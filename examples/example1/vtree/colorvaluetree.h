@@ -19,8 +19,8 @@ typedef Node Node;
 
 class colorvaluetree {
     private:
-      std::string DEBUG_H;
-      std::string WARN_H;
+      const std::string DEBUG_H;
+      const std::string WARN_H;
 
       int count;
       Node* root;
@@ -32,6 +32,7 @@ class colorvaluetree {
     private:
       Node* createNode(int data, int key);
       void deleteTree(Node* n);
+      void getNodeContents(Node* n, std::string* s);
       Node* insertNode(Node* root, int data, int key);
       void printTree(Node* n);
       void printVector(std::vector<int>* v);
@@ -43,8 +44,11 @@ class colorvaluetree {
       void add(int data, int key);
       void deleteTree(); 
       int getMaxValue();
+      std::string getContents();  
       int size();
       void printTree();
 };
+
+#endif
 
 #endif
