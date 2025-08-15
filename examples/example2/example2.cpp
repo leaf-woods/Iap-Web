@@ -1,6 +1,7 @@
 // https://stackoverflow.com/questions/71883343/how-to-write-to-file-in-c
 #include <fstream>
 #include <iostream>
+#include <sys/stat.h>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -10,6 +11,11 @@
 #include "../example1/imagecolordesc.h"
 
 using namespace std;
+
+inline bool exists(const string& name) {
+    struct stat buffer;
+    return (stat (name.c_str(), &buffer) == 0);
+}
 
 int main(int argc, char* argv[]) {
 
@@ -42,6 +48,10 @@ int main(int argc, char* argv[]) {
     fn = fn.append("dat");
     cout << "Writing to file: " << fn << endl;
 
+    if (exists(fname)) {
+        cout << "File: " << fn << " already exists. Abort." << endl;
+        return 1;
+    }
     ofstream f;
     f.open (fn);
     f << mcs << tcs;
