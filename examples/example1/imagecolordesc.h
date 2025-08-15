@@ -11,6 +11,10 @@
 
 class imagecolordesc {
     private:
+      const std::string DEBUG_H;
+      const std::string WARN_H;
+
+      int W; int H;
       std::unordered_map<int, std::vector<int*>*>  *color_map;
       convertnumber* convert;
 
@@ -18,7 +22,7 @@ class imagecolordesc {
       colorvaluetree* t;
 
     public:
-      int W; int H;
+      const static int DEBUG = 0;
 
       uchar b_max;
       uchar b_min;
@@ -37,6 +41,8 @@ class imagecolordesc {
       imagecolordesc();
       ~imagecolordesc();
 
+      std::string getContents();
+      std::string getColorValueTreeContents(); 
       void setDescData(cv::Mat &mat);
       void setMinMax();
       void printColorValueTree();
