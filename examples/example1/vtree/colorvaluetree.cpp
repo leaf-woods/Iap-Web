@@ -8,9 +8,7 @@
 
 using namespace std;
 
-colorvaluetree::colorvaluetree() {
-    DEBUG_H = "Debug - ";
-    WARN_H = "Warn - ";
+colorvaluetree::colorvaluetree() : DEBUG_H("Debug - "),WARN_H("Warn - ") {
     count = 0;
     //https://stackoverflow.com/questions/35827086/best-way-to-check-if-pointer-is-initialized
     root = nullptr;
@@ -19,7 +17,7 @@ colorvaluetree::colorvaluetree() {
 colorvaluetree::~colorvaluetree() {
     if (DEBUG) {
         cout << endl;
-        cout << DEBUG_H << "Destructing root at: " << root << endl;
+        cout << DEBUG_H << "Destructing colorvaluetree: root at: " << root << endl;
     }
     if (count > 0) {
         deleteTree(root);
@@ -84,7 +82,7 @@ Node* colorvaluetree::insertNode(Node* n, int data, int key)
 
 void colorvaluetree::add(int data, int key) {
     if (data <=0 ) {
-        cout << "Can not data. Invalid data entry: { " << data << ", " << key << " }" << endl;
+        cout << "Can not add data. Invalid data entry: { " << data << ", " << key << " }" << endl;
         return;
     }
     insertNode(root, data, key);
@@ -105,6 +103,30 @@ void colorvaluetree::printTree() {
     printTree(root);
     cout << "Print tree completed." << endl;
     cout << endl;
+}
+
+void colorvaluetree::getNodeContents(Node* n, string* s) {
+    if (n == nullptr) {
+        return;
+    }
+    s->append("N=");
+    s->append(to_string(n->data));
+    s->append(" V=[ ");
+    for (int i=0; i<n->keys->size(); i++) {
+        s->append(to_string(n->keys->at(i)));
+        s->append(" ");
+    }
+    s->append("]\n");
+    getNodeContents(n->left, s);
+    getNodeContents(n->right, s);
+}
+
+std::string colorvaluetree::getContents() {
+    string s = "t size=";
+    s.append(to_string(count));
+    s.append("\n");
+    getNodeContents(root, &s);
+    return s;
 }
 
 void colorvaluetree::printTree(Node* n) {
@@ -206,4 +228,3 @@ void colorvaluetree::deleteTree() {
     deleteTree(root);
     cout << "Tree deleted. Root: " << root << endl;
 }
-
