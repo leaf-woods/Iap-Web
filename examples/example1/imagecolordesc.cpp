@@ -5,7 +5,7 @@
 
 using namespace std;
 
-imagecolordesc::imagecolordesc(){
+imagecolordesc::imagecolordesc() : DEBUG_H("Debug - "),WARN_H("Warn - "){
     color_map = new unordered_map<int, std::vector<int*>*>();
     convert = new convertnumber();
     t = new colorvaluetree();
@@ -20,7 +20,12 @@ imagecolordesc::imagecolordesc(){
     }
 }
 
+/// TODO DEBUG
 imagecolordesc::~imagecolordesc() {
+    if (DEBUG) {
+        cout << endl;
+        cout << DEBUG_H << "Destructing imagecolordesc. " << endl;
+    }
     std::vector<int*>* v;
 
     //cout << "To destruct map." << endl;
@@ -50,7 +55,49 @@ void imagecolordesc::clearSTDVector(std::vector<int*>* v) {
     //cout << "clearSTDVector: size: " << v->size() << endl;
 }
 
+string imagecolordesc::getContents() {
+    if (color_map==nullptr) {
+        return nullptr;
+    }
+    string s = "W=";
+    s.append(to_string(W));
+    s.append(" H=");
+    s.append(to_string(H));
+
+    s.append("\nB_MIN=");
+    s.append(to_string(b_min));
+    s.append(" G_MIN=");
+    s.append(to_string(g_min));
+    s.append(" R_MIN=");
+    s.append(to_string(r_min));
+    s.append("\nB_MAX=");
+    s.append(to_string(b_max));
+    s.append(" G_MAX=");
+    s.append(to_string(g_max));
+    s.append(" R_MAX=");
+    s.append(to_string(r_max));
+
+    s.append("\nm size=");
+    s.append(to_string(color_map->size()));
+    s.append("\n");
+
+    for (auto it=color_map->begin(); it!=color_map->end(); it++) {
+        s.append("K=");
+        s.append(to_string(it->first));
+        s.append(" N=");
+        s.append(to_string(it->second->size()));
+        s.append("\n");
+    }
+    return s;
+}
+
+string imagecolordesc::getColorValueTreeContents() {
+    return t->getContents();
+}
+
 void imagecolordesc::setDescData(cv::Mat& mat) {
+    W = mat.cols;
+    H = mat.rows;
     std::vector<int*>* v;
     cv::Vec<unsigned char, 3> entry;
     for (int i=0; i<mat.rows; i++) {
@@ -120,30 +167,25 @@ void imagecolordesc::printBGR(uchar* array) {
 
 void imagecolordesc::printMinMax() {
     cout << "b_max: " << static_cast<unsigned>(b_max) << " g_max: " << static_cast<unsigned>(g_max) << " r_max: " << static_cast<unsigned>(r_max) << endl;
-    cout << "b_min: " << static_cast<unsigned>(b_min) << " g_min: " << static_cast<unsigned>(g_min) << " r_min: " << static_cast<unsigned>(r_min) << endl;
-
-    //printPixelIndex(b_max_idx);
-    //printPixelIndex(b_min_idx);
-
+    cout << "b_min: " << static_cast<unsigned>(b_min) << " g_min: " << static_cast<unsigned>(g_min) << " r_min: " << static_cast<unsigned>(r_min) << endl;   
 }
 
 void imagecolordesc::printMap() {
     int num = 0; 
-    int key = 0;
     string s;
     uchar p[] = {0, 0, 0};
     cout << "printMap: " << endl;
     for (auto it=color_map->begin(); it!=color_map->end(); it++) {
-        
-        //cv::Vec<unsigned char, 3> entry = *(it->first);
-        key = it->first;
-        convert->setBGR(key, p);
+        convert->setBGR(it->first, p);
         
         std::vector<int*> value = *(it->second);
         if (value.size() < 10) {
-            s = "  " + std::to_string(value.size());
+            s = "   " + std::to_string(value.size());
         }
         else if (value.size() < 100) {
+            s = "  " + std::to_string(value.size());
+        }
+        else if (value.size() < 1000) {
             s = " " + std::to_string(value.size());
         }
         else {
@@ -160,4 +202,3 @@ void imagecolordesc::printMap() {
 void imagecolordesc::printColorValueTree() {
     t->printTree();
 }
-
