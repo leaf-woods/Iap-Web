@@ -63,7 +63,6 @@ int main(int argc, char* argv[])
     desc.setDescData(input);
     desc.printMap();
     desc.printColorValueTree();
-    desc.setMinMax();
     desc.printMinMax();
     cout << endl;
     //*/
