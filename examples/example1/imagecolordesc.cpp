@@ -55,7 +55,7 @@ void imagecolordesc::clearSTDVector(std::vector<int*>* v) {
     //cout << "clearSTDVector: size: " << v->size() << endl;
 }
 
-string imagecolordesc::getContents() {
+string imagecolordesc::writeContents() {
     if (color_map==nullptr) {
         return nullptr;
     }
@@ -91,7 +91,7 @@ string imagecolordesc::getContents() {
     return s;
 }
 
-string imagecolordesc::getColorValueTreeContents() {
+string imagecolordesc::writeColorValueTreeContents() {
     return t->getContents();
 }
 
@@ -116,7 +116,8 @@ void imagecolordesc::setDescData(cv::Mat& mat) {
             v->push_back(new int[]{i, j});
         }
     } 
-    setColorValueTree();           
+    setColorValueTree(); 
+    setMinMax();          
 }
 
 void imagecolordesc::setColorValueTree() {
@@ -202,3 +203,4 @@ void imagecolordesc::printMap() {
 void imagecolordesc::printColorValueTree() {
     t->printTree();
 }
+
