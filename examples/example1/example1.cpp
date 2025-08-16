@@ -95,7 +95,10 @@ int main(int argc, char* argv[])
     uchar bgr[] = {0, 0, 0};
     convert.setBGR(s, bgr);
     assert(bgr[0]==b); assert(bgr[1]==g); assert(bgr[2]==r);
+
+    bgr[0]=0; bgr[1]=0; bgr[2]=0;
     convert.setBGR(s+1, bgr);
+    assert(bgr[0]==0); assert(bgr[1]==0); assert(bgr[2]==0);
     
     convert.setBGR(s-1, bgr);
     assert(bgr[0]==b); assert(bgr[1]==g); assert(bgr[2]==r-1);
@@ -111,9 +114,7 @@ int main(int argc, char* argv[])
     assert(r_d==static_cast<unsigned>(convert.getUChar(r)));
     assert(0==static_cast<unsigned>(convert.getUChar(0)));
     assert(r_d-1==static_cast<unsigned>(convert.getUChar(r_d-1)));
-    cout << endl;
-    
-    
+    cout << "Test convernumber Done" << endl;
     cout << endl;
 
     return 0;
