@@ -36,17 +36,17 @@ class imagecolordesc {
       void printBGR(uchar* array);
       void printPixelIndex(int* array);
       void setColorValueTree();
+      void setMinMax();
       
     public:
       imagecolordesc();
       ~imagecolordesc();
 
-      std::string getContents();
-      std::string getColorValueTreeContents(); 
       void setDescData(cv::Mat &mat);
-      void setMinMax();
       void printColorValueTree();
       void printMap();
-      void printMinMax(); 
+      void printMinMax();
+      std::string writeColorValueTreeContents(); 
+      std::string writeContents(); 
 };
 #endif
