@@ -132,28 +132,33 @@ void imagecolordesc::setColorValueTree() {
 
 /// TODO: test with all black and all white images
 void imagecolordesc::setMinMax() {
+    uchar c;
+    
     for (int i=0; i<256; i++) {
+        c = convert->getUChar(i);
+        c = c=='\0' ? 255 : c ; 
         if (b_min==255 && B[i] > 0) {
-            b_min = convert->getUChar(i);
-            //cout << "b min is: " << static_cast<unsigned>(b_min) << endl;;
+            b_min = c;
         }
         if (g_min==255 && G[i] > 0) {
-            g_min = convert->getUChar(i);
+            g_min = c;
         }
         if (r_min==255 && R[i] > 0) {
-            r_min = convert->getUChar(i);
+            r_min = c;
         }
     }
 
     for (int i=255; i>=0; i--) {
+        c = convert->getUChar(i);
+        c = c=='\0' ? 0 : c ;
         if (b_max == 0 && B[i] > 0) {
-            b_max = convert->getUChar(i);
+            b_max = c;
         }
         if (g_max == 0 && G[i] > 0) {
-            g_max = convert->getUChar(i);
+            g_max = c;
         }
         if (r_max == 0 && R[i] > 0) {
-            r_max = convert->getUChar(i);
+            r_max = c;
         }
     }
 }
