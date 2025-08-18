@@ -146,6 +146,9 @@ void imagecolordesc::setMinMax() {
         if (r_min==255 && R[i] > 0) {
             r_min = c;
         }
+        if (b_min < 255 && g_min < 255 && r_min < 255) {
+            break;
+        }
     }
 
     for (int i=255; i>=0; i--) {
@@ -159,6 +162,9 @@ void imagecolordesc::setMinMax() {
         }
         if (r_max == 0 && R[i] > 0) {
             r_max = c;
+        }
+        if (b_max > 0 && g_max > 0 && r_max > 0) {
+            break;
         }
     }
 }
