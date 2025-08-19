@@ -12,54 +12,41 @@ calcBgrHsv::calcBgrHsv() {}
 
 calcBgrHsv::~calcBgrHsv() {}
 
-void calcBgrHsv::toHsvCV(int* hsv, double b, double g, double r)
+void calcBgrHsv::toHsvCV(int* hsv, uchar b, uchar g, uchar r)
 {
+    uchar u_max = max(r, max(g, b));
+    uchar u_min = min(r, min(g, b));
+    uchar u_diff = u_max - u_min;
 
-    // R, G, B values are divided by 255
-    // to change the range from 0..255 to 0..1
-    r = r / 255.0;
-    g = g / 255.0;
-    b = b / 255.0;
-
-    // h, s, v = hue, saturation, value
-    double cmax = max(r, max(g, b)); // maximum of r, g, b
-    double cmin = min(r, min(g, b)); // minimum of r, g, b
-    double diff = cmax - cmin; // diff of cmax and cmin.
     double h = -1, s = -1;
 
     // if cmax and cmax are equal then h = 0
-    if (cmax == cmin)
+    if (u_max == u_min)
         h = 0;
 
     // if cmax equal r then compute h
-    else if (cmax == r)
-        h = fmod(60 * ((g - b) / diff) + 360, 360);
+    else if (u_max == r)
+        h = fmod(60 * ((double)(g - b) / (double)u_diff) + 360, 360);
 
     // if cmax equal g then compute h
-    else if (cmax == g)
-        h = fmod(60 * ((b - r) / diff) + 120, 360);
+    else if (u_max == g)
+        h = fmod(60 * ((double)(b - r) / (double)u_diff) + 120, 360);
 
     // if cmax equal b then compute h
-    else if (cmax == b)
-        h = fmod(60 * ((r - g) / diff) + 240, 360);
+    else if (u_max == b)
+        h = fmod(60 * ((double)(r - g) / (double)u_diff) + 240, 360);
 
     // if cmax equal zero
-    if (cmax == 0)
+    if (u_max == 0)
         s = 0;
     else {
         //s = (diff / cmax) * 100;
-        s = (diff / cmax) * 255;
+        s = ((double)u_diff / (double)u_max) * 255;
     }
-    // compute v
-    //double v = cmax * 100;
-    double v = cmax * 255;
-    //cout << "(" << h << ", " << s << ", " << v << ")" << endl;
-
     
-    //hsv = new int[3]{(int)((h+0.5)/2), (int)(s+0.5), (int)(v+0.5)};
     hsv[0]= (int)((h+0.5)/2);
     hsv[1]= (int)(s+0.5);
-    hsv[2]= (int)(v+0.5);
+    hsv[2]= (int)u_max;
 }
 
 double calcBgrHsv::diffBGR(uchar b1, uchar g1, uchar r1, uchar b2, uchar g2, uchar r2) {
