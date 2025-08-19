@@ -14,19 +14,19 @@ int main(int argc, char* argv[]) {
 
     cout << "Test toHsvCV()" << endl;
     calcBgrHsv calc;
-    int hsv[3];
+    uchar hsv[3];
     calc.toHsvCV(hsv, 165, 107, 72);
-    cout << "h:" << hsv[0] << " s:" << hsv[1] << " v:" << hsv[2] << endl;
+    cout << "h:" << static_cast<unsigned>(hsv[0]) << " s:" << static_cast<unsigned>(hsv[1]) << " v:" << static_cast<unsigned>(hsv[2]) << endl;
     cout << endl;
     // 159, 105, 75 masked
     // 150, 92, 57 not masked
     calc.toHsvCV(hsv, 158, 104, 74);
-    cout << "h:" << hsv[0] << " s:" << hsv[1] << " v:" << hsv[2] << endl;
+    cout << "h:" << static_cast<unsigned>(hsv[0]) << " s:" << static_cast<unsigned>(hsv[1]) << " v:" << static_cast<unsigned>(hsv[2]) << endl;
     assert(hsv[0]==109); assert(hsv[1]==136); assert(hsv[2]==158);
     cout << endl;
 
     calc.toHsvCV(hsv, 150, 91, 59);
-    cout << "h:" << hsv[0] << " s:" << hsv[1] << " v:" << hsv[2] << endl;
+    cout << "h:" << static_cast<unsigned>(hsv[0]) << " s:" << static_cast<unsigned>(hsv[1]) << " v:" << static_cast<unsigned>(hsv[2]) << endl;
     assert(hsv[0]==109); assert(hsv[1]==155); assert(hsv[2]==150);
     cout << endl;
     //delete hsv;
@@ -39,9 +39,9 @@ int main(int argc, char* argv[]) {
     // 
     double diff_bgr = calc.diffBGR(142, 84, 49, 155, 98, 66);
     cout << "diff_bgr: " << diff_bgr << endl;
-    int hsv_a[3];
+    uchar hsv_a[3];
     calc.toHsvCV(hsv_a, 142, 84, 49); 
-    int hsv_b[3];
+    uchar hsv_b[3];
     calc.toHsvCV(hsv_b, 155, 98, 66);
     double diff_hsv = calc.diffHSV(hsv_a[0], hsv_a[1], hsv_a[2], hsv_b[0], hsv_b[1], hsv_b[2]);
     cout << "diff_hsv: " << diff_hsv << endl;
