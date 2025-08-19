@@ -12,7 +12,7 @@ calcBgrHsv::calcBgrHsv() {}
 
 calcBgrHsv::~calcBgrHsv() {}
 
-void calcBgrHsv::toHsvCV(int* hsv, uchar b, uchar g, uchar r)
+void calcBgrHsv::toHsvCV(uchar* hsv, uchar b, uchar g, uchar r)
 {
     uchar u_max = max(r, max(g, b));
     uchar u_min = min(r, min(g, b));
@@ -44,9 +44,9 @@ void calcBgrHsv::toHsvCV(int* hsv, uchar b, uchar g, uchar r)
         s = ((double)u_diff / (double)u_max) * 255;
     }
     
-    hsv[0]= (int)((h+0.5)/2);
-    hsv[1]= (int)(s+0.5);
-    hsv[2]= (int)u_max;
+    hsv[0]= (uchar)((h+0.5)/2);
+    hsv[1]= (uchar)(s+0.5);
+    hsv[2]= (uchar)u_max;
 }
 
 double calcBgrHsv::diffBGR(uchar b1, uchar g1, uchar r1, uchar b2, uchar g2, uchar r2) {
@@ -57,7 +57,7 @@ double calcBgrHsv::diffBGR(uchar b1, uchar g1, uchar r1, uchar b2, uchar g2, uch
     return sqrt(diff_b*diff_b + diff_g*diff_g + diff_r*diff_r);
 }
 
-double calcBgrHsv::diffHSV(int h1, int s1, int v1, int h2, int s2, int v2) {
+double calcBgrHsv::diffHSV(uchar h1, uchar s1, uchar v1, uchar h2, uchar s2, uchar v2) {
     int diff_h = h1 - h2;
     int diff_s = s1 - s2;
     int diff_v = v1 - v2;
