@@ -9,6 +9,6 @@ class convertnumber {
     public:
         int getInt(uchar b, uchar g, uchar r);
         uchar getUChar(int n);
-        void setBGR(int n, uchar* p_bgr);
+        void setUChar3(int n, uchar* p_bgr);
 };
 #endif

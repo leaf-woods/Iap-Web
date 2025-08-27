@@ -15,7 +15,7 @@ class ibstree {
 // Every child class type of abstree has its own root.
 class abstree : public ibstree {
     protected:
-      const static int DEBUG = 1;
+      const static int DEBUG = 0;
       const std::string DEBUG_H;
 
       int count;

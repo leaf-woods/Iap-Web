@@ -8,6 +8,8 @@
 #include "convertnumber.h"
 #include "iap_print.h"
 #include "imagecolordesc.h"
+#include "imagecolormatrices.h"
+#include "range.h"
 
 class iap_context {
     public:
@@ -16,16 +18,25 @@ class iap_context {
         iap_print* printer;
         convert_bgrhsv* calc;
         convertnumber* convert;
+
+        range* rg;
+
+        imagecolormatrices* mats;
+
     public:
         iap_context() {
             printer = new iap_print();
             calc = new convert_bgrhsv();
             convert = new convertnumber(); 
+            rg = new range();
 
             desc = new imagecolordesc();
             desc->setPrint(printer);
-            desc->setCalcHSV(calc);
-            desc->setConvert(convert);
+            desc->setConvertHSV(calc);
+            desc->setConvertNum(convert);
+            desc->setRange(rg);
+
+            mats = new imagecolormatrices();
         }
 
         ~iap_context() {
@@ -33,7 +44,9 @@ class iap_context {
             delete printer;
             delete calc;
             delete convert;
+            delete rg;
             delete desc;
+            delete mats;
         }
 };
 #endif

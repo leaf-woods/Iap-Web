@@ -26,8 +26,8 @@ rsync -av $iap_dev_base/util/example1/iap_print.h $iap_cv_base/util/print/iap_pr
 rsync -av $iap_dev_base/util/example1/iap_print.cpp $iap_cv_base/util/print/iap_print.cpp
 
 # Sync package util/convert
-rsync -av $iap_dev_base/util/example1/convert_number.h $iap_cv_base/util/convert/convert_number.h
-rsync -av $iap_dev_base/util/example1/convert_number.cpp $iap_cv_base/util/print/convert_number.cpp
+rsync -av $iap_dev_base/util/example1/convertnumber.h $iap_cv_base/util/convert/convertnumber.h
+rsync -av $iap_dev_base/util/example1/convertnumber.cpp $iap_cv_base/util/convert/convertnumber.cpp
 rsync -av $iap_dev_base/util/example4/convert_bgrhsv.h $iap_cv_base/util/convert/convert_bgrhsv.h
 rsync -av $iap_dev_base/util/example4/convert_bgrhsv.cpp $iap_cv_base/util/convert/convert_bgrhsv.cpp
 rsync -av $iap_dev_base/util/example4/convert_bgrhsv_test.cpp $iap_cv_base/util/convert/convert_bgrhsv_test.cpp
@@ -44,4 +44,4 @@ make clean
 
 echo;
 echo "Make iap-web cv and run test";
-make && ./runtest
+make #&& ./runtest

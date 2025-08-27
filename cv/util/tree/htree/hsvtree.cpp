@@ -10,6 +10,7 @@ using namespace std;
 hsvtree::hsvtree() {
     count = 0;
     root = nullptr;
+    hsv_dim = HUE;
 }
 
 hsvtree::~hsvtree() {
@@ -35,7 +36,7 @@ hsvtree::~hsvtree() {
 HNode* hsvtree::createNode(uchar* hsv)
 {
     HNode* newNode = new HNode();
-    newNode->data = hsv[0];
+    newNode->data = hsv[hsv_dim];
     newNode->left = newNode->right = nullptr;
     newNode->vecHsv = new vector<uchar*>();
     newNode->vecHsv->push_back(hsv);
@@ -62,10 +63,10 @@ HNode* hsvtree::insertNode(HNode* n, uchar* hsv)
         return n;
     }
 
-    if (hsv[0] < n->data) {
+    if (hsv[hsv_dim] < n->data) {
         n->left = insertNode(n->left, hsv);
     }
-    else if (hsv[0] > n->data) { 
+    else if (hsv[hsv_dim] > n->data) { 
         n->right = insertNode(n->right, hsv);
     }
     else {
@@ -81,10 +82,7 @@ HNode* hsvtree::insertNode(HNode* n, uchar* hsv)
 }
 
 void hsvtree::add(uchar* hsv) {
-    if (hsv[0] < 0 ) {
-        cout << "Can not add data. Invalid data: " << static_cast<unsigned>(hsv[0])  << endl;
-        return;
-    }
+    assert(hsv_dim==HUE || hsv_dim==SAT || hsv_dim==VAL);
     insertNode(root, hsv);
 }
 
@@ -169,7 +167,17 @@ void hsvtree::deleteTree() {
 }
 
 void hsvtree::printTree() {
-    cout << "Print tree: size: " << count << endl;
+    string dim;
+    if (hsv_dim==HUE) {
+        dim = "HUE";
+    }
+    else if (hsv_dim==SAT) {
+        dim = "SAT";
+    }
+    else if (hsv_dim==VAL) {
+        dim = "VAL";
+    }
+    cout << "Print hsvtree. Use hsv dimention: " << dim << " Size: " << count << endl;
     if (count == 0) {
         cout << "Empty tree." << endl;
         return;
@@ -187,6 +195,11 @@ void hsvtree::printTree() {
 
 int hsvtree::getMaxValue() {
     return abstree::getMaxValue(root);
+}
+
+void hsvtree::setHsvDim(int hd) {
+    assert(hd==HUE || hd==SAT || hd==VAL);
+    hsv_dim = hd;
 }
 
 

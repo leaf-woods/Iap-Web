@@ -6,14 +6,21 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
-//#include "iap_context.h"
+#include "iap_context.h"
 #include "test_img_data.h"
 
 using namespace std;
 
 test_img_data::test_img_data() {
-    img_base = "/home/linye020603/iap-web/cv/test/image/data/";
-    cout << "Use image base: " << img_base << endl;
+   ctx = new iap_context();
+}
+
+test_img_data::~test_img_data() {
+   delete ctx;
+}
+
+void test_img_data::setImageBase(string path) {
+    img_base = path;
 }
 
 void test_img_data::set(string fn){
@@ -21,107 +28,62 @@ void test_img_data::set(string fn){
     cv::cvtColor(input, hsvImage, cv::COLOR_BGR2HSV);
 }
 
-void test_img_data::test_img_data_blue(){
-    // Open IMG_4585_S_CR_R1_SMALL.JPG with ImageMagick. Result is same.
-    fname = "IMG_4585_S_CR_R1.JPG";
+double test_img_data::test_blue(std::string f) {
+   
+    ctx->mats->setImagePath(f);
+    ctx->mats->read_to_hsv();
 
-    string fn = img_base + fname;
-    set(fn);  
-    cout << "Test using file: " << fname << endl;
-    
+    // Calculate the first range 
+    ctx->desc->setColorType(imagecolorvalues::HSV);
+    ctx->desc->setDescData(ctx->mats->hsvImage);
+    uchar* lower = ctx->desc->getLowerBoundHSV();
+    uchar* upper = ctx->desc->getUpperBoundHSV();
+    ctx->desc->getPrint()->printPixelColor(lower);
+    ctx->desc->getPrint()->printPixelColor(upper);
+
     //https://www.geeksforgeeks.org/dsa/program-change-rgb-color-model-hsv-color-model/
     /*
      * 20250817 Use bounds to detect blue in the above sample. 
      */
-    int lower_h = 100;
-    int lower_s = 158; //150;
-    int lower_v = 0;
+    ctx->mats->in_range_mask(lower, upper);
 
-    int upper_h = 120; //140;
-    int upper_s = 255;
-    int upper_v = 155; //255;
-
-    /*
-    bh_max: 109 gs_max: 183 rv_max: 152
-    bh_min: 108 gs_min: 175 rv_min: 142
-    */
-
-    lower_h = 108; upper_h = 109;
-    lower_s = 175; upper_s = 183;
-    lower_v = 142; upper_v = 152;
-    
-    cv::inRange(hsvImage, cv::Scalar(lower_h, lower_s, lower_v), cv::Scalar(upper_h,upper_s,upper_v), hueMask);
-
-    double imageSize = hsvImage.cols * hsvImage.rows;
-    double bluePercentage = 100*(((double) cv::countNonZero(hueMask))/imageSize);
-    cout << "Percenage of blue: " << bluePercentage << "%" << endl;
+    return ctx->mats->get_percentage();
 }
 
-void test_img_data::test_img_data_range(){
-    fname = "IMG_4585_S_CR_R1.JPG";
+void test_img_data::test_img_data_blue(){
+    // For IMG_4585_S_CR_R1.JPG, open IMG_4585_S_CR_R1_SMALL.JPG with ImageMagick. Result is same.
+    string fname = "IMG_4585_S_CR_R1.JPG";
 
-    string fn = img_base + fname;
-    set(fn);  
-    cout << "Test using file: " << fname << endl;
-
-    //https://www.geeksforgeeks.org/dsa/program-change-rgb-color-model-hsv-color-model/
-    /*
-     * 20250817 Use bounds to detect blue in the above sample. 
-     */
-    int lower_h = 100;
-    int lower_s = 158; //150;
-    int lower_v = 0;
-
-    int upper_h = 120; //140;
-    int upper_s = 255;
-    int upper_v = 155; //255;
-
-    /*
-    bh_max: 109 gs_max: 183 rv_max: 152
-    bh_min: 108 gs_min: 175 rv_min: 142
-    */
-
-    lower_h = 108; upper_h = 109;
-    lower_s = 175; upper_s = 183;
-    lower_v = 142; upper_v = 152;
-    
-    cv::inRange(hsvImage, cv::Scalar(lower_h, lower_s, lower_v), cv::Scalar(upper_h,upper_s,upper_v), hueMask);
-
-    // Not in range
-    int x = 5; int y = 14; // cloud
-
-    cv::Vec<unsigned char, 3> entry = input.at<cv::Vec3b>(y, x);
-    cout << "b: " << static_cast<unsigned>(entry[0]) << " g: " << static_cast<unsigned>(entry[1]) << " r: " << static_cast<unsigned>(entry[2]) << endl;
-
-    entry = hsvImage.at<cv::Vec3b>(y, x);
-    cout << "h: " << static_cast<unsigned>(entry[0]) << " s: " << static_cast<unsigned>(entry[1]) << " v: " << static_cast<unsigned>(entry[2]) << endl;
-
-    entry = hueMask.at<cv::Vec3b>(y, x);
-    cout << "masked b: " << static_cast<unsigned>(entry[0]) << " masked g: " << static_cast<unsigned>(entry[1]) << " masked r: " << static_cast<unsigned>(entry[2]) << endl;
+    fname = "img64/IMG_4585_S_CR_R1_S64_11.JPG";
+    string fn = img_base + fname; 
+    cout << "Test uses file: " << fn << endl;
+    double percent = test_blue(fn);
+    assert(percent==100.0);
     cout << endl;
+    
+    fname = "img64/IMG_4585_S_CR_R1_S64_10.JPG";
+    fn = img_base + fname; 
+    cout << "Test uses file: " << fn << endl;
+    percent = test_blue(fn);
+    //assert(percent==100.0);
+    cout << endl;
+}
 
+/// TODO
+void test_img_data::test_range(int x, int y){
+    // IMG_4585_S_CR_R1.JPG
+    // Not in range
+    x = 5; y = 14; // cloud
+    ctx->mats->printPixelColorValues(x, y);
     // In range
     x = 12; y = 5;  //sky
-
-    entry = input.at<cv::Vec3b>(y, x);
-    cout << "b: " << static_cast<unsigned>(entry[0]) << " g: " << static_cast<unsigned>(entry[1]) << " r: " << static_cast<unsigned>(entry[2]) << endl;
-
-    entry = hsvImage.at<cv::Vec3b>(y, x);
-    cout << "h: " << static_cast<unsigned>(entry[0]) << " s: " << static_cast<unsigned>(entry[1]) << " v: " << static_cast<unsigned>(entry[2]) << endl;
-
-    entry = hueMask.at<cv::Vec3b>(y, x);
-    cout << "masked h: " << static_cast<unsigned>(entry[0]) << " masked s: " << static_cast<unsigned>(entry[1]) << " masked v: " << static_cast<unsigned>(entry[2]) << endl;
+    ctx->mats->printPixelColorValues(x, y);
     cout << endl;
 }
 
-void test_img_data::test_img_data_types(){
-    fname = "IMG_4585_S_CR_R1.JPG";
-
-    string fn = img_base + fname;
-    set(fn); 
-    cout << "Test using file: " << fname << endl;
-    
-     cout << "Testing of sky pixels and cloud pixels" << endl;
+void test_img_data::test_types(){
+     // IMG_4585_S_CR_R1.JPG
+     cout << "Test of sky pixels and cloud pixels" << endl;
     /*
      * @20250822
      * Use ImageMagick to open file IMG_4585_S_CR_R1.JPG
@@ -135,18 +97,14 @@ void test_img_data::test_img_data_types(){
      // h: 108-109 s: 157-177 v: 142-148
      cout << "sky pixels" << endl;
      for (int i=0; i<30; i++) {
-         entry = hsvImage.at<cv::Vec3b>(0, i);
-         // check range of hsv
-         cout << "h: " << static_cast<unsigned>(entry[0]) << " s: " << static_cast<unsigned>(entry[1]) << " v: " << static_cast<unsigned>(entry[2]) << endl;
+        ctx->mats->printPixelColor(0, i, "HSV");
      }
      cout << endl;
 
      // h: 109-110 s: 121-157 v: 154-162
      cout << "cloud pixels" << endl;
      for (int i=14; i<36; i++) {
-         entry = hsvImage.at<cv::Vec3b>(i, 0);
-         // check range of hsv
-         cout << "h: " << static_cast<unsigned>(entry[0]) << " s: " << static_cast<unsigned>(entry[1]) << " v: " << static_cast<unsigned>(entry[2]) << endl;
+        ctx->mats->printPixelColor(0, i, "HSV");
      }
      cout << endl;
 
@@ -155,10 +113,7 @@ void test_img_data::test_img_data_types(){
     // h: 108-109 s: 155-158 v: 147-152  Verified
     for (int r=2; r<5; r++) {
         for (int c=18; c<20; c++) {
-            entry = hsvImage.at<cv::Vec3b>(r, c);
-            // check range of hsv
-            cout << "h: " << static_cast<unsigned>(entry[0]) << " s: " << static_cast<unsigned>(entry[1]) << " v: " << static_cast<unsigned>(entry[2]) << endl;
-     
+            ctx->mats->printPixelColor(c, r, "HSV");
         }
     }
 }

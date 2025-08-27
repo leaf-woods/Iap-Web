@@ -21,7 +21,7 @@ uchar convertnumber::getUChar(int n) {
     return static_cast<uchar>(x.to_ulong());
 }
 
-void convertnumber:: setBGR(int n, uchar* p_bgr) {
+void convertnumber:: setUChar3(int n, uchar* p_bgr) {
     if (n < 0 || n > MAX) {
         cout << "Can not set BGR. Invalid number: " << n << endl;
         exit;
@@ -48,4 +48,7 @@ void convertnumber:: setBGR(int n, uchar* p_bgr) {
     p_bgr[0] = b;
     p_bgr[1] = g;
     p_bgr[2] = r;
+
+    //int ib = (int)b;
+    //cout << ib << " -Convert " << n << " to: " << static_cast<unsigned>(b) << ", " << static_cast<unsigned>(g) << ", " << static_cast<unsigned>(r) << endl;
 }

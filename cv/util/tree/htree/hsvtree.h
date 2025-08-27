@@ -21,6 +21,13 @@ class hsvtree : public abstree{
 
       HNode* root;
 
+      int hsv_dim;
+
+    public:
+      const static int HUE = 0;
+      const static int SAT = 1;
+      const static int VAL = 2;
+      
     private:
       HNode* createNode(uchar* hsv);
       void deleteTree(HNode* n);
@@ -32,6 +39,7 @@ class hsvtree : public abstree{
       ~hsvtree();
 
       void add(uchar* hsv);
+      void setHsvDim(int hd);
       virtual void deleteTree(); 
       virtual int getMaxValue();  
       virtual void printTree();

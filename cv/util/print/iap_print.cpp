@@ -34,3 +34,7 @@ void iap_print::printVector(vector<int>* v) {
 void iap_print::printPixelColor(uchar* array) {
     cout << "Color [" << static_cast<unsigned>(array[0]) << ", " << static_cast<unsigned>(array[1]) << ", " << static_cast<unsigned>(array[2]) << "]" << endl;
 }
+
+void iap_print::printPixelColor(cv::Vec<unsigned char, 3> entry, string type) {
+    cout << type << " [" << static_cast<unsigned>(entry[0]) << ", " << static_cast<unsigned>(entry[1]) << ", " << static_cast<unsigned>(entry[2]) << "]" << endl;
+}
