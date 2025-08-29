@@ -90,9 +90,9 @@ int main(int argc, char* argv[]) {
      /*
       * @20250829
       * Although Point (19,4) which is a cloud not in range set above (S_min, 152), it is 
-      * considered significantly from Point (20,4). Both points not in range set above.
-      * At this moment, we manually define they are significantly as initial train data.
-      * That is, we define critical difference base on Point(19,4) and (20,4) with Delta(S)=+5 and
+      * considered significantly different from Point (20,4). Both points not in range set above.
+      * At this moment, we manually define they are significantly different as initial train data.
+      * That is, we define critical difference based on Point(19,4) and (20,4) with Delta(S)=+5 and
       * Delta(V)=-5. See Issue4 for the observation for the difference between sky and cloud.
       */
      
