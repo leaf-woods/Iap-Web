@@ -49,6 +49,8 @@ else
     rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv.h $iap_github_base/util/convert/convert_bgrhsv.h
     rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv.cpp $iap_github_base/util/convert/convert_bgrhsv.cpp
     rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv_test.cpp $iap_github_base/util/convert/convert_bgrhsv_test.cpp  
+    rsync $dry_run -av $iap_cv_base/util/tree/ITreeNode.h $iap_github_base/util/tree/ITreeNode.h
+    rsync $dry_run -av $iap_cv_base/util/tree/ibstree.h $iap_github_base/util/tree/ibstree.h
     rsync $dry_run -av $iap_cv_base/util/tree/htree/*.h $iap_github_base/util/tree/htree/
     rsync $dry_run -av $iap_cv_base/util/tree/htree/*.cpp $iap_github_base/util/tree/htree/
 fi

@@ -48,6 +48,20 @@ class abstree : public ibstree {
           }
           return value;
       }
+
+      template<typename N>
+      N* findNode(N* n, int data) {
+          if (n == nullptr) {
+            return nullptr;
+          } 
+          if (n->data == data) {
+            return n;
+          }
+          if (data < n->data) {
+            return findNode(n->left, data);
+          }
+          return findNode(n->right, data);
+      }
 };
 
 #endif
