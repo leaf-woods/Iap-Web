@@ -24,6 +24,7 @@ then
     echo;
 fi
 
+iap_dev_base=/home/linye020603/iap-web;
 iap_cv_base=/home/linye020603/iap-web/cv;
 iap_github_base=/home/linye020603/github-local/Iap-Web/cv;
 
@@ -53,6 +54,10 @@ else
     rsync $dry_run -av $iap_cv_base/util/tree/ibstree.h $iap_github_base/util/tree/ibstree.h
     rsync $dry_run -av $iap_cv_base/util/tree/htree/*.h $iap_github_base/util/tree/htree/
     rsync $dry_run -av $iap_cv_base/util/tree/htree/*.cpp $iap_github_base/util/tree/htree/
+
+    rsync $dry_run -av $iap_dev_base/util/example6/*.cpp $iap_github_base/../examples/example6/
+    rsync $dry_run -av $iap_dev_base/util/example6/*.h $iap_github_base/../examples/example6/
+
 fi
 
 echo;

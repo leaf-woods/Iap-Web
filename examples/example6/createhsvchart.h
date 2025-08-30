@@ -9,15 +9,20 @@
 #include "convert_bgrhsv.h"
 
 class createhsvchart {
-  private:
-    cv::Mat input;  
+  private: 
     double H;
+    std::string fname;
 
     convert_bgrhsv* convert;
+  
+  private:
+    std::string createFileName(std::string prefix);
 
   public:
     ~createhsvchart();
     void createChart(double h);
+    void createChart(uchar b, uchar g, uchar r);
     void setConvertHSV(convert_bgrhsv* convert);
+    void setFileName(std::string fname);
 };
 #endif

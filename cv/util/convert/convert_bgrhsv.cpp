@@ -142,10 +142,7 @@ void convert_bgrhsv::toBgr(size_t channel, uchar* bgr, double H, double S,double
     double G = (g+m)*255;
     double B = (b+m)*255;
     
-    cout << "bgr: " << B << ", " << G << ", " << R << endl; 
-    //bgr[0] = 0; bgr[1] = 0; bgr[2] = 0;
     bgr[0]=(uchar)round(B); bgr[1]=(uchar)round(G); bgr[2]=(uchar)round(R);
-    cout << "Set bgr: " << static_cast<unsigned>(bgr[0]) << ", " << static_cast<unsigned>(bgr[1]) << ", " << static_cast<unsigned>(bgr[2]) << endl; 
 }
 
 // when h < 217.5 and h > 215.5, toHsvCV() will generate h = 108
