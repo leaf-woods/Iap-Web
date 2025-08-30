@@ -99,6 +99,11 @@ vector<uchar*>* imagecolordesc::findB(uchar b) {
     return v;
 }
 
+vector<uchar*>* imagecolordesc::findPixelColors(uchar hue) {
+    assert(color_type==imagecolorvalues::HSV);
+    return ht->findValues(hue);
+}
+
 vector<int*>* imagecolordesc::containsBGR(uchar b, uchar g, uchar r) {
     int key = convert->getInt(b, g, r);
     // https://en.cppreference.com/w/cpp/container/unordered_map/find.html
@@ -199,14 +204,14 @@ void imagecolordesc::setColorValueTree() {
 void imagecolordesc::setHsvTree() {
     cout << "Set hsv tree." << endl;
     ht->setHsvDim(hsv_dim);
-    uchar arr[3] = {0}; 
+    uchar arr[convert_bgrhsv::channel] = {0}; 
     int key = 0;
     for (auto it=color_map->begin(); it!=color_map->end(); it++) {
         key = it->first;
-        auto hsv = new uchar[3]{0};
+        auto hsv = new uchar[convert_bgrhsv::channel]{0};
         convert->setUChar3(key, arr);
         if (color_type == imagecolorvalues::BGR) {
-            calc->toHsvCV(hsv, arr[0], arr[1], arr[2]);
+            calc->toHsvCV(convert_bgrhsv::channel, hsv, arr[0], arr[1], arr[2]);
         }
         else {
             hsv[0] = arr[0]; hsv[1] = arr[1]; hsv[2] = arr[2];

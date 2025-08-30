@@ -39,6 +39,7 @@ class hsvtree : public abstree{
       ~hsvtree();
 
       void add(uchar* hsv);
+      std::vector<uchar*>* findValues(int data);
       void setHsvDim(int hd);
       virtual void deleteTree(); 
       virtual int getMaxValue();  

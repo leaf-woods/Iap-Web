@@ -51,6 +51,7 @@ class imagecolordesc : public iclearable{
       void init();
       std::vector<int*>* containsBGR(uchar b, uchar g, uchar r);
       std::vector<uchar*>* findB(uchar b);
+      std::vector<uchar*>* findPixelColors(uchar hue);
       iap_print* getPrint();
       void setDescData(cv::Mat &mat);
       void setPrint(iap_print* p);

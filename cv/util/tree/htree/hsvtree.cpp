@@ -202,4 +202,13 @@ void hsvtree::setHsvDim(int hd) {
     hsv_dim = hd;
 }
 
+std::vector<uchar*>* hsvtree::findValues(int data) {
+    assert(root);
+    HNode* n = abstree::findNode(root, data);
+    if (n==nullptr) {
+        return nullptr;
+    }
+    return n->vecHsv;
+}
+
 
