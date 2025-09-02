@@ -44,6 +44,6 @@ class hsvtree : public abstree{
       virtual void deleteTree(); 
       virtual int getMaxValue();  
       virtual void printTree();
-
+      void getTreeData(std::vector<int>* vh);
 };
 #endif

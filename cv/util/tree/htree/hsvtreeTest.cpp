@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
     uchar data_00_3 [22][3] = { {110, 164, 151}, {110, 149, 145}, {110, 161, 154}, {110, 163, 152}, {110, 142, 153}, {110, 143, 152}, {110, 162, 153}, {110, 144, 151}, {110, 141, 154}, {110, 157, 158}, {110, 136, 154}, {110, 158, 157}, {110, 146, 148}, {110, 133, 157}, {110, 131, 156}, {110, 121, 162}, {110, 127, 161}, {110, 129, 162}, {110, 128, 160}, {110, 130, 161}, {110, 132, 155}, {110, 126, 162}  };
     /// TODO 
     // https://stackoverflow.com/questions/14309877/calculate-number-of-rows-in-constant-2d-c-array
-    /** No index bound check. If i<44, assertion failed. */
+    /** No index bound check. If we write i<44, assertion failed. */
     for (int i=0; i<22; i++) {
         t.add(data_00_3[i]);
     }
@@ -97,6 +97,14 @@ int main(int argc, char* argv[]) {
     cout << "vec size: " << vec->size() << endl;
     assert(vec->size()==158);
 
+    vector<int>* vh = new vector<int>();
+    t.getTreeData(vh);
+    assert(3==vh->size());
+
+    for (auto it=(*vh).begin(); it!=(*vh).end(); it++) {
+        cout << "H: " << (*it) << endl;
+    }
+    delete vh;
     cout << "Test-5 hsvtree: Done." << endl;
     cout << endl;
 

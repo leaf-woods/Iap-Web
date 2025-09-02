@@ -1,6 +1,8 @@
 #ifndef IBSTREE_H
 #define IBSTREE_H
 
+#include <vector>
+#include <iostream>
 #include "ITreeNode.h"
 #include "iap_print.h"
 
@@ -17,13 +19,14 @@ class abstree : public ibstree {
     protected:
       const static int DEBUG = 0;
       const std::string DEBUG_H;
+      const std::string INFO_H;
 
       int count;
 
       iap_print* printer;
 
     public:
-      abstree() : DEBUG_H("Debug - ") {}
+      abstree() : DEBUG_H("Debug - "), INFO_H("Info - "){}
       virtual ~abstree(){};
 
       int size() { return count;}
@@ -62,6 +65,19 @@ class abstree : public ibstree {
           }
           return findNode(n->right, data);
       }
-};
 
+      template<typename N>
+      void traverseData(N* n, std::vector<int>* vh) {
+          if (n == nullptr) {
+              return;
+          }
+          if (DEBUG) {
+              std::cout << DEBUG_H << "Node data:" << n->data << " ";
+              printer->printVector(n->vecHsv);
+          }
+          traverseData(n->left, vh);
+          vh->push_back(n->data);
+          traverseData(n->right, vh);
+      }
+};
 #endif

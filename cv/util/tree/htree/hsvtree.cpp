@@ -156,14 +156,19 @@ void hsvtree::printTree(HNode* n) {
 
 void hsvtree::deleteTree() {
     if (count == 0) {
-        cout << "Empty tree." << endl;
+        cout << INFO_H << "Empty tree." << endl;
         assert(!root);
         return;
     }
-
-    cout << "Deleting hsvtree." << endl;    
+    if (DEBUG) {
+        cout << DEBUG_H << "Deleting hsvtree." << endl;
+    }
+        
     deleteTree(root);
-    cout << "Tree deleted. Root: " << root << endl;
+
+    if (DEBUG) {
+        cout << DEBUG_H << "Tree deleted. Root: " << root << endl;
+    }
 }
 
 void hsvtree::printTree() {
@@ -202,13 +207,23 @@ void hsvtree::setHsvDim(int hd) {
     hsv_dim = hd;
 }
 
-std::vector<uchar*>* hsvtree::findValues(int data) {
-    assert(root);
+vector<uchar*>* hsvtree::findValues(int data) {
+    if (root == nullptr) {
+        cout << INFO_H << "Cannot find values for data: " << data << endl;
+    }
     HNode* n = abstree::findNode(root, data);
     if (n==nullptr) {
         return nullptr;
     }
     return n->vecHsv;
+}
+
+void hsvtree::getTreeData(vector<int>* vh) {
+    if (vh==nullptr || root==nullptr) {
+        cout << INFO_H << "Cannot get tree data." << endl;
+        return;
+    }
+    abstree::traverseData(root, vh);
 }
 
 
