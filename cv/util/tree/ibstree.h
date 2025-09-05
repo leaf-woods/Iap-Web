@@ -1,9 +1,11 @@
 #ifndef IBSTREE_H
 #define IBSTREE_H
 
-#include <vector>
 #include <iostream>
+#include <vector>
+
 #include "ITreeNode.h"
+#include "iapcv_log.h"
 #include "iap_print.h"
 
 class ibstree {
@@ -17,19 +19,19 @@ class ibstree {
 // Every child class type of abstree has its own root.
 class abstree : public ibstree {
     protected:
-      const static int DEBUG = 0;
-      const std::string DEBUG_H;
-      const std::string INFO_H;
-
       int count;
-
+      int level;
+      iapcv_log* logger;
       iap_print* printer;
-
+      
     public:
-      abstree() : DEBUG_H("Debug - "), INFO_H("Info - "){}
+      abstree(){};
       virtual ~abstree(){};
 
       int size() { return count;}
+      
+      void setLogLevel(int level) { logger->setLevel(level); }
+
       void setPrint(iap_print* p) { printer = p;}
 
     protected:
@@ -71,8 +73,8 @@ class abstree : public ibstree {
           if (n == nullptr) {
               return;
           }
-          if (DEBUG) {
-              std::cout << DEBUG_H << "Node data:" << n->data << " ";
+          logger->debug("Node data:", n->data);
+          if (logger->isDebug()) {
               printer->printVector(n->vecHsv);
           }
           traverseData(n->left, vh);

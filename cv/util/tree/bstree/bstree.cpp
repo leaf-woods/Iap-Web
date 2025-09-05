@@ -7,32 +7,23 @@
 using namespace std;
 
 bstree::bstree() {
-    //DEBUG_H = "Debug - ";
+    logger = new iapcv_log(typeid(this).name());
     count = 0;
     //https://stackoverflow.com/questions/35827086/best-way-to-check-if-pointer-is-initialized
     root = nullptr;
 }
 
 bstree::~bstree() {
-    if (DEBUG) {
-        cout << endl;
-        cout << DEBUG_H << "Destructing root at: " << root << endl;
-    }
+    logger->Debug("Destructing root at: ", root);
+    
     if (count > 0) {
-        
         deleteTree(root);
     }
-    if (DEBUG) {
-        cout << DEBUG_H << "Root at: " << root << endl;
-        assert(!root);
-    }
+    logger->Debug("Root at: ", root);
+    assert(!root);
+    
+    delete logger;
 }
-
-/*
-int bstree::size() {
-    return count;
-}
-*/
 
 ITreeNode* bstree::createNode(int data)
 {
@@ -40,9 +31,8 @@ ITreeNode* bstree::createNode(int data)
     newNode->data = data;
     newNode->left = newNode->right = nullptr;
     count++;
-    if (DEBUG) {
-        cout << DEBUG_H << "Created Node of: " << data << " at: " << newNode << endl;
-    }
+    logger->Debug("Created Node of: ", data, " at: ", newNode);
+    
     return newNode;
 }
 
@@ -50,9 +40,7 @@ ITreeNode* bstree::insertNode(ITreeNode* n, int data)
 {
     if (count == 0) {
         root = createNode(data);
-        if (DEBUG) {
-            cout << DEBUG_H << "Root created of data: " << data << " at: " << root << endl;
-        }
+        logger->Debug("Root created of data: ", data, " at: ", root);
         return root;
     }
 
@@ -68,17 +56,13 @@ ITreeNode* bstree::insertNode(ITreeNode* n, int data)
         n->right = insertNode(n->right, data);
     }
     else {
-        cout << "Node already exists for data: " << data << endl;
+        logger->Debug("Node already exists for data: ", data);
     }
-
-    // return the (unchanged) ITreeNode pointer
     return n;
 }
 
 void bstree::add(int data) {
-    if (DEBUG) {
-        cout << DEBUG_H << "Add Node: " << data << endl;
-    }
+    logger->Debug("Add Node: ", data);
     insertNode(root, data);
 }
 
@@ -113,7 +97,6 @@ int bstree::getMaxValue() {
     return abstree::getMaxValue(root);
 }
 
-
 /* 
  * If deleteTree(root) is called, root is deleted. 
  * Then calling add(int) will generate a new tree, i.e. a new root is created.
@@ -123,21 +106,13 @@ void bstree::deleteTree(ITreeNode* n) {
         return;
     }
 
-    if (DEBUG) {
-        cout << DEBUG_H << "Delete left child of Node: " << n->data << endl;
-    }
+    logger->Debug("Delete left child of Node: ", n->data);
     deleteTree(n->left);
     
-    if (DEBUG) {
-        cout << DEBUG_H << "Delete right child of Node: " << n->data << endl;
-    }
+    logger->Debug("Delete right child of Node: ", n->data);
     deleteTree(n->right);
 
-    if (DEBUG) {
-        cout << DEBUG_H << "Delete Node: " << n->data << endl;
-    }
-
-    //cout << "deleting address: " << n << endl;
+    logger->Debug("Delete Node: ", n->data);
     
     /*
      * @20250814
@@ -166,23 +141,23 @@ void bstree::deleteTree(ITreeNode* n) {
     n = nullptr;
 
     count--;
-    if (DEBUG) {
-        cout << DEBUG_H << "Current size: " << count << endl;
-        if (count == 0) {
-            cout << "Root deleted at addr:" << root << endl;
-            assert(!root);
-        }
+    
+    logger->Debug("Current size: ", count);
+    if (count == 0) {
+        logger->Debug("Root deleted at addr:", root);
+        assert(!root);
     }
+    
 }
 
 void bstree::deleteTree() {
     if (count == 0) {
-        cout << "Empty tree." << endl;
+        logger->Info("Empty tree.");
         assert(!root);
         return;
     }
 
-    cout << "Deleting tree. Root: " << root << endl;    
+    logger->Debug("Deleting tree. Root: ", root);    
     deleteTree(root);
-    cout << "Tree deleted. Root: " << root << endl;
+    logger->Debug("Tree deleted. Root: ", root);
 }

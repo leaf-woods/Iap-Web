@@ -3,34 +3,33 @@
 
 #include <opencv2/core.hpp>
 
+#include "imagecolorvalues.h"
 #include "hsvtree.h" 
 
 using namespace std;
 
 hsvtree::hsvtree() {
+    logger = new iapcv_log(typeid(this).name());
     count = 0;
     root = nullptr;
     hsv_dim = HUE;
 }
 
 hsvtree::~hsvtree() {
-    if (DEBUG) {
-        cout << endl;
-        cout << DEBUG_H << "Destructing hsvtree: root at: " << root << endl;
-    }
+    logger->Debug("Destructing hsvtree: root at: ", root);
     if (count > 0) {
         deleteTree(root);
     }
-    if (DEBUG) {
-        cout << DEBUG_H << "Root at: " << root << endl;
-        assert(!root);
-    }
+    logger->Debug("Root at: ", root);
+    assert(!root);
 
     /*
      * @20250821
      * Variable printer is injected using a setter. Therefore we don't release it here.
      */
     printer = nullptr;
+
+    delete logger;
 }
 
 HNode* hsvtree::createNode(uchar* hsv)
@@ -42,9 +41,7 @@ HNode* hsvtree::createNode(uchar* hsv)
     newNode->vecHsv->push_back(hsv);
 
     count++;
-    if (DEBUG) {
-        cout << DEBUG_H << "Created node of: " << newNode->data << " at: " << newNode << endl;
-    }
+    logger->Debug("Created Node of: ", newNode->data, " at: ", newNode);
     return newNode;
 }
 
@@ -52,9 +49,7 @@ HNode* hsvtree::insertNode(HNode* n, uchar* hsv)
 {
     if (count == 0) {
         root = createNode(hsv);
-        if (DEBUG) {
-            cout << DEBUG_H << "Root created of data: " << root->data << " at: " << root << endl;
-        }
+        logger->Debug("Root created of data: ", root->data, " at: ", root);
         return root;
     }
 
@@ -71,9 +66,9 @@ HNode* hsvtree::insertNode(HNode* n, uchar* hsv)
     }
     else {
         // No new node is created. We add an entry in node n->vecHsv
-        if (DEBUG) {
-            cout << DEBUG_H << "Data exists. Add hsv to existing vector. ";
-            printer->printPixelColor(hsv);
+        logger->Debug("Data exists. Add hsv to existing vector. ");
+        if (logger->isDebug()) {
+            printer->printPixelColor(imagecolorvalues::channel, hsv);
         }
         n->vecHsv->push_back(hsv);
     }
@@ -91,19 +86,11 @@ void hsvtree::deleteTree(HNode* n) {
         return;
     }
 
-    if (DEBUG) {
-        cout << DEBUG_H << "Delete left child of node: " << n->data << endl;
-    }
+    logger->Debug("Delete left child of node: ", n->data);
     deleteTree(n->left);
-    
-    if (DEBUG) {
-        cout << DEBUG_H << "Delete right child of node: " << n->data << endl;
-    }
+    logger->Debug("Delete right child of node: ", n->data);
     deleteTree(n->right);
-
-    if (DEBUG) {
-        cout << DEBUG_H << "Delete node: " << n->data << endl;
-    }
+    logger->Debug("Delete node: ", n->data);
 
     if (n == root) {
         root = nullptr;
@@ -134,12 +121,10 @@ void hsvtree::deleteTree(HNode* n) {
     n = nullptr;
     
     count--;
-    if (DEBUG) {
-        cout << DEBUG_H << "Current size: " << count << endl;
-        if (count == 0) {
-            cout << "Root deleted at addr:" << root << endl;
-            assert(!root);
-        }
+    logger->Debug("Current size: ", count);
+    if (count == 0) {
+        logger->Debug("Root deleted at addr:", root);
+        assert(!root);
     }
 }
 
@@ -156,19 +141,13 @@ void hsvtree::printTree(HNode* n) {
 
 void hsvtree::deleteTree() {
     if (count == 0) {
-        cout << INFO_H << "Empty tree." << endl;
+        logger->Info("Empty tree.");
         assert(!root);
         return;
     }
-    if (DEBUG) {
-        cout << DEBUG_H << "Deleting hsvtree." << endl;
-    }
-        
+    logger->Debug("Deleting hsvtree.");
     deleteTree(root);
-
-    if (DEBUG) {
-        cout << DEBUG_H << "Tree deleted. Root: " << root << endl;
-    }
+    logger->Debug("Tree deleted. Root: ", root);
 }
 
 void hsvtree::printTree() {
@@ -209,7 +188,7 @@ void hsvtree::setHsvDim(int hd) {
 
 vector<uchar*>* hsvtree::findValues(int data) {
     if (root == nullptr) {
-        cout << INFO_H << "Cannot find values for data: " << data << endl;
+        logger->Info("Cannot find values for data: ", data);
     }
     HNode* n = abstree::findNode(root, data);
     if (n==nullptr) {
@@ -220,7 +199,7 @@ vector<uchar*>* hsvtree::findValues(int data) {
 
 void hsvtree::getTreeData(vector<int>* vh) {
     if (vh==nullptr || root==nullptr) {
-        cout << INFO_H << "Cannot get tree data." << endl;
+        logger->Info("Cannot get tree data.");
         return;
     }
     abstree::traverseData(root, vh);

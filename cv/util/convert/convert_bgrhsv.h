@@ -4,9 +4,6 @@
 #include <opencv2/core.hpp>
 
 class convert_bgrhsv{
-    public:
-      static const size_t channel = 3;
-    
       public:
       convert_bgrhsv();
       ~convert_bgrhsv();

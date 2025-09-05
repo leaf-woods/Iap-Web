@@ -29,83 +29,68 @@ void convert_bgrhsv::toHsvCV(size_t channel, uchar* hsv, uchar b, uchar g, uchar
 
     double h = -1, s = -1;
 
-    // if cmax and cmax are equal then h = 0
     if (u_max == u_min)
         h = 0;
 
-    // if cmax equal r then compute h
     else if (u_max == r)
         h = fmod(60 * ((double)(g - b) / (double)u_diff) + 360, 360);
 
-    // if cmax equal g then compute h
     else if (u_max == g)
         h = fmod(60 * ((double)(b - r) / (double)u_diff) + 120, 360);
 
-    // if cmax equal b then compute h
     else if (u_max == b)
         h = fmod(60 * ((double)(r - g) / (double)u_diff) + 240, 360);
 
-    // if cmax equal zero
     if (u_max == 0)
         s = 0;
     else {
         //s = (diff / cmax) * 100;
         s = ((double)u_diff / (double)u_max) * 255;
     }
-    //cout << "hsv: " << h << ", " << s << ", " << static_cast<unsigned>(u_max) << endl;
+    
     hsv[0]= (uchar)((h+0.5)/2);
     hsv[1]= (uchar)(s+0.5);
-    hsv[2]= (uchar)u_max;
-    //cout << "Rounded hsv: " << static_cast<unsigned>(hsv[0]) << ", " << static_cast<unsigned>(hsv[1]) << ", " << static_cast<unsigned>(hsv[2]) << endl;
+    hsv[2]= (uchar)u_max;    
 }
 
+/*
+ * when h < 217.5 and h > 215.5, toHsvCV() will generate h = 108
+ * This means given h=108, we don't know the exact classical Hue calculated from rgb.
+ * Which means we can not get the original rgb.
+ *
+ * From CV S to Classical S: s==0? 0 : 100* s/255.0; 
+ * From CV V to Classical V: v==0? 0 : 100*v/255.0;
+ */
 void convert_bgrhsv::toHsv(size_t channel, double* hsv, uchar b, uchar g, uchar r)
 {
-    // h, s, v = hue, saturation, value
-    double cmax = max(r, max(g, b)); // maximum of r, g, b
-    double cmin = min(r, min(g, b)); // minimum of r, g, b
-    double diff = cmax - cmin; // diff of cmax and cmin.
+    double cmax = max(r, max(g, b)); 
+    double cmin = min(r, min(g, b)); 
+    double diff = cmax - cmin;
     double h = -1, s = -1;
 
-    // if cmax and cmax are equal then h = 0
     if (cmax == cmin)
         h = 0;
 
-    // if cmax equal r then compute h
     else if (cmax == r)
         h = fmod(60 * ((g - b) / diff) + 360, 360);
 
-    // if cmax equal g then compute h
     else if (cmax == g)
         h = fmod(60 * ((b - r) / diff) + 120, 360);
 
-    // if cmax equal b then compute h
     else if (cmax == b)
         h = fmod(60 * ((r - g) / diff) + 240, 360);
 
-    // if cmax equal zero
     if (cmax == 0)
         s = 0;
     else
         s = (diff / cmax) * 100;
 
-    // compute v
     double v = cmax * 100/255.0;
     
     hsv[0] = h;
     hsv[1] = s;
     hsv[2] = v;
 }
-
-/*
-double convertS(uchar s) {
-    return s==0? 0 : 100* s/255.0; 
-}
-
-double convertV(uchar v) {
-    return v==0? 0 : 100*v/255.0;
-}
-*/
 
 // https://www.codespeedy.com/hsv-to-rgb-in-cpp/
 // Input is traditional hsv
@@ -144,15 +129,6 @@ void convert_bgrhsv::toBgr(size_t channel, uchar* bgr, double H, double S,double
     
     bgr[0]=(uchar)round(B); bgr[1]=(uchar)round(G); bgr[2]=(uchar)round(R);
 }
-
-// when h < 217.5 and h > 215.5, toHsvCV() will generate h = 108
-// This means given h=108, we don't know the exact tradition Hue calculated from rgb.
-// Which means we can not get the original rgb.
-
-// Create color chart is one time operation, we do the following:
-// We use traditional Hue, which means color chart is generated for H=217.
-// For each (h, s, v), we calculate rgb based on toBgr().
-
 
 double convert_bgrhsv::diffBGR(uchar b1, uchar g1, uchar r1, uchar b2, uchar g2, uchar r2) {
     int diff_b = b1 - b2;

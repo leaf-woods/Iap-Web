@@ -6,6 +6,7 @@
 
 #include <opencv2/core.hpp>
 
+#include "iapcv_log.h"
 #include "vtree/colorvaluetree.h"
 #include "convertnumber.h"
 #include "convert_bgrhsv.h"
@@ -14,8 +15,7 @@
 
 class imagecolordesc : public iclearable{
     private:
-      const std::string DEBUG_H;
-      const std::string WARN_H;
+      iapcv_log* logger;
 
       int W; int H;
       int BH[256]; int GS[256]; int RV[256];
@@ -32,13 +32,9 @@ class imagecolordesc : public iclearable{
       convertnumber* convert;
 
       range* rg; 
-
-    public:
-      const static int DEBUG = 0;
       
     private:
       void clearSTDVector(std::vector<int*>* v);
-      void printPixelIndex(int* array);
       void setColorValueTree();
       void setHsvTree();
       void setMinMax();
@@ -52,8 +48,8 @@ class imagecolordesc : public iclearable{
       std::vector<int*>* containsBGR(uchar b, uchar g, uchar r);
       std::vector<uchar*>* findB(uchar b);
       std::vector<uchar*>* findPixelColors(uchar hue);
-      iap_print* getPrint();
       void setDescData(cv::Mat &mat);
+      void setLogLevel(int level);
       void setPrint(iap_print* p);
       void setColorType(int ct);
       void setConvertHSV(convert_bgrhsv* calc);
@@ -69,5 +65,9 @@ class imagecolordesc : public iclearable{
 
       uchar* getLowerBoundHSV();
       uchar* getUpperBoundHSV();
+
+      void getAllHue(std::vector<int>* vh);
+      int getImageSize();
+
 };
 #endif

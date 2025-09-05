@@ -31,10 +31,18 @@ void iap_print::printVector(vector<int>* v) {
     cout << " }" << endl;
 }
 
-void iap_print::printPixelColor(uchar* array) {
+void iap_print::printPixelColor(size_t channel, uchar* array) {
     cout << "Color [" << static_cast<unsigned>(array[0]) << ", " << static_cast<unsigned>(array[1]) << ", " << static_cast<unsigned>(array[2]) << "]" << endl;
 }
 
 void iap_print::printPixelColor(cv::Vec<unsigned char, 3> entry, string type) {
     cout << type << " [" << static_cast<unsigned>(entry[0]) << ", " << static_cast<unsigned>(entry[1]) << ", " << static_cast<unsigned>(entry[2]) << "]" << endl;
+}
+
+void iap_print::printKV(int key, int value) {
+    cout << "{ " << key << ", " << value << " }" << endl;
+}
+
+void iap_print::printPixelIndex(size_t dim, int* array) {
+    cout << "[" << array[0] << ", " << array[1] << "]" << endl;
 }

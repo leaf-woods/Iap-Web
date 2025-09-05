@@ -8,25 +8,24 @@
 
 using namespace std;
 
-colorvaluetree::colorvaluetree() : WARN_H("Warn - ") {
+colorvaluetree::colorvaluetree() {
+    logger = new iapcv_log(typeid(this).name());
     count = 0;
     //https://stackoverflow.com/questions/35827086/best-way-to-check-if-pointer-is-initialized
     root = nullptr;
 }
 
 colorvaluetree::~colorvaluetree() {
-    if (DEBUG) {
-        cout << endl;
-        cout << DEBUG_H << "Destructing colorvaluetree: root at: " << root << endl;
-    }
+    logger->Debug("Destructing colorvaluetree: root at: ", root);
     if (count > 0) {
         deleteTree(root);
     }
-    if (DEBUG) {
-        cout << DEBUG_H << "Root at: " << root << endl;
-        assert(!root);
-    }
+    
+    logger->Debug("Root at: ", root);
+    assert(!root);
+
     printer = nullptr;
+    delete logger;
 }
 
 Node* colorvaluetree::createNode(int data, int key)
@@ -38,9 +37,8 @@ Node* colorvaluetree::createNode(int data, int key)
     newNode->keys->push_back(key);
 
     count++;
-    if (DEBUG) {
-        cout << DEBUG_H << "Created node of: " << data << " at: " << newNode << endl;
-    }
+    logger->Debug("Created node of: ", data, " at: ", newNode);
+    
     return newNode;
 }
 
@@ -48,9 +46,7 @@ Node* colorvaluetree::insertNode(Node* n, int data, int key)
 {
     if (count == 0) {
         root = createNode(data, key);
-        if (DEBUG) {
-            cout << DEBUG_H << "Root created of data: " << data << " at: " << root << endl;
-        }
+        logger->Debug("Root created of data: ", data, " at: ", root);
         return root;
     }
 
@@ -70,13 +66,13 @@ Node* colorvaluetree::insertNode(Node* n, int data, int key)
         n->keys->push_back(key);
     }
 
-    // return the (unchanged) node pointer
     return n;
 }
 
 void colorvaluetree::add(int data, int key) {
-    if (data <=0 ) {
-        cout << "Can not add data. Invalid data entry: { " << data << ", " << key << " }" << endl;
+    if (data <= 0 ) {
+        logger->Info("Can not add data. Invalid data entry: ");
+        printer->printKV(data, key);
         return;
     }
     insertNode(root, data, key);
@@ -143,19 +139,12 @@ void colorvaluetree::deleteTree(Node* n) {
         return;
     }
 
-    if (DEBUG) {
-        cout << DEBUG_H << "Delete left child of node: " << n->data << endl;
-    }
+    logger->Debug("Delete left child of node: ", n->data);
     deleteTree(n->left);
-    
-    if (DEBUG) {
-        cout << DEBUG_H << "Delete right child of node: " << n->data << endl;
-    }
+    logger->Debug("Delete right child of node: ", n->data);
     deleteTree(n->right);
 
-    if (DEBUG) {
-        cout << DEBUG_H << "Delete node: " << n->data << endl;
-    }
+    logger->Debug("Delete node: ", n->data);
 
     if (n == root) {
         //root->data = 0;
@@ -178,24 +167,22 @@ void colorvaluetree::deleteTree(Node* n) {
     n = nullptr;
     
     count--;
-    if (DEBUG) {
-        cout << DEBUG_H << "Current size: " << count << endl;
-        if (count == 0) {
-            cout << "Root deleted at addr:" << root << endl;
-            assert(!root);
-        }
+    logger->Debug("Current size: ", count);
+    if (count == 0) {
+        logger->Debug("Root deleted at addr:", root);
+        assert(!root);
     }
 }
 
 void colorvaluetree::deleteTree() {
     if (count == 0) {
-        cout << "Empty tree." << endl;
+        logger->Info("Empty tree.");
         assert(!root);
         return;
     }
 
-    cout << "Deleting colorvaluetree." << endl;    
+    logger->Debug("Deleting colorvaluetree.");    
     deleteTree(root);
-    cout << "Tree deleted. Root: " << root << endl;
+    logger->Debug("Tree deleted. Root: ", root);
 }
 

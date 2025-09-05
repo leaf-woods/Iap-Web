@@ -14,7 +14,7 @@ int convertnumber:: getInt(uchar b, uchar g, uchar r){
 
 uchar convertnumber::getUChar(int n) {
     if (n < 0 || n > 255) {
-        cout << "Can not get UChar. Invalid number: " << n << endl;
+        cout << "Can not get uchar. Invalid number: " << n << endl;
         return '\0';
     }
     std::bitset x = std::bitset<8>(n);
@@ -23,8 +23,8 @@ uchar convertnumber::getUChar(int n) {
 
 void convertnumber:: setUChar3(int n, uchar* p_bgr) {
     if (n < 0 || n > MAX) {
-        cout << "Can not set BGR. Invalid number: " << n << endl;
-        exit;
+        cout << "Can not set uchar. Invalid number: " << n << endl;
+        return;
     }
     std::bitset x = std::bitset<24>(n);
     
@@ -48,7 +48,4 @@ void convertnumber:: setUChar3(int n, uchar* p_bgr) {
     p_bgr[0] = b;
     p_bgr[1] = g;
     p_bgr[2] = r;
-
-    //int ib = (int)b;
-    //cout << ib << " -Convert " << n << " to: " << static_cast<unsigned>(b) << ", " << static_cast<unsigned>(g) << ", " << static_cast<unsigned>(r) << endl;
 }
