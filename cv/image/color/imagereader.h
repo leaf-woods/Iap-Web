@@ -25,6 +25,7 @@ class imagereader {
       ~imagereader(); 
 
       void setLogLevel(int level);
+      cv::Mat* getInputImage();
       cv::Mat* getHsvImage();
       cv::Mat* getHueMask();
       double getNonZeroPercent();

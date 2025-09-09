@@ -133,6 +133,10 @@ void imagereader::setPrint(iap_print* p) {
     return &hsvImage;
  }
 
+ cv::Mat* imagereader::getInputImage() {
+    return &input;
+ }
+
  double imagereader::getNonZeroPercent() {
     double imageSize = hsvImage.cols * hsvImage.rows;
     double percent = 100*((double) cv::countNonZero(hueMask))/imageSize;

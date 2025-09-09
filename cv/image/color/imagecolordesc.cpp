@@ -34,7 +34,7 @@ imagecolordesc::~imagecolordesc() {
 }
 
 void imagecolordesc::init() {
-    color_map = new unordered_map<int, std::vector<int*>*>();
+    color_map = new unordered_map<int, vector<int*>*>();
     t = new colorvaluetree();
     ht = new hsvtree();
 
@@ -212,7 +212,7 @@ void imagecolordesc::setDescData(cv::Mat& mat) {
     
     W = mat.cols;
     H = mat.rows;
-    std::vector<int*>* v;
+    std::vector<int*>* v = nullptr;
     cv::Vec<unsigned char, 3> entry;
     int key = 0;
     for (int i=0; i<mat.rows; i++) {
@@ -224,11 +224,15 @@ void imagecolordesc::setDescData(cv::Mat& mat) {
             RV[static_cast<unsigned>(entry[2])]++;
 
             key = convert->getInt(entry[0], entry[1], entry[2]);
-            if (auto search=color_map->find(key); search==color_map->end()) {
+            auto search = color_map->find(key);
+            if (search == color_map->end()) {
                 v = new vector<int*>();
                 color_map->insert(make_pair(key, v));
+                v->push_back(new int[]{i, j});
             }
-            v->push_back(new int[]{i, j});
+            else {
+                search->second->push_back(new int[]{i, j});
+            }
         }
     } 
     logger->debug("To set trees");
@@ -277,6 +281,7 @@ void imagecolordesc::setHsvTree() {
 
 /// TODO: test with all black and all white images
 void imagecolordesc::setMinMax() {
+    logger->debug("Set Min Max.");
     uchar bh_max=0; uchar bh_min=255;
     uchar gs_max=0; uchar gs_min=255;
     uchar rv_max=0; uchar rv_min=255;
@@ -346,7 +351,7 @@ void imagecolordesc::printMap() {
     int num = 0; 
     string s;
     uchar p[] = {0, 0, 0};
-    cout << "printMap: " << endl;
+    cout << "printMap: size: " << color_map->size() << " Color type: " << imagecolorvalues::getColorTypeVal(color_type) << endl;
     for (auto it=color_map->begin(); it!=color_map->end(); it++) {
         convert->setUChar3(it->first, p);
         
@@ -378,6 +383,13 @@ void imagecolordesc::printColorValueTree() {
 
 void imagecolordesc::printHsvTree() {
     ht->printTree();
+}
+
+void imagecolordesc::printState() {
+    cout << "Size of color_map: " << color_map->size() << endl;
+    cout << "Size of color value tree: " << t->size() << endl;
+    cout << "Size of hsv tree: " << ht->size() << endl;
+    printMinMax();
 }
 
 void imagecolordesc::setPrint(iap_print* p) {
@@ -438,3 +450,20 @@ void imagecolordesc::setLogLevel(int level) {
     logger->setLevel(level);
 }
 
+int imagecolordesc::countColor(int color) {
+    assert(color_type==imagecolorvalues::BGR);
+    if (color != imagecolorvalues::BLACK) {
+        logger->info("Unsupported operation. Color: ", imagecolorvalues::getColorTypeVal(color));
+        return -1;
+    }
+    int count = 0;
+    uchar bgr[imagecolorvalues::channel] = {0};
+    for (auto it=color_map->begin(); it!=color_map->end(); it++) {
+        convert->setUChar3(it->first, bgr);
+        if (bgr[0]<=20 && bgr[1]<=20 && bgr[2] <=20) {
+            count+=it->second->size();
+        }
+    }
+    logger->debug("Count of " + imagecolorvalues::getColorVal(color), count);
+    return count;
+}

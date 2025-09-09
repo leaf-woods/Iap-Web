@@ -106,11 +106,19 @@ linye020603@penguin:~/iap-web/cv/image/toolbox$
 
         void debug(string msg1, string msg2, string msg3);
 
-        template<typename T>
-        void debug(string msg1, int num, string msg2, T obj) {
-            if (level == DEBUG) {
-                cout << "Debug: " << msg1 << num << msg2 << obj << endl;
-            }
+        //https://stackoverflow.com/questions/1657883/variable-number-of-arguments-in-c
+        template <typename T>
+        void debug(T t) 
+        {
+            cout << t << std::endl ;
+        }
+        
+        template<typename T, typename... Args>
+        void debug(T t, Args... args) 
+        {
+            cout << t ;
+            debug(args...);
+            cout << endl;
         }
 
         void info(string msg1);

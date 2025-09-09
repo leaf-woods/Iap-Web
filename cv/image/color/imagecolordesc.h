@@ -60,6 +60,7 @@ class imagecolordesc : public iclearable{
       void printHsvTree();
       void printMap();
       void printMinMax();
+      void printState();
       std::string writeColorValueTreeContents(); 
       std::string writeContents(); 
 
@@ -68,6 +69,8 @@ class imagecolordesc : public iclearable{
 
       void getAllHue(std::vector<int>* vh);
       int getImageSize();
+
+      int countColor(int color);
 
 };
 #endif

@@ -85,7 +85,7 @@ void iapcv_log::warn( string msg1 ) {
 
 void iapcv_log::warn( string msg1, int num) {
     if (level <= WARN) {
-        cout << "Warn: " << msg1 << " " << to_string(num) << endl;
+        cout << "Warn: " << msg1 << " " << num << endl;
     }
 }
 
