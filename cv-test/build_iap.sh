@@ -49,11 +49,11 @@ else
         dry_run="--dry-run";
     fi
     # https://github.com/leaf-woods/Iap-Web/commit/9c6ba60c31071cbed315b953a41c0b3155513b21
-    rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.h $iap_github_base/image/color/imagecolordesc.h
-    rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.cpp $iap_github_base/image/color/imagecolordesc.cpp
-    rsync $dry_run -av $iap_cv_base/image/color/imagecolorvalues.h $iap_github_base/image/color/imagecolorvalues.h
-    rsync $dry_run -av $iap_cv_base/image/color/imagereader.h $iap_github_base/image/color/imagereader.h
-    rsync $dry_run -av $iap_cv_base/image/color/imagereader.cpp $iap_github_base/image/color/imagereader.cpp
+    #rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.h $iap_github_base/image/color/imagecolordesc.h
+    #rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.cpp $iap_github_base/image/color/imagecolordesc.cpp
+    #rsync $dry_run -av $iap_cv_base/image/color/imagecolorvalues.h $iap_github_base/image/color/imagecolorvalues.h
+    #rsync $dry_run -av $iap_cv_base/image/color/imagereader.h $iap_github_base/image/color/imagereader.h
+    #rsync $dry_run -av $iap_cv_base/image/color/imagereader.cpp $iap_github_base/image/color/imagereader.cpp
 
     #rsync $dry_run -av $iap_cv_base/image/color/ $iap_github_base/image/color
     
@@ -75,7 +75,7 @@ else
     
     #rsync $dry_run -av $iap_cv_base/util/print/ $iap_github_base/util/print
 
-    rsync $dry_run -av $iap_cv_base/util/log/ $iap_github_base/util/log
+    #rsync $dry_run -av $iap_cv_base/util/log/ $iap_github_base/util/log
 
     #rsync $dry_run -av $iap_cv_base/main.cpp $iap_github_base/main.cpp
     #rsync $dry_run -av $iap_cv_base/makefile $iap_github_base/makefile
@@ -83,7 +83,9 @@ else
     #rsync $dry_run -av $iap_dev_base/util/example6/*.cpp $iap_github_base/../examples/example6/
     #rsync $dry_run -av $iap_dev_base/util/example6/*.h $iap_github_base/../examples/example6/
 
-    rsync $dry_run -av $iap_cv_test_base/ $iap_github_test_base
+    rsync $dry_run -av $iap_dev_base/util/example8/*.* $iap_github_base/../examples/example8/
+    
+    #rsync $dry_run -av $iap_cv_test_base/ $iap_github_test_base
     
 fi
 
