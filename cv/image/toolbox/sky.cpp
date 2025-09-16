@@ -29,15 +29,15 @@ void sky::setLogLevel(int level) {
     logger->setLevel(level);
 }
 
-b_status* sky::isSky(string imageName) {
+bool_status* sky::isSky(string imageName) {
     auto t1 = chrono::high_resolution_clock::now();
 
     if (! ctx->reader->read_image(false, imageName)) {
-        return new b_status(status::ERROR, false, "Cannot proceed with image: " + imageName);
+        return new bool_status(status::ERROR, false, "Cannot proceed with image: " + imageName);
     }
     ctx->desc->setColorType(imagecolorvalues::HSV);
     ctx->desc->setDescData(*(ctx->reader->getHsvImage()));
-
+    ctx->desc->setHsvTree(hsvtree::HUE);
     auto t2 = chrono::high_resolution_clock::now();
     logger->info("Image data collection time: ", (int)chrono::duration_cast<chrono::microseconds>(t2-t1).count());
     
@@ -53,13 +53,13 @@ b_status* sky::isSky(string imageName) {
         }
     }
     double blue_percent = count/(ctx->desc->getImageSize());
-    bool rv = blue_percent>=0.5? true : false;
+    bool result = blue_percent>=0.5? true : false;
     
     logger->debug("Test blue: ", blue_percent);
-    logger->info("Is sky:", (rv ? "true" : "false"));
+    logger->info("Is sky:", (result ? "true" : "false"));
     auto t3 = chrono::high_resolution_clock::now();
     logger->info("Total process time: ", (int)chrono::duration_cast<chrono::microseconds>(t3-t1).count());
     
     delete vh;
-    return new b_status(status::OK, true);
+    return new bool_status(status::NORMAL, result);
 }

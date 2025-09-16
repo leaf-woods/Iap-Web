@@ -24,7 +24,7 @@ class sky {
         void setBlueSpace(blue_space* blue);
         void setImageContext(imagecontext* ctx);
         
-        b_status* isSky(std::string imageName);
+        bool_status* isSky(std::string imageName);
 
 };
 #endif

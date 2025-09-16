@@ -2,51 +2,61 @@
 #define STATUS_H
 class status {
     public:
-        static const int OK=0; 
-        static const int ERROR=1;
+        static const int NORMAL=0; 
+        static const int ERROR =1;
 
     protected:
-        int status_val;
+        /*
+         * Indiates a function is successfully completed or not.
+         * In case that error occurred, we set f_status to ERROR.
+         * For a bool function, this tells the difference between a normal 
+         * function return false and a failed completion of the function.
+
+         * Example: For function isSky(), return false means input image is not sky.
+         * Return status_val ERROR means the function is not completed due to
+         * exceptions/errors. We don't know whether the input image is sky or not.
+         */
+        int f_status;
         string msg;
 };
 
-class b_status : status{
+class bool_status : status{
     private:
-        bool ret;
+        bool f_result;
 
     public:
-        b_status(int status_val, bool ret, string msg) {
-            this->status_val = status_val;
-            this->ret = ret;
+        bool_status(int f_status, bool f_result, string msg) {
+            this->f_status = f_status;
+            this->f_result = f_result;
             this->msg = msg;
         }
 
-        b_status(int status_val, bool ret) {
-            this->status_val = status_val;
-            this->ret = ret;
+        bool_status(int f_status, bool f_result) {
+            this->f_status = f_status;
+            this->f_result = f_result;
             msg= "";
         }
 
-        ~b_status() {
-            status_val = 0;
-            ret = false;
+        ~bool_status() {
+            f_status = 0;
+            f_result = false;
             msg = "";
         }
         
-        int getStatusVal() {
-            return status_val;
+        int getStatus() {
+            return f_status;
         }
 
-        bool getRet() {
-            return ret;
+        bool getResult() {
+            return f_result;
         }
 
         string getMsg() {
             return msg;
         }
 
-        bool isOK() {
-            return status_val == OK;
+        bool isNormal() {
+            return f_status == NORMAL;
         }
 };
 #endif
