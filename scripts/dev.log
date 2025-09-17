@@ -1,1 +1,3 @@
 @penguin:~/iap-web/cv$ find . -type f -name "*.h" -o -name "*.cpp" -exec grep -H "to_string" {} \;
+
+rsync --dry-run -av --exclude='*.o' --exclude='*.log' --exclude='*-bak' $src $dest
