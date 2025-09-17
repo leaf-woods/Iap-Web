@@ -1,18 +1,23 @@
-iap_cv_test_base=/home/linye020603/iap-web/cv-test
-dir_test_image_color=$(iap_cv_test_base)/image/color
-dir_test_util_convert=$(iap_cv_test_base)/util/convert
-dir_test_util_tree=$(iap_cv_test_base)/util/tree
+iap_ghl_test_cv_base=/home/linye020603/github-local/Iap-Web/cv-test
+dir_test_image=$(iap_ghl_test_cv_base)/image
+dir_test_util=$(iap_ghl_test_cv_base)/util
 
 all:
-	cd $(dir_test_image_color) && $(MAKE)
-	cd $(dir_test_util_convert) && $(MAKE)
-	cd $(dir_test_util_tree)/bstree && $(MAKE)
-	cd $(dir_test_util_tree)/htree && $(MAKE)
-	cd $(dir_test_util_tree)/vtree && $(MAKE)
+	cd $(dir_test_image)/color && $(MAKE)
+	cd $(dir_test_image)/color/compare && $(MAKE)
+	cd $(dir_test_image)/region && $(MAKE)
+	cd $(dir_test_image)/toolbox && $(MAKE)
+	cd $(dir_test_util)/convert && $(MAKE)
+	cd $(dir_test_util)/tree/bstree && $(MAKE)
+	cd $(dir_test_util)/tree/htree && $(MAKE)
+	cd $(dir_test_util)/tree/vtree && $(MAKE)
 
 clean:
-	cd $(dir_test_image_color) && $(MAKE) clean
-	cd $(dir_test_util_convert) && $(MAKE) clean
-	cd $(dir_test_util_tree)/bstree && $(MAKE) clean
-	cd $(dir_test_util_tree)/htree && $(MAKE) clean
-	cd $(dir_test_util_tree)/vtree && $(MAKE) clean
+	cd $(dir_test_image)/color && $(MAKE) clean
+	cd $(dir_test_image)/color/compare && $(MAKE) clean
+	cd $(dir_test_image)/region && $(MAKE)
+	cd $(dir_test_image)/toolbox && $(MAKE)
+	cd $(dir_test_util)/convert && $(MAKE) clean
+	cd $(dir_test_util)/tree/bstree && $(MAKE) clean
+	cd $(dir_test_util)/tree/htree && $(MAKE) clean
+	cd $(dir_test_util)/tree/vtree && $(MAKE) clean

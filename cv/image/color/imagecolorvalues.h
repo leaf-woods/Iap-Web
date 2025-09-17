@@ -1,20 +1,28 @@
 #ifndef IMAGECOLORVAL_H
 #define IMAGECOLORVAL_H
+
+#include <string>
+
 class imagecolorvalues {
     public:
+      static const int NOT_AVAILABLE = -1;
+      
       static const size_t channel = 3;
       
       static const int BGR=100;
       static const int HSV=200;
       static const int MASKED=300;
 
-      static const int BLACK=1000;
-      static const int PURPLE=1010;
-      static const int BLUE=1020;
-      static const int GREEN=1030;
-      static const int YELLOW=1040;
-      static const int ORANGE=1050;
-      static const int RED=1060;
+      static const int BLACK  = 0;
+      static const int PURPLE = 8323327;  // 127, 0, 255
+      static const int BLUE   = 255;      // 0, 0, 255
+      static const int GREEN  = 65280;    // 0, 255, 0
+      static const int YELLOW = 16776960; // 255, 255, 0
+      static const int ORANGE = 16744192; // 255, 127, 0
+      static const int RED    = 16711680; // 255, 0, 0
+
+      static const int DELTA = 20;
+      static const int M_DELTA = 15; 
 
     public:
       static std::string getColorTypeVal(int type) {

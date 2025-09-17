@@ -51,22 +51,22 @@ else
     # https://github.com/leaf-woods/Iap-Web/commit/9c6ba60c31071cbed315b953a41c0b3155513b21
     #rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.h $iap_github_base/image/color/imagecolordesc.h
     #rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.cpp $iap_github_base/image/color/imagecolordesc.cpp
-    #rsync $dry_run -av $iap_cv_base/image/color/imagecolorvalues.h $iap_github_base/image/color/imagecolorvalues.h
+    rsync $dry_run -av $iap_cv_base/image/color/imagecolorvalues.h $iap_github_base/image/color/imagecolorvalues.h
     #rsync $dry_run -av $iap_cv_base/image/color/imagereader.h $iap_github_base/image/color/imagereader.h
     #rsync $dry_run -av $iap_cv_base/image/color/imagereader.cpp $iap_github_base/image/color/imagereader.cpp
 
-    rsync $dry_run -av $iap_cv_base/image/color/compare/ $iap_github_base/image/color/compare
+    #rsync $dry_run -av $iap_cv_base/image/color/compare/ $iap_github_base/image/color/compare
 
-    rsync $dry_run -av $iap_cv_base/image/color/datatype/status/status.h $iap_github_base/image/color/datatype/status/status.h
+    #rsync $dry_run -av $iap_cv_base/image/color/datatype/status/status.h $iap_github_base/image/color/datatype/status/status.h
     
     #rsync $dry_run -av $iap_cv_base/image/color/ $iap_github_base/image/color
     
-    rsync $dry_run -av $iap_cv_base/image/region/ $iap_github_base/image/region
+    #rsync $dry_run -av $iap_cv_base/image/region/ $iap_github_base/image/region
 
     #rsync $dry_run -av $iap_cv_base/image/toolbox/sky.h $iap_github_base/image/toolbox/sky.h
     #rsync $dry_run -av $iap_cv_base/image/toolbox/sky.cpp $iap_github_base/image/toolbox/sky.cpp
 
-    rsync $dry_run -av $iap_cv_base/manage/iclearable.h $iap_github_base/manage/iclearable.h
+    #rsync $dry_run -av $iap_cv_base/manage/iclearable.h $iap_github_base/manage/iclearable.h
 
     #rsync $dry_run -av $iap_cv_base/util/convert/convertnumber.cpp $iap_github_base/util/convert/convertnumber.cpp
     #rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv.h $iap_github_base/util/convert/convert_bgrhsv.h
@@ -81,9 +81,9 @@ else
     #rsync $dry_run -av $iap_cv_base/util/tree/vtree/*.h $iap_github_base/util/tree/vtree/
     #rsync $dry_run -av $iap_cv_base/util/tree/vtree/*.cpp $iap_github_base/util/tree/vtree/
     
-    rsync $dry_run -av $iap_cv_base/util/print/ $iap_github_base/util/print
+    #rsync $dry_run -av $iap_cv_base/util/print/ $iap_github_base/util/print
 
-    rsync $dry_run -av $iap_cv_base/util/log/ $iap_github_base/util/log
+    #rsync $dry_run -av $iap_cv_base/util/log/ $iap_github_base/util/log
 
     #rsync $dry_run -av $iap_cv_base/main.cpp $iap_github_base/main.cpp
     #rsync $dry_run -av $iap_cv_base/makefile $iap_github_base/makefile

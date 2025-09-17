@@ -2,15 +2,19 @@
 
 date;
 
-iap_cv_test_base=/home/linye020603/iap-web/cv-test;
-dir_test_image_color=$iap_cv_test_base/image/color;
-dir_test_util_convert=$iap_cv_test_base/util/convert;
-dir_test_util_tree=$iap_cv_test_base/util/tree;
+iap_ghl_cv_test_base=/home/linye020603/github-local/Iap-Web/cv-test;
+dir_test_image=$iap_ghl_cv_test_base/image;
+dir_test_util=$iap_ghl_cv_test_base/util;
 
-cd $dir_test_image_color && ./test_colordesc
-cd $dir_test_util_convert && ./bgrhsvTest
-cd $dir_test_util_tree/bstree && ./test
-cd $dir_test_util_tree/htree && ./test
-cd $dir_test_util_tree/vtree && ./test
+cd $dir_test_image/color && ./test_colordesc
+cd $dir_test_image/color/compare && ./testComparator
+cd $dir_test_image/region && ./testRegion
+cd $dir_test_util/convert && ./bgrhsvTest
+cd $dir_test_util/convert && ./testConvertnumber
+cd $dir_test_util/tree/bstree && ./test
+cd $dir_test_util/tree/htree && ./test
+cd $dir_test_util/tree/vtree && ./test
 
 cd $iap_cv_test_base
+
+# test_init_train

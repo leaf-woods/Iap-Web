@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
     imagecontext* ctx = new imagecontext();
     ctx->setImgCtxLogsLevel(iapcv_log::INFO);
 
-    ctx->desc->setLogLevel(iapcv_log::INFO);
+    ctx->desc->setLogLevel(iapcv_log::DEBUG);
 
     if (ctx->reader->read_image(false, imageName)) {
         ctx->desc->setColorType(imagecolorvalues::BGR);

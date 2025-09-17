@@ -1,7 +1,5 @@
 iap_ghl_cv_base=/home/linye020603/github-local/Iap-Web/cv
-
 dir_image=$(iap_ghl_cv_base)/image
-dir_manage=$(iap_ghl_cv_base)/manage
 dir_util=$(iap_ghl_cv_base)/util
 
 #https://stackoverflow.com/questions/36381272/link-h-files-and-c-files-from-different-directory-using-makefile
@@ -13,40 +11,26 @@ CC = g++
 #CFLAGS = -g -O -Wall -Wextra -Werror -Wfatal-errors -std=c99 -pedantic
 
 # define any directories containing header files other than /usr/include
-INCLUDES = -I$(dir_image)/color \
-		   -I$(dir_image)/color/datatype \
-		   -I$(dir_image)/color/datatype/status \
-		   -I$(dir_manage) \
-		   -I$(dir_util)/convert \
-		   -I$(dir_util)/log \
+INCLUDES = -I$(dir_image)/toolbox \
            -I$(dir_util)/print \
-		   -I$(dir_util)/tree \
-           -I$(dir_util)/tree/htree \
-		   -I$(dir_util)/tree/vtree \
            -I/usr/include/opencv4
 
 # define library paths in addition to /usr/lib
 #LFLAGS = -L/Users/nguyenmanhduc/Documents/C\ library/cii/src
 
 # define any libraries to link into executable:
-LIBS = -lopencv_core -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc
+LIBS = -lopencv_core -lopencv_imgcodecs -lopencv_imgproc
 
 # define the C source files
-SRCS = test_imagecolordesc.cpp \
-	   $(dir_image)/color/imagecolordesc.cpp \
-	   $(dir_image)/color/imagereader.cpp \
-	   $(dir_util)/log/iapcv_log.cpp \
-       $(dir_util)/convert/convertnumber.cpp \
-	   $(dir_util)/convert/convert_bgrhsv.cpp \
-	   $(dir_util)/tree/vtree/colorvaluetree.cpp \
-	   $(dir_util)/tree/htree/hsvtree.cpp \
+SRCS = test_init_train.cpp \
+       $(dir_image)/toolbox/sky_init_train.cpp \
 	   $(dir_util)/print/iap_print.cpp 
 
 # define the C object files 
-OBJS = $(SRCS:.c=.o)
+OBJS = $(SRCS:.cpp=.o)
 
 # define the executable file 
-MAIN = test_colordesc
+MAIN = test_init_train
  
 .PHONY: depend clean
 
@@ -56,7 +40,7 @@ all : $(MAIN)
 $(MAIN) : $(OBJS) 
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LIBS)
 
-.c.o :
+.cpp.o :
 	$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
 
 clean :
