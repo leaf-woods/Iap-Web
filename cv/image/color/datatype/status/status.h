@@ -1,6 +1,9 @@
 #ifndef STATUS_H
 #define STATUS_H
-class status {
+
+#include "iclearable.h"
+
+class status : iclearable {
     public:
         static const int NORMAL=0; 
         static const int ERROR =1;
@@ -17,7 +20,7 @@ class status {
          * exceptions/errors. We don't know whether the input image is sky or not.
          */
         int f_status;
-        string msg;
+        std::string msg;
 };
 
 class bool_status : status{
@@ -25,7 +28,7 @@ class bool_status : status{
         bool f_result;
 
     public:
-        bool_status(int f_status, bool f_result, string msg) {
+        bool_status(int f_status, bool f_result, std::string msg) {
             this->f_status = f_status;
             this->f_result = f_result;
             this->msg = msg;
@@ -51,12 +54,30 @@ class bool_status : status{
             return f_result;
         }
 
-        string getMsg() {
+        std::string getMsg() {
             return msg;
         }
 
         bool isNormal() {
             return f_status == NORMAL;
+        }
+
+        void setResult(bool rv) {
+            f_result = rv;
+        }
+
+        void setStatus(int status) {
+            f_status = status;
+        }
+
+        void setMsg(std::string msg) {
+            this->msg = msg;
+        }
+
+        void clear() {
+            f_result = false;
+            f_status = NORMAL;
+            msg = "";
         }
 };
 #endif

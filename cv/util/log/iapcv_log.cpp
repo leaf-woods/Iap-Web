@@ -136,5 +136,16 @@ void iapcv_log::Info(string msg1, int num) {
     }
 }
 
+/*
+ *************************************************************
+ *  For customer classes that print without new line.
+ *************************************************************
+ */  
+ void iapcv_log::debug_inline(string msg) {
+    if (level <= DEBUG) {
+        cout << "Debug: " << msg;
+    }
+}
+
 
 

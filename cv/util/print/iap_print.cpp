@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include "iap_print.h" 
 
 using namespace std;
@@ -45,4 +46,45 @@ void iap_print::printKV(int key, int value) {
 
 void iap_print::printPixelIndex(size_t dim, int* array) {
     cout << "[" << array[0] << ", " << array[1] << "]" << endl;
+}
+
+string iap_print::formattedNumToStr(int num) {
+    ostringstream ostrm;
+    if (num < 10) {
+        string p = "       ";
+        ostrm << string(p) << num;
+        return ostrm.str();
+    }
+    if (num < 100) {
+        string p = "      ";
+        ostrm << string(p) << num;
+        return ostrm.str();
+    }
+    if (num < 1000) {
+        string p = "     ";
+        ostrm << string(p) << num;
+        return ostrm.str();
+    }
+    if (num < 10000) {
+        string p = "    ";
+        ostrm << string(p) << num;
+        return ostrm.str();
+    }
+    if (num < 100000) {
+        string p = "   ";
+        ostrm << string(p) << num;
+        return ostrm.str();
+    }
+    if (num < 1000000) {
+        string p = "  ";
+        ostrm << string(p) << num;
+        return ostrm.str();
+    }
+    if (num < 10000000) {
+        string p = " ";
+        ostrm << string(p) << num;
+        return ostrm.str();
+    }
+    return to_string(num);
+    
 }

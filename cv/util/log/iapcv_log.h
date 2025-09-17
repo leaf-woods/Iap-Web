@@ -32,6 +32,12 @@ using namespace std;
  * Usage: Custom class calls setLevel(int level).
  * If level == INFO, then logger->debug(msg) will be ignored.
  */
+ /*
+  * @20250909
+  * https://en.cppreference.com/w/cpp/language/unqualified_lookup.html
+  * https://stackoverflow.com/questions/55119673/overload-resolution-order-of-defined-functions-and-templates
+  * We have to ensure declaration order when template is used in overloading.
+  */
 class iapcv_log {
     private: 
         int level = DEBUG;
@@ -116,19 +122,21 @@ linye020603@penguin:~/iap-web/cv/image/toolbox$
         template<typename T, typename... Args>
         void debug(T t, Args... args) 
         {
-            cout << t ;
+            cout << t << " ";
             debug(args...);
             cout << endl;
         }
 
         void info(string msg1);
+        void info(string msg1, string msg2);
+        
         template<typename T>
         void info(string msg1, T obj) {
             if (level <= INFO) {
                 cout << "Info: " << msg1 << " " << obj << endl;
             }
         }
-        void info(string msg1, string msg2);
+        
         void info(string msg1, string msg2, string msg3);
         
         void warn(string msg1);
@@ -137,7 +145,13 @@ linye020603@penguin:~/iap-web/cv/image/toolbox$
         void warn(string msg1, string msg2, string msg3);
 
         void error(string msg1);  
-        void error( string msg1, string msg2);  
+        void error( string msg1, string msg2);
+        template<typename T>
+        void error(string msg1, T obj) {
+            if (level <= ERROR) {
+                cout << "Error: " << msg1 << " " << obj << endl;
+            }
+        }
 
         /*
          *************************************************************
@@ -162,6 +176,13 @@ linye020603@penguin:~/iap-web/cv/image/toolbox$
        
         void Info(string msg);
         void Info(string msg1, int num);
+
+        /*
+         *************************************************************
+         *  For customer classes that print without new line.
+         *************************************************************
+         */ 
+        void debug_inline(string msg);
 };
 
 #endif
