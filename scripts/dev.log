@@ -1,3 +1,7 @@
 @penguin:~/iap-web/cv$ find . -type f -name "*.h" -o -name "*.cpp" -exec grep -H "to_string" {} \;
 
 rsync --dry-run -av --exclude='*.o' --exclude='*.log' --exclude='*-bak' $src $dest
+
+rsync -av --dry-run --include=="*.cpp" --include=="makefile" --exclude="*.o" --exclude="*.log" --exclude="*bak" $source $desc
+
+find ./cv-test -type f -name 'makefile' | xargs sed -i 's/iap_cv_base/iap_ghl_cv_base/g'
