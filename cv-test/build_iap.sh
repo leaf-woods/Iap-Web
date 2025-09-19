@@ -51,7 +51,7 @@ else
     # https://github.com/leaf-woods/Iap-Web/commit/9c6ba60c31071cbed315b953a41c0b3155513b21
     #rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.h $iap_github_base/image/color/imagecolordesc.h
     #rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.cpp $iap_github_base/image/color/imagecolordesc.cpp
-    rsync $dry_run -av $iap_cv_base/image/color/imagecolorvalues.h $iap_github_base/image/color/imagecolorvalues.h
+    #rsync $dry_run -av $iap_cv_base/image/color/imagecolorvalues.h $iap_github_base/image/color/imagecolorvalues.h
     #rsync $dry_run -av $iap_cv_base/image/color/imagereader.h $iap_github_base/image/color/imagereader.h
     #rsync $dry_run -av $iap_cv_base/image/color/imagereader.cpp $iap_github_base/image/color/imagereader.cpp
 
@@ -60,6 +60,8 @@ else
     #rsync $dry_run -av $iap_cv_base/image/color/datatype/status/status.h $iap_github_base/image/color/datatype/status/status.h
     
     #rsync $dry_run -av $iap_cv_base/image/color/ $iap_github_base/image/color
+    
+    rsync $dry_run -av $iap_cv_base/image/region/region_builder.cpp $iap_github_base/image/region/region_builder.cpp
     
     #rsync $dry_run -av $iap_cv_base/image/region/ $iap_github_base/image/region
 
@@ -74,16 +76,16 @@ else
     #rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv_test.cpp $iap_github_base/util/convert/convert_bgrhsv_test.cpp  
     #rsync $dry_run -av $iap_cv_base/util/tree/ITreeNode.h $iap_github_base/util/tree/ITreeNode.h
     #rsync $dry_run -av $iap_cv_base/util/tree/ibstree.h $iap_github_base/util/tree/ibstree.h
-    #rsync $dry_run -av $iap_cv_base/util/tree/bstree/*.h $iap_github_base/util/tree/bstree/
-    #rsync $dry_run -av $iap_cv_base/util/tree/bstree/*.cpp $iap_github_base/util/tree/bstree/
-    #rsync $dry_run -av $iap_cv_base/util/tree/htree/*.h $iap_github_base/util/tree/htree/
-    #rsync $dry_run -av $iap_cv_base/util/tree/htree/*.cpp $iap_github_base/util/tree/htree/
-    #rsync $dry_run -av $iap_cv_base/util/tree/vtree/*.h $iap_github_base/util/tree/vtree/
-    #rsync $dry_run -av $iap_cv_base/util/tree/vtree/*.cpp $iap_github_base/util/tree/vtree/
+    #rsync $dry_run -av $iap_cv_base/util/tree/bstree/bstree.h $iap_github_base/util/tree/bstree/bstree.h
+    rsync $dry_run -av $iap_cv_base/util/tree/bstree/bstree.cpp $iap_github_base/util/tree/bstree/bstree.cpp
+    #rsync $dry_run -av $iap_cv_base/util/tree/htree/hsvtree.h $iap_github_base/util/tree/htree/hsvtree.h
+    rsync $dry_run -av $iap_cv_base/util/tree/htree/hsvtree.cpp $iap_github_base/util/tree/htree/hsvtree.cpp
+    #rsync $dry_run -av $iap_cv_base/util/tree/vtree/colorvaluetree.h $iap_github_base/util/tree/vtree/colorvaluetree.h
+    rsync $dry_run -av $iap_cv_base/util/tree/vtree/colorvaluetree.cpp $iap_github_base/util/tree/vtree/colorvaluetree.cpp
     
     #rsync $dry_run -av $iap_cv_base/util/print/ $iap_github_base/util/print
 
-    #rsync $dry_run -av $iap_cv_base/util/log/ $iap_github_base/util/log
+    rsync $dry_run -av $iap_cv_base/util/log/ $iap_github_base/util/log
 
     #rsync $dry_run -av $iap_cv_base/main.cpp $iap_github_base/main.cpp
     #rsync $dry_run -av $iap_cv_base/makefile $iap_github_base/makefile
