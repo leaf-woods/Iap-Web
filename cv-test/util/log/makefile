@@ -1,4 +1,4 @@
-iap_ghl_cv_base=/home/linye020603/iap-web/cv
+iap_ghl_cv_base=/home/linye020603/github-local/Iap-Web/cv
 dir_util_log=$(iap_ghl_cv_base)/util/log
 
 INCLUDES = -I$(dir_util_log) -I/usr/include/opencv4

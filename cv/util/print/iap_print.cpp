@@ -4,17 +4,19 @@
 
 using namespace std;
 
-void iap_print::printVector(vector<uchar*>* v) {
+void iap_print::printVector(const vector<uchar*>& v) {
+    /*
     if (!v) {
         cout << "Cannot print vector. Invalid v." << endl;
         return;
     }
+        */
             
     cout << " Vector: { ";
-    for (int i=0; i<v->size(); i++) {
-        cout << "[" << static_cast<unsigned>(v->at(i)[0]) << ", " 
-             << static_cast<unsigned>(v->at(i)[1]) << ", " 
-             << static_cast<unsigned>(v->at(i)[2]) << "] ";
+    for (int i=0; i < (int)v.size(); i++) {
+        cout << "[" << static_cast<unsigned>(v.at(i)[0]) << ", " 
+             << static_cast<unsigned>(v.at(i)[1]) << ", " 
+             << static_cast<unsigned>(v.at(i)[2]) << "] ";
     }
     cout << " }" << endl;
 }
@@ -26,7 +28,7 @@ void iap_print::printVector(vector<int>* v) {
     }
             
     cout << " Vector: { ";
-    for (int i=0; i<v->size(); i++) {
+    for (int i=0; i < (int)v->size(); i++) {
        cout << v->at(i) << " "; 
     }
     cout << " }" << endl;

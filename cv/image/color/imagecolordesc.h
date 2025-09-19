@@ -6,12 +6,12 @@
 
 #include <opencv2/core.hpp>
 
-#include "iapcv_log.h"
-#include "vtree/colorvaluetree.h"
 #include "convertnumber.h"
 #include "convert_bgrhsv.h"
+#include "iapcv_log.h"
 #include "htree/hsvtree.h"
 #include "range.h"
+#include "vtree/colorvaluetree.h"
 
 class imagecolordesc : public iclearable{
     private:
@@ -20,10 +20,10 @@ class imagecolordesc : public iclearable{
       int W; int H;
       int BH[256]; int GS[256]; int RV[256];
 
-      int color_type;
-      int hsv_dim;
+      int color_type = imagecolorvalues::NOT_AVAILABLE;
 
       std::unordered_map<int, std::vector<int*>*>  *color_map;
+      std::unordered_map<int, std::vector<int*>*>  *compact_map;
       colorvaluetree* t;
       hsvtree* ht;
 
@@ -34,9 +34,8 @@ class imagecolordesc : public iclearable{
       range* rg; 
       
     private:
+      void clearMap(unordered_map<int, vector<int*>*>& m);
       void clearSTDVector(std::vector<int*>* v);
-      void setColorValueTree();
-      void setHsvTree();
       void setMinMax();
       
     public:
@@ -48,13 +47,14 @@ class imagecolordesc : public iclearable{
       std::vector<int*>* containsBGR(uchar b, uchar g, uchar r);
       std::vector<uchar*>* findB(uchar b);
       std::vector<uchar*>* findPixelColors(uchar hue);
-      void setDescData(cv::Mat &mat);
+      int getColorType();
+      void setDescData(const cv::Mat &mat, int type);
       void setLogLevel(int level);
       void setPrint(iap_print* p);
-      void setColorType(int ct);
       void setConvertHSV(convert_bgrhsv* calc);
       void setConvertNum(convertnumber* con);
-      void setHsvDim(int hd);
+      void setColorValueTree();
+      void setHsvTree(int hsv_dim);
       void setRange(range* rg);
       void printColorValueTree();
       void printHsvTree();

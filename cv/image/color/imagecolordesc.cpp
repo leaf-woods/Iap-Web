@@ -6,21 +6,37 @@
 
 using namespace std;
 
+/// TODO Ready to a full test
+/*
+ * @20250914
+ * setDescData() will build color_map, compact_color_map.
+ * color value tree and hsv tree will be generated on demand by customer classes.
+ */
+ /*
+  * @20250917
+  * imagecolordesc: setDescData() is to store image matrix data in a color_map for 
+  * future analysis.
+  *
+  * instance variable color_type is used to record the color type on the matrix, i.e.,
+  * BGR, HSV or Masked matrix. Therefore each time setDescData() is called, we need
+  * to tell setDescData() the color type and store it in color_type.
+  *
+  * color_type is set to NOT_AVAILABE in header file. Each setDescData() call will change
+  * color_type accordingly. Neither init() or clear() will change color_type.
+  */
 imagecolordesc::imagecolordesc() {
     logger = new iapcv_log(typeid(this).name());
     init();
-    /*
-     * @20250826
-     * Preserve color_type and hsv_dim when image color desc is reused.
-     */
-    color_type = 0;
-    hsv_dim = hsvtree::HUE; /// TODO two variables not changed
 }
 
 imagecolordesc::~imagecolordesc() {
     logger->setLevel(iapcv_log::ERROR);
-    t->setLogLevel(this->logger->getLevel());
-    ht->setLogLevel(this->logger->getLevel());
+    if (t != nullptr) {
+        t->setLogLevel(iapcv_log::ERROR);
+    }
+    if (ht != nullptr) {
+        ht->setLogLevel(iapcv_log::ERROR);
+    }
 
     logger->debug("Destructing imagecolordesc. ");
     clear();
@@ -35,6 +51,12 @@ imagecolordesc::~imagecolordesc() {
 
 void imagecolordesc::init() {
     color_map = new unordered_map<int, vector<int*>*>();
+    compact_map = new unordered_map<int, vector<int*>*>();
+    
+    /*
+     * @20250914
+     * Ready to use by customer classes.
+     */
     t = new colorvaluetree();
     ht = new hsvtree();
 
@@ -46,60 +68,100 @@ void imagecolordesc::init() {
 }
 
 void imagecolordesc::clear() {
+    if (rg != nullptr) {
+        rg->clear();
+    }
+    for (int i=0; i< 256; i++) {
+        BH[i] = 0;
+        GS[i] = 0;
+        RV[i] = 0;
+    }
+
+    // Just cleared
     if (color_map==nullptr) {
-        logger->info("Map is null.");
-        assert(t == nullptr);
-        assert(ht == nullptr);
+        logger->info("Color Map is null.");
+        assert(t == nullptr && ht == nullptr);
         return;
     }
-    // This is not a normal scenario as color_map size=0 only occurs when instance just created.
+    // Just created.
     if (color_map->size()==0) {
         logger->info("Map is clear.");
         delete color_map;
         color_map = nullptr;
         if (t != nullptr) {
-            logger->warn("Color value tree size: ", t->size());            
-            t->deleteTree();
+            if (t->size() > 0) {
+                logger->error("Color value tree size: ", t->size());
+                t->deleteTree();
+            }
+            delete t;
             t = nullptr;
         }
         if (ht != nullptr) {
-            logger->warn("HSV tree size: ", ht->size());
-            ht->deleteTree();
+            if (ht->size() > 0) {
+                logger->error("HSV tree size: ", ht->size());
+                ht->deleteTree();
+            }
+            delete ht;
             ht = nullptr;
         }
         return;
     }
+
+    // Just used
+    logger->debug("To destruct color map: size: ", color_map->size());
     
-    vector<int*>* v;
-    logger->debug("To destruct map size: ", color_map->size());
-    
+    /*
     for (auto it=(*color_map).begin(); it!=(*color_map).end();) {
         v = it->second;
         clearSTDVector(v);
         it = color_map->erase(it);
         delete v;
-    }
-
+    }*/
+    clearMap(*color_map);
     *color_map = unordered_map<int, std::vector<int*>*>();
     delete color_map;
     color_map = nullptr;
-    t->deleteTree();
+
+    if (compact_map->size() > 0) {
+        clearMap(*compact_map);
+        *compact_map = unordered_map<int, std::vector<int*>*>();
+        delete compact_map;
+        compact_map = nullptr;
+    }
+    
+    if (t->size()>0) {
+        t->deleteTree();
+    }
     delete t;
     t = nullptr;
-    ht->deleteTree();
+    if (ht->size()>0) {
+        ht->deleteTree();
+    }
     delete ht;
     ht = nullptr;
 }
 
+void imagecolordesc::clearMap(unordered_map<int, vector<int*>*>& m) {
+    if (m.size()>0) {
+        vector<int*>* v;
+        for (auto it=m.begin(); it!=m.end();) {
+            v = it->second;
+            clearSTDVector(it->second);
+            it = m.erase(it);
+            delete v;
+        }
+    }
+}
+
 void imagecolordesc::clearSTDVector(vector<int*>* v) {
-    logger->debug("clearSTDVector: vector size: ", v->size());
+    logger->debug("Clear vector: vector size: ", v->size());
     
     int s = v->size();
     for (int i=0; i < s; i++) {
         delete v->at(i);
     }
     *v = vector<int*>();
-    logger->debug("clearSTDVector: vector elements deleted.");
+    logger->debug("Clear vector: vector elements deleted.");
 }
 
 /**
@@ -185,30 +247,30 @@ string imagecolordesc::writeColorValueTreeContents() {
  * Function clear():
  * We invalidate color_map so it can not be accessed without calling init() to create a new instance.
  *
- * When setDesc() is called, it first checks color_map null since clear() can invalidate it.
+ * When setDescData() is called, it first checks color_map null since clear() can invalidate it.
  * If color_map is null, we call init().
  * Otherwise, we check size = 0.
  * If size = 0, instance just created.
  * If size > 0, we clear color_map and invalidate it.
  */
-void imagecolordesc::setDescData(cv::Mat& mat) {
+void imagecolordesc::setDescData(const cv::Mat& mat, int type) {
     assert(mat.rows>0 && mat.cols>0);
-    if (color_map == nullptr ) { 
+    assert(type==imagecolorvalues::BGR || type==imagecolorvalues::HSV);
+    color_type = type;
+
+    // Just cleared
+    if (color_map == nullptr) {
+        logger->info("color_map is null.");
         init();
     }
-    else if (color_map->size() == 0) {
-        // Just constructed.
-        assert(t!=nullptr && t->size()==0);
-        assert(ht!=nullptr && ht->size()==0);
-    }
-    else {
+    // color_map->size() == 0: Just constructed
+    // Just used
+    else if (color_map->size() > 0) { 
         logger->info("Clear image color desc.");
         clear();
         rg->clear();
         init();
     }
-
-    assert(color_type==imagecolorvalues::BGR || color_type==imagecolorvalues::HSV);
     
     W = mat.cols;
     H = mat.rows;
@@ -235,30 +297,28 @@ void imagecolordesc::setDescData(cv::Mat& mat) {
             }
         }
     } 
-    logger->debug("To set trees");
     
-    t->setLogLevel(this->logger->getLevel());
-    ht->setLogLevel(this->logger->getLevel());
-    setColorValueTree();
-    setHsvTree(); 
     setMinMax();          
 }
 
 void imagecolordesc::setColorValueTree() {
     assert(color_map->size()>0);
+    t->setLogLevel(this->logger->getLevel());
     logger->debug("Set color value tree.");
     
     t->setPrint(printer);
     int key = 0;
     for (auto it=color_map->begin(); it!=color_map->end(); it++) {
         key = it->first;
-        std::vector<int*> value = *(it->second);
+        std::vector<int*> value = *it->second;
         t->add(value.size(), key);
     }
 }
 
-void imagecolordesc::setHsvTree() {
+void imagecolordesc::setHsvTree(int hsv_dim) {
+    assert(color_map->size()>0); 
     logger->debug("Set hsv tree.");
+    ht->setLogLevel(this->logger->getLevel());
     ht->setPrint(printer);
     ht->setHsvDim(hsv_dim);
     uchar arr[imagecolorvalues::channel] = {0}; 
@@ -274,7 +334,7 @@ void imagecolordesc::setHsvTree() {
             hsv[0] = arr[0]; hsv[1] = arr[1]; hsv[2] = arr[2];
         }
         
-        //printer->printPixelColor(hsv);
+        //printer->printPixelColor(imagecolorvalues::channel, hsv);
         ht->add(hsv);
     }
 }
@@ -341,6 +401,17 @@ void imagecolordesc::setMinMax() {
     }
 }
 
+/// TODO
+/*
+void imagecolordesc::setCompactMap() {
+    if (color_map->size() == 0) {
+        logger->info("Empty color map.");
+        return;
+    }
+
+}
+*/
+
 void imagecolordesc::printMinMax() {
     cout << "color type: " << imagecolorvalues::getColorTypeVal(color_type) << endl;
     cout << "max: { " << static_cast<unsigned>(rg->getUpper()[0]) << " , " << static_cast<unsigned>(rg->getUpper()[1]) << " , " << static_cast<unsigned>(rg->getUpper()[2]) << " }" << endl;
@@ -349,27 +420,14 @@ void imagecolordesc::printMinMax() {
 
 void imagecolordesc::printMap() {
     int num = 0; 
-    string s;
     uchar p[] = {0, 0, 0};
     cout << "printMap: size: " << color_map->size() << " Color type: " << imagecolorvalues::getColorTypeVal(color_type) << endl;
     for (auto it=color_map->begin(); it!=color_map->end(); it++) {
         convert->setUChar3(it->first, p);
         
-        std::vector<int*> value = *(it->second);
-        if (value.size() < 10) {
-            s = "   " + to_string(value.size());
-        }
-        else if (value.size() < 100) {
-            s = "  " + to_string(value.size());
-        }
-        else if (value.size() < 1000) {
-            s = " " + to_string(value.size());
-        }
-        else {
-            s = to_string(value.size());
-        }
+        std::vector<int*> value = *it->second;
 
-        cout << "Num of pixels: " << s << " ";
+        cout << "Num of pixels: " << printer->formattedNumToStr(value.size()) << " " << " Key: " << printer->formattedNumToStr(it->first) << " ";
         cout << "Color: ";
         printer->printPixelColor(imagecolorvalues::channel, p);
         num+=value.size();
@@ -386,9 +444,25 @@ void imagecolordesc::printHsvTree() {
 }
 
 void imagecolordesc::printState() {
-    cout << "Size of color_map: " << color_map->size() << endl;
-    cout << "Size of color value tree: " << t->size() << endl;
-    cout << "Size of hsv tree: " << ht->size() << endl;
+    cout << "Print imagecolordesc state." << endl;
+    if (color_map == nullptr) {
+        cout << "color_map: null" << endl;
+    }
+    else {
+        cout << "Size of color_map: " << color_map->size() << endl;
+    }
+    if (t == nullptr) {
+        cout << "color value tree: null" << endl;
+    }
+    else {
+        cout << "Size of color value tree: " << t->size() << endl;
+    }
+    if (ht == nullptr) {
+        cout << "hsv tree: null" << endl;
+    } 
+    else {
+        cout << "Size of hsv tree: " << ht->size() << endl;
+    }
     printMinMax();
 }
 
@@ -402,16 +476,6 @@ void imagecolordesc::setConvertHSV(convert_bgrhsv* c) {
 
 void imagecolordesc::setConvertNum(convertnumber* c) {
     convert = c;
-}
-
-void imagecolordesc::setColorType(int ct) {
-    assert(ct==imagecolorvalues::BGR || ct==imagecolorvalues::HSV);
-    color_type = ct;
-}
-
-void imagecolordesc::setHsvDim(int hd) {
-    assert(hd==hsvtree::HUE || hd==hsvtree::SAT || hsvtree::VAL);
-    hsv_dim = hd;
 }
 
 void imagecolordesc::setRange(range* rg) {
@@ -466,4 +530,8 @@ int imagecolordesc::countColor(int color) {
     }
     logger->debug("Count of " + imagecolorvalues::getColorVal(color), count);
     return count;
+}
+
+int imagecolordesc::getColorType() {
+    return color_type;
 }

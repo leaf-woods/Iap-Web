@@ -75,7 +75,7 @@ class abstree : public ibstree {
           }
           logger->debug("Node data:", n->data);
           if (logger->isDebug()) {
-              printer->printVector(n->vecHsv);
+              printer->printVector(*n->vecHsv);
           }
           traverseData(n->left, vh);
           vh->push_back(n->data);

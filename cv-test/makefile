@@ -1,4 +1,4 @@
-iap_ghl_test_cv_base=/home/linye020603/iap-web/cv-test
+iap_ghl_test_cv_base=/home/linye020603/github-local/Iap-Web/cv-test
 dir_test_image=$(iap_ghl_test_cv_base)/image
 dir_test_util=$(iap_ghl_test_cv_base)/util
 

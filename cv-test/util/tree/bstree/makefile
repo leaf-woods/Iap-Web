@@ -1,4 +1,4 @@
-iap_ghl_cv_base=/home/linye020603/iap-web/cv
+iap_ghl_cv_base=/home/linye020603/github-local/Iap-Web/cv
 dir_util_log=$(iap_ghl_cv_base)/util/log
 dir_util_print=$(iap_ghl_cv_base)/util/print
 dir_util_tree=$(iap_ghl_cv_base)/util/tree

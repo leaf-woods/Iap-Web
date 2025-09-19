@@ -1,9 +1,9 @@
-iap_cv_base=/home/linye020603/iap-web/cv
+iap_ghl_cv_base=/home/linye020603/github-local/Iap-Web/cv
 
-dir_ctx=$(iap_cv_base)/context
-dir_image=$(iap_cv_base)/image
-dir_manage=$(iap_cv_base)/manage
-dir_util=$(iap_cv_base)/util
+dir_ctx=$(iap_ghl_cv_base)/context
+dir_image=$(iap_ghl_cv_base)/image
+dir_manage=$(iap_ghl_cv_base)/manage
+dir_util=$(iap_ghl_cv_base)/util
 
 #https://stackoverflow.com/questions/36381272/link-h-files-and-c-files-from-different-directory-using-makefile
 

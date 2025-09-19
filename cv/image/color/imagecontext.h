@@ -10,7 +10,10 @@
 #include "iapcv_log.h"
 #include "imagecolordesc.h"
 #include "imagereader.h"
+//#include "pixel_comparator.h"
 #include "range.h"
+//#include "region_builder.h"
+//#include "region_evaluator.h"
 
 class imagecontext {
     public:
@@ -24,6 +27,12 @@ class imagecontext {
         range* rg;
 
         imagereader* reader;
+
+        /*
+        pixel_comparator* compt;
+        region_evaluator* evaluator;
+        region_builder* builder;
+        */
 
     public:
         imagecontext() {
@@ -41,16 +50,28 @@ class imagecontext {
             desc->setRange(rg);
 
             reader = new imagereader();
+
+            /*
+            compt = new pixel_comparator();
+            evaluator = new region_evaluator();
+            evaluator->setComparator(compt);
+            builder = new region_builder();
+            builder->setRegionEvaluator(evaluator);
+            builder->setPrint(printer);
+            */
         }
 
         ~imagecontext() {
             logger->debug("Destructing imagecontext.");
+            delete desc;
+            delete rg;
+            delete reader;
+            //delete builder;
+            //delete evaluator;
+            //delete compt;
             delete printer;
             delete calc;
             delete convert;
-            delete rg;
-            delete desc;
-            delete reader;
             delete logger;
         }
 
@@ -60,6 +81,7 @@ class imagecontext {
             logger->setLevel(level);
             desc->setLogLevel(level);
             reader->setLogLevel(level);
+            //region_builder->setLogLevel(level);
         }
 };
 #endif

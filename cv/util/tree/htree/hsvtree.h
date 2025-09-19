@@ -21,7 +21,7 @@ class hsvtree : public abstree{
 
       HNode* root;
 
-      int hsv_dim;
+      int hsv_dim = HUE;
 
     public:
       const static int HUE = 0;
@@ -45,5 +45,6 @@ class hsvtree : public abstree{
       virtual int getMaxValue();  
       virtual void printTree();
       void getTreeData(std::vector<int>* vh);
+      int getHSVDim();
 };
 #endif

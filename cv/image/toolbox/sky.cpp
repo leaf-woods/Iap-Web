@@ -35,8 +35,7 @@ bool_status* sky::isSky(string imageName) {
     if (! ctx->reader->read_image(false, imageName)) {
         return new bool_status(status::ERROR, false, "Cannot proceed with image: " + imageName);
     }
-    ctx->desc->setColorType(imagecolorvalues::HSV);
-    ctx->desc->setDescData(*(ctx->reader->getHsvImage()));
+    ctx->desc->setDescData(* ctx->reader->getHsvImage(), imagecolorvalues::HSV);
     ctx->desc->setHsvTree(hsvtree::HUE);
     auto t2 = chrono::high_resolution_clock::now();
     logger->info("Image data collection time: ", (int)chrono::duration_cast<chrono::microseconds>(t2-t1).count());
