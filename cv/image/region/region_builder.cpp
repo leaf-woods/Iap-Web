@@ -135,7 +135,7 @@ void region_builder::explore(const cv::Mat& mat, int row, int col) {
     checkInBound(mat, row, col, *sta);
     if (! sta->getResult()) {
         if (sta->isNormal()) {
-            logger->info("Pixel not in region: ", "row: " + to_string(row) + " col: " + to_string(col) + " " + region_desc::toString(desc));
+            logger->finfo("snsnss", "Pixel not in region: row: ", row, " col: ", col, " ", region_desc::toString(desc));
         }
         else {
             logger->error(sta->getMsg());
@@ -206,7 +206,7 @@ void region_builder::explore(const cv::Mat& mat, int row, int col) {
         cout << endl;
     }
   }
-    logger->debug("count: ", count, " count col: ", count_exp_col, " count row: ", count_exp_row);
+    logger->fdebug("snsnsn", "count: ", count, " count col: ", count_exp_col, " count row: ", count_exp_row);
     printMap("cols", *cols_map);
     cout << endl;
     printMap("rows", *rows_map);
@@ -309,7 +309,7 @@ void region_builder::explore_r(const cv::Mat& mat, int row, int col) {
          */
       }
   }
-    logger->debug("count: ", count, " count col: ", count_exp_col, " count row: ", count_exp_row);
+    logger->fdebug("snsnsn", "count: ", count, " count col: ", count_exp_col, " count row: ", count_exp_row);
     //printMap("cols", *cols_map);
     cout << endl;
     //printMap("rows", *rows_map);
@@ -440,7 +440,7 @@ void region_builder::explore_vert(const cv::Mat& mat, const span_node& col_sp) {
         auto sch = cols_map->find(col_sp.offset - 1);
         if (sch != cols_map->end()) {
             bounds* b = new bounds();
-            adjustBounds(*b, begin, end, *(sch->second));
+            adjustBounds(*b, begin, end, *sch->second);
             
             int op = b->op;
             if (op == bounds::ADJUSTED) {
@@ -483,7 +483,7 @@ void region_builder::explore_vert(const cv::Mat& mat, const span_node& col_sp) {
             count_newentry++;
         }
         else {
-            if (! contains( *(search->second), col_sp.offset)) {
+            if (! contains( *search->second, col_sp.offset)) {
                 get_row_span(mat, i, col_sp.offset);
                 search->second->push_back(rows->back()->span);
                 count_newbounds++;
@@ -507,7 +507,7 @@ void region_builder::explore_hort(const cv::Mat& mat, const span_node& row_sp) {
         auto sch = rows_map->find(row_sp.offset - 1);
         if (sch != rows_map->end()) {
             bounds* b = new bounds(); 
-            adjustBounds(*b, begin, end, *(sch->second));
+            adjustBounds(*b, begin, end, *sch->second);
             
             int op = b->op;
             if (op == bounds::ADJUSTED) {
@@ -551,7 +551,7 @@ void region_builder::explore_hort(const cv::Mat& mat, const span_node& row_sp) {
             count_newentry++;
         }
         else {
-            if (! contains( *(search->second), row_sp.offset)) {
+            if (! contains( *search->second, row_sp.offset)) {
                 get_col_span(mat, row_sp.offset, i);
                 search->second->push_back(cols->back()->span);
                 count_newbounds++; 
@@ -594,7 +594,7 @@ void region_builder::printVector(const vector<int*>& v) {
 }
 
 void region_builder::printQueue(string which, deque<span_node*>* q) {
-    logger->debug("Print deque. ", which, " size: ", q->size());
+    logger->fdebug("snsn", "Print deque. ", which, " size: ", q->size());
     int s = q->size();
     if (s == 0) {
         logger->Info("Empty queue.");

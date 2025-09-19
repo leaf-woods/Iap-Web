@@ -1,4 +1,3 @@
-#include <cstdarg>
 #include <iostream>
 
 #include "iapcv_log.h"
@@ -27,12 +26,35 @@ bool iapcv_log::isDebug() {
     return level==DEBUG;
 }
 
-bool iapcv_log::isInfo() {
-    return level==INFO;
-}
-
-bool iapcv_log::isWarn() {
-    return level==WARN;
+void iapcv_log::cprintf(const char* fmt, va_list args) 
+{
+    while (*fmt != '\0')
+    {
+        if (*fmt == 's') {
+            char* s = va_arg(args, char*);
+            cout << string(s) << ' ';
+        }
+        else if (*fmt == 'n') {
+            int s = va_arg(args, int);
+            cout << to_string(s) << ' ';
+        }
+        else if (*fmt == 'f')
+        {
+            double d = va_arg(args, double);
+            cout << d << ' ';
+        }
+        else if (*fmt == 'p')
+        {
+            void* addr = va_arg(args, void*);
+            cout << addr << ' ';
+        }
+        else {
+            cout << endl;
+            cout << "Error in logging process: Invalid format: " << *fmt << endl;
+        }
+        ++fmt;
+    }
+    cout << endl;
 }
 
 void iapcv_log::debug(string msg1) {
@@ -41,39 +63,30 @@ void iapcv_log::debug(string msg1) {
     }
 }
 
-void iapcv_log::debug( string msg1, string msg2) {
+void iapcv_log::fdebug(const char* fmt ...) {
     if (level == DEBUG) {
-        cout << "Debug: " << msg1 << " " << msg2 << endl;
+        cout << "Debug: ";
+        va_list args;
+        va_start(args, fmt);
+        cprintf(fmt, args);
+        va_end(args);
     }
 }
-
-void iapcv_log::debug( string msg1, int num) {
-    if (level == DEBUG) {
-        cout << "Debug: " << msg1 << " " << num << endl;
-    }
-}
-
-void iapcv_log::debug( string msg1, string msg2, string msg3) {
-    if (level == DEBUG) {
-        cout << "Debug: " << msg1 << " " << msg2 << " " << msg3 << endl;
-    }
-}
-        
+       
 void iapcv_log::info(string msg1) {
     if (level <= INFO) {
         cout << "Info: " << msg1 << endl;
     }
 }
 
-void iapcv_log::info( string msg1, string msg2) {
+// https://cplusplus.com/reference/cstdio/vfprintf/
+void iapcv_log::finfo(const char* fmt, ...) {
     if (level <= INFO) {
-        cout << "Info: " << msg1 << " " << msg2 << endl;
-    }
-}
-
-void iapcv_log::info( string msg1, string msg2, string msg3) {
-    if (level <= INFO) {
-        cout << "Info: " << msg1 << " " << msg2 << " " << msg3 << endl;
+        cout << "Info: ";
+        va_list args;
+        va_start(args, fmt);
+        cprintf(fmt, args);
+        va_end(args);
     }
 }
 
@@ -89,27 +102,9 @@ void iapcv_log::warn( string msg1, int num) {
     }
 }
 
-void iapcv_log::warn( string msg1, string msg2) {
-    if (level <= WARN) {
-        cout << "Warn: " << msg1 << " " << msg2 << endl;
-    }
-}
-
-void iapcv_log::warn( string msg1, string msg2, string msg3) {
-    if (level <= WARN) {
-        cout << "Warn: " << msg1 << " " << msg2 << " " << msg3 << endl;
-    }
-}
-    
 void iapcv_log::error( string msg) {
     if (level <= ERROR) {
         cout << "Error: " << msg << endl;
-    }
-}
-
-void iapcv_log::error( string msg1, string msg2) {
-    if (level <= ERROR) {
-        cout << "Error: " << msg1 << msg2 << endl;
     }
 }
 
@@ -119,8 +114,17 @@ void iapcv_log::error( string msg1, string msg2) {
  *************************************************************
  */     
 void iapcv_log::Debug(string msg) {
-    if (level <= DEBUG) {
+    if (level == DEBUG) {
         cout << msg << endl;
+    }
+}
+
+void iapcv_log::fDebug(const char* fmt ...) {
+    if (level == DEBUG) {
+        va_list args;
+        va_start(args, fmt);
+        cprintf(fmt, args);
+        va_end(args);
     }
 }
 
@@ -132,7 +136,7 @@ void iapcv_log::Info(string msg1) {
 
 void iapcv_log::Info(string msg1, int num) {
     if (level <= INFO) {
-        cout << "Info: " << msg1 << num << endl;
+        cout << msg1 << " " << num << endl;
     }
 }
 
@@ -142,8 +146,8 @@ void iapcv_log::Info(string msg1, int num) {
  *************************************************************
  */  
  void iapcv_log::debug_inline(string msg) {
-    if (level <= DEBUG) {
-        cout << "Debug: " << msg;
+    if (level == DEBUG) {
+        cout << "Debug: " << msg << " ";
     }
 }
 

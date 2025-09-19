@@ -12,7 +12,7 @@ hsvtree::hsvtree() {
     logger = new iapcv_log(typeid(this).name());
     count = 0;
     root = nullptr;
-    hsv_dim = HUE;
+    //hsv_dim = HUE;
 }
 
 hsvtree::~hsvtree() {
@@ -41,7 +41,7 @@ HNode* hsvtree::createNode(uchar* hsv)
     newNode->vecHsv->push_back(hsv);
 
     count++;
-    logger->Debug("Created Node of: ", newNode->data, " at: ", newNode);
+    logger->fDebug("snsp", "Created Node of: ", newNode->data, " at: ", newNode);
     return newNode;
 }
 
@@ -49,7 +49,7 @@ HNode* hsvtree::insertNode(HNode* n, uchar* hsv)
 {
     if (count == 0) {
         root = createNode(hsv);
-        logger->Debug("Root created of data: ", root->data, " at: ", root);
+        logger->fDebug("snsp", "Root created of data: ", root->data, " at: ", root);
         return root;
     }
 
@@ -98,7 +98,7 @@ void hsvtree::deleteTree(HNode* n) {
     
     n->data = 0;
     if (n->vecHsv != nullptr) {
-        for (int i=0; i<n->vecHsv->size(); i++) {
+        for (int i=0; i < (int)n->vecHsv->size(); i++) {
             n->vecHsv->at(i)[0] = 0;
             n->vecHsv->at(i)[1] = 0;
             n->vecHsv->at(i)[2] = 0;
@@ -133,7 +133,7 @@ void hsvtree::printTree(HNode* n) {
         return;
     }
     cout << "HNode:" << n->data << " ";
-    printer->printVector(n->vecHsv);
+    printer->printVector(*n->vecHsv);
 
     printTree(n->left);
     printTree(n->right);
@@ -161,7 +161,7 @@ void hsvtree::printTree() {
     else if (hsv_dim==VAL) {
         dim = "VAL";
     }
-    cout << "Print hsvtree. Use hsv dimention: " << dim << " Size: " << count << endl;
+    cout << "Print hsvtree. Use hsv dimension: " << dim << " Size: " << count << endl;
     if (count == 0) {
         cout << "Empty tree." << endl;
         return;
@@ -203,6 +203,10 @@ void hsvtree::getTreeData(vector<int>* vh) {
         return;
     }
     abstree::traverseData(root, vh);
+}
+
+int hsvtree::getHSVDim() {
+    return hsv_dim;
 }
 
 

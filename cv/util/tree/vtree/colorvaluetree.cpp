@@ -37,7 +37,7 @@ Node* colorvaluetree::createNode(int data, int key)
     newNode->keys->push_back(key);
 
     count++;
-    logger->Debug("Created node of: ", data, " at: ", newNode);
+    logger->fDebug("snsp", "Created node of: ", data, " at: ", newNode);
     
     return newNode;
 }
@@ -46,7 +46,7 @@ Node* colorvaluetree::insertNode(Node* n, int data, int key)
 {
     if (count == 0) {
         root = createNode(data, key);
-        logger->Debug("Root created of data: ", data, " at: ", root);
+        logger->fDebug("snsp", "Root created of data: ", data, " at: ", root);
         return root;
     }
 
@@ -102,7 +102,7 @@ void colorvaluetree::getNodeContents(Node* n, string* s) {
     s->append("N=");
     s->append(to_string(n->data));
     s->append(" V=[ ");
-    for (int i=0; i<n->keys->size(); i++) {
+    for (int i=0; i < (int)n->keys->size(); i++) {
         s->append(to_string(n->keys->at(i)));
         s->append(" ");
     }
@@ -155,7 +155,7 @@ void colorvaluetree::deleteTree(Node* n) {
     
     n->data = 0;
     if (n->keys != nullptr) {
-        for (int i=0; i<n->keys->size(); i++) {
+        for (int i=0; i<(int)n->keys->size(); i++) {
             n->keys->at(i) = 0;
         }
         *n->keys = vector<int>();

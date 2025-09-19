@@ -1,4 +1,4 @@
-iap_ghl_cv_base=/home/linye020603/github-local/Iap-Web/cv
+iap_ghl_cv_base=/home/linye020603/iap-web/cv
 dir_image_color=$(iap_ghl_cv_base)/image/color
 dir_util_log=$(iap_ghl_cv_base)/util/log
 dir_util_tree=$(iap_ghl_cv_base)/util/tree
@@ -21,11 +21,8 @@ iapcv_log.o : $(dir_util_log)/iapcv_log.cpp
 	g++ -c $(dir_util_log)/iapcv_log.cpp
 
 clean :
-ifneq (,$(wildcard $(dir_util_tree_htree)/*.o))
-	rm $(dir_util_tree_htree)/*.o
-endif
 ifneq (,$(wildcard *.o))
-	rm  *.o 
+	rm  *.o
 endif
 ifneq (,$(wildcard test))
 	rm  test

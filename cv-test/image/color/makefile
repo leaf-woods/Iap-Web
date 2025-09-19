@@ -1,4 +1,4 @@
-iap_ghl_cv_base=/home/linye020603/github-local/Iap-Web/cv
+iap_ghl_cv_base=/home/linye020603/iap-web/cv
 
 dir_image=$(iap_ghl_cv_base)/image
 dir_manage=$(iap_ghl_cv_base)/manage
@@ -11,6 +11,7 @@ CC = g++
 
 # define any compile-time flags
 #CFLAGS = -g -O -Wall -Wextra -Werror -Wfatal-errors -std=c99 -pedantic
+#CFLAGS = -g -O -Wall -Wextra -Werror -Wfatal-errors -pedantic
 
 # define any directories containing header files other than /usr/include
 INCLUDES = -I$(dir_image)/color \

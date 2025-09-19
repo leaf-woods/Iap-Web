@@ -31,7 +31,7 @@ ITreeNode* bstree::createNode(int data)
     newNode->data = data;
     newNode->left = newNode->right = nullptr;
     count++;
-    logger->Debug("Created Node of: ", data, " at: ", newNode);
+    logger->fDebug("snsp", "Created Node of: ", data, " at: ", newNode);
     
     return newNode;
 }
@@ -40,7 +40,7 @@ ITreeNode* bstree::insertNode(ITreeNode* n, int data)
 {
     if (count == 0) {
         root = createNode(data);
-        logger->Debug("Root created of data: ", data, " at: ", root);
+        logger->fDebug("snsp", "Root created of data: ", data, " at: ", root);
         return root;
     }
 
