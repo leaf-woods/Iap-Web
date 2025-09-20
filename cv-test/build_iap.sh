@@ -28,6 +28,7 @@ iap_dev_base=/home/linye020603/iap-web;
 iap_cv_base=/home/linye020603/iap-web/cv;
 iap_github_base=/home/linye020603/github-local/Iap-Web/cv;
 
+# All makefiles under $iap_cv_test_base has to update manually one by one.
 iap_cv_test_base=/home/linye020603/iap-web/cv-test;
 iap_github_test_base=/home/linye020603/github-local/Iap-Web/cv-test;
 
@@ -37,11 +38,9 @@ then
     if [ $DRY_RUN == 0]
     then
         rsync -av $iap_cv_base/ $iap_github_base
-        rsync -av $iap_cv_test_base/ $iap_github_test_base
     else
-        rsync --dry-run -av $iap_cv_test_base/ $iap_github_test_base
-    fi
-    
+        rsync --dry-run -av $iap_cv_base/ $iap_github_base
+    fi 
 else
     dry_run="";
     if [ $DRY_RUN == 1 ]
@@ -52,7 +51,7 @@ else
     #rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.h $iap_github_base/image/color/imagecolordesc.h
     #rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.cpp $iap_github_base/image/color/imagecolordesc.cpp
     #rsync $dry_run -av $iap_cv_base/image/color/imagecolorvalues.h $iap_github_base/image/color/imagecolorvalues.h
-    rsync $dry_run -av $iap_cv_base/image/color/imagecontext.h $iap_github_base/image/color/imagecontext.h
+    #rsync $dry_run -av $iap_cv_base/image/color/imagecontext.h $iap_github_base/image/color/imagecontext.h
     #rsync $dry_run -av $iap_cv_base/image/color/imagereader.h $iap_github_base/image/color/imagereader.h
     #rsync $dry_run -av $iap_cv_base/image/color/imagereader.cpp $iap_github_base/image/color/imagereader.cpp
 
@@ -76,17 +75,17 @@ else
     #rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv.cpp $iap_github_base/util/convert/convert_bgrhsv.cpp
     #rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv_test.cpp $iap_github_base/util/convert/convert_bgrhsv_test.cpp  
     #rsync $dry_run -av $iap_cv_base/util/tree/ITreeNode.h $iap_github_base/util/tree/ITreeNode.h
-    #rsync $dry_run -av $iap_cv_base/util/tree/ibstree.h $iap_github_base/util/tree/ibstree.h
+    rsync $dry_run -av $iap_cv_base/util/tree/ibstree.h $iap_github_base/util/tree/ibstree.h
     #rsync $dry_run -av $iap_cv_base/util/tree/bstree/bstree.h $iap_github_base/util/tree/bstree/bstree.h
     #rsync $dry_run -av $iap_cv_base/util/tree/bstree/bstree.cpp $iap_github_base/util/tree/bstree/bstree.cpp
-    #rsync $dry_run -av $iap_cv_base/util/tree/htree/hsvtree.h $iap_github_base/util/tree/htree/hsvtree.h
-    #rsync $dry_run -av $iap_cv_base/util/tree/htree/hsvtree.cpp $iap_github_base/util/tree/htree/hsvtree.cpp
+    rsync $dry_run -av $iap_cv_base/util/tree/htree/hsvtree.h $iap_github_base/util/tree/htree/hsvtree.h
+    rsync $dry_run -av $iap_cv_base/util/tree/htree/hsvtree.cpp $iap_github_base/util/tree/htree/hsvtree.cpp
     #rsync $dry_run -av $iap_cv_base/util/tree/vtree/colorvaluetree.h $iap_github_base/util/tree/vtree/colorvaluetree.h
-    #rsync $dry_run -av $iap_cv_base/util/tree/vtree/colorvaluetree.cpp $iap_github_base/util/tree/vtree/colorvaluetree.cpp
+    rsync $dry_run -av $iap_cv_base/util/tree/vtree/colorvaluetree.cpp $iap_github_base/util/tree/vtree/colorvaluetree.cpp
     
-    #rsync $dry_run -av $iap_cv_base/util/print/ $iap_github_base/util/print
+    rsync $dry_run -av $iap_cv_base/util/print/ $iap_github_base/util/print
 
-    #rsync $dry_run -av $iap_cv_base/util/log/ $iap_github_base/util/log
+    rsync $dry_run -av $iap_cv_base/util/log/ $iap_github_base/util/log
 
     #rsync $dry_run -av $iap_cv_base/main.cpp $iap_github_base/main.cpp
     #rsync $dry_run -av $iap_cv_base/makefile $iap_github_base/makefile
@@ -96,6 +95,10 @@ else
 
     #rsync $dry_run -av $iap_dev_base/util/example8/*.* $iap_github_base/../examples/example8/
     
+    ##### TEST PACKAGES: Manually run rsync only #####
+    
+    rsync $dry_run -av $iap_cv_test_base/util/tree/htree/hsvtreeTest.cpp $iap_github_test_base/util/tree/htree/hsvtreeTest.cpp
+
     #rsync $dry_run -av $iap_cv_test_base/ $iap_github_test_base
     
 fi

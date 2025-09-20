@@ -27,7 +27,7 @@ SRCS = test_init_train.cpp \
 	   $(dir_util)/print/iap_print.cpp 
 
 # define the C object files 
-OBJS = $(SRCS:.cpp=.o)
+OBJS = $(SRCS:.c=.o)
 
 # define the executable file 
 MAIN = test_init_train

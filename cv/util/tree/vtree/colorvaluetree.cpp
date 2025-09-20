@@ -124,7 +124,7 @@ void colorvaluetree::printTree(Node* n) {
         return;
     }
     cout << "Node:" << n->data << " ";
-    printer->printVector(n->keys);
+    printer->printVector(*n->keys);
 
     printTree(n->left);
     printTree(n->right);

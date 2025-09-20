@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 
 #include "iapcv_log.h"
 
@@ -10,12 +11,10 @@ iapcv_log::iapcv_log(string cname) {
 }
 
 void iapcv_log::setLevel(int level) {
-    if (level>=DEBUG && level<=ERROR) {
-        this->level = level;
+    if (level<DEBUG || level>ERROR) {
+        throw invalid_argument( "Invalid log level: " + to_string(level) );
     }
-    else {
-        cout << "Error: invalid level: " << level << endl;
-    }
+    this->level = level;
 }
 
 int iapcv_log::getLevel() {
@@ -59,13 +58,13 @@ void iapcv_log::cprintf(const char* fmt, va_list args)
 
 void iapcv_log::debug(string msg1) {
     if (level == DEBUG) {
-        cout << "Debug: " << msg1 << endl;
+        cout << H_DEBUG << msg1;
     }
 }
 
 void iapcv_log::fdebug(const char* fmt ...) {
     if (level == DEBUG) {
-        cout << "Debug: ";
+        cout << H_DEBUG;
         va_list args;
         va_start(args, fmt);
         cprintf(fmt, args);
@@ -75,14 +74,14 @@ void iapcv_log::fdebug(const char* fmt ...) {
        
 void iapcv_log::info(string msg1) {
     if (level <= INFO) {
-        cout << "Info: " << msg1 << endl;
+        cout << H_INFO << msg1 << endl;
     }
 }
 
 // https://cplusplus.com/reference/cstdio/vfprintf/
 void iapcv_log::finfo(const char* fmt, ...) {
     if (level <= INFO) {
-        cout << "Info: ";
+        cout << H_INFO;
         va_list args;
         va_start(args, fmt);
         cprintf(fmt, args);
@@ -92,19 +91,19 @@ void iapcv_log::finfo(const char* fmt, ...) {
 
 void iapcv_log::warn( string msg1 ) {
     if (level <= WARN) {
-        cout << "Warn: " << msg1 << endl;
+        cout << H_WARN << msg1 << endl;
     }
 }
 
 void iapcv_log::warn( string msg1, int num) {
     if (level <= WARN) {
-        cout << "Warn: " << msg1 << " " << num << endl;
+        cout << H_WARN << msg1 << " " << num << endl;
     }
 }
 
 void iapcv_log::error( string msg) {
     if (level <= ERROR) {
-        cout << "Error: " << msg << endl;
+        cout << H_ERROR << msg << endl;
     }
 }
 
@@ -147,7 +146,7 @@ void iapcv_log::Info(string msg1, int num) {
  */  
  void iapcv_log::debug_inline(string msg) {
     if (level == DEBUG) {
-        cout << "Debug: " << msg << " ";
+        cout << H_DEBUG << msg << " ";
     }
 }
 

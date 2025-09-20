@@ -8,11 +8,14 @@
 
 using namespace std;
 
+/*
+ * We ensure when count = 0, root is nullptr.
+ */
 hsvtree::hsvtree() {
     logger = new iapcv_log(typeid(this).name());
     count = 0;
     root = nullptr;
-    //hsv_dim = HUE;
+    hsv_dim = HUE;
 }
 
 hsvtree::~hsvtree() {
@@ -53,7 +56,7 @@ HNode* hsvtree::insertNode(HNode* n, uchar* hsv)
         return root;
     }
 
-    if (n == nullptr) {
+    if (n == nullptr) {  /// TODO not reachable?
         n = createNode(hsv);
         return n;
     }
@@ -77,7 +80,6 @@ HNode* hsvtree::insertNode(HNode* n, uchar* hsv)
 }
 
 void hsvtree::add(uchar* hsv) {
-    assert(hsv_dim==HUE || hsv_dim==SAT || hsv_dim==VAL);
     insertNode(root, hsv);
 }
 
@@ -99,9 +101,6 @@ void hsvtree::deleteTree(HNode* n) {
     n->data = 0;
     if (n->vecHsv != nullptr) {
         for (int i=0; i < (int)n->vecHsv->size(); i++) {
-            n->vecHsv->at(i)[0] = 0;
-            n->vecHsv->at(i)[1] = 0;
-            n->vecHsv->at(i)[2] = 0;
             /* @20250821 Parameter uchar* is passed to function add(),
              * therefore it is not our responsibility to handle the 
              * memory release.
@@ -128,17 +127,6 @@ void hsvtree::deleteTree(HNode* n) {
     }
 }
 
-void hsvtree::printTree(HNode* n) {
-    if (n == nullptr) {
-        return;
-    }
-    cout << "HNode:" << n->data << " ";
-    printer->printVector(*n->vecHsv);
-
-    printTree(n->left);
-    printTree(n->right);
-}
-
 void hsvtree::deleteTree() {
     if (count == 0) {
         logger->Info("Empty tree.");
@@ -148,6 +136,17 @@ void hsvtree::deleteTree() {
     logger->Debug("Deleting hsvtree.");
     deleteTree(root);
     logger->Debug("Tree deleted. Root: ", root);
+}
+
+void hsvtree::printTree(HNode* n) {
+    if (n == nullptr) {
+        return;
+    }
+    cout << "HNode:" << n->data << " ";
+    printer->printVector(*n->vecHsv);
+
+    printTree(n->left);
+    printTree(n->right);
 }
 
 void hsvtree::printTree() {
@@ -164,11 +163,7 @@ void hsvtree::printTree() {
     cout << "Print hsvtree. Use hsv dimension: " << dim << " Size: " << count << endl;
     if (count == 0) {
         cout << "Empty tree." << endl;
-        return;
-    }
-
-    if (root == nullptr) {
-        cout << "Error occurred. Abort." << endl;
+        assert(!root);
         return;
     }
 
@@ -186,21 +181,26 @@ void hsvtree::setHsvDim(int hd) {
     hsv_dim = hd;
 }
 
-vector<uchar*>* hsvtree::findValues(int data) {
+vector<uchar*> hsvtree::findValues(int data) {
     if (root == nullptr) {
-        logger->Info("Cannot find values for data: ", data);
+        throw logic_error( "Function findValues: Invalid tree state: root is null." );
     }
     HNode* n = abstree::findNode(root, data);
     if (n==nullptr) {
-        return nullptr;
-    }
-    return n->vecHsv;
+        return vector<uchar*>();
+    }  
+    return copyVecFast(* n->vecHsv);
 }
 
 void hsvtree::getTreeData(vector<int>* vh) {
-    if (vh==nullptr || root==nullptr) {
-        logger->Info("Cannot get tree data.");
-        return;
+    if (vh == nullptr) {
+        throw invalid_argument( "Function getTreeData: Null pointer argument." );
+    }
+    if (vh->size() != 0) {
+        throw invalid_argument( "Function getTreeData: Argument vector is not empty." );
+    }
+    if (root==nullptr) {
+        throw logic_error( "Function getTreeData: Invalid tree state: root is null." );
     }
     abstree::traverseData(root, vh);
 }
@@ -208,5 +208,23 @@ void hsvtree::getTreeData(vector<int>* vh) {
 int hsvtree::getHSVDim() {
     return hsv_dim;
 }
+
+//https://stackoverflow.com/questions/644673/is-it-more-efficient-to-copy-a-vector-by-reserving-and-copying-or-by-creating-a
+/*
+ * Shallow copy i.e., create a set of pointers in newVec pointing to the same contents as orginal.
+ */
+ /**
+  * Customer classes are responsible to release memory of newVec, example use auto.
+  */
+vector<uchar*> hsvtree::copyVecFast(const vector<uchar*>& original)
+{
+  std::vector<uchar*> newVec;
+  newVec.reserve(original.size());
+  copy(original.begin(), original.end(), back_inserter(newVec));
+  return newVec;
+}
+
+
+
 
 

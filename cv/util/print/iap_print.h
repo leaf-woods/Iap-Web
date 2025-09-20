@@ -15,7 +15,7 @@ class iap_print {
          */
         
         void printVector(const std::vector<uchar*>& v);
-        void printVector(std::vector<int>* v);
+        void printVector(const std::vector<int>& v);
         void printPixelColor(size_t channel, uchar* array);
         void printPixelColor(cv::Vec<unsigned char, 3> entry, std::string type);
         void printPixelIndex(size_t dim, int* array);

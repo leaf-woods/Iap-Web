@@ -48,6 +48,11 @@ using namespace std;
    */
 class iapcv_log {
     private: 
+        const char* H_DEBUG = "Debug: ";
+        const char* H_INFO  = "Info: ";
+        const char* H_WARN  = "Warn: ";
+        const char* H_ERROR = "Error: ";
+
         int level = DEBUG;
 
     public:
@@ -73,7 +78,7 @@ class iapcv_log {
         template<typename T>
         void debug(string msg1, T obj) {
             if (level == DEBUG) {
-                cout << "Debug: " << msg1 << " " << obj << endl;
+                cout << H_DEBUG << msg1 << " " << obj << endl;
             }
         }
         void fdebug(const char* fmt ...);
@@ -83,7 +88,7 @@ class iapcv_log {
         template<typename T>
         void info(string msg1, T obj) {
             if (level <= INFO) {
-                cout << "Info: " << msg1 << " " << obj << endl;
+                cout << H_INFO << msg1 << " " << obj << endl;
             }
         }
         
@@ -92,12 +97,16 @@ class iapcv_log {
         void warn(string msg1);
         void warn(string msg1, int num);
 
+        /*
+         * @20250919
+         * We cannot have function Warn() and Error().
+         */
         void error(string msg1);  
 
         template<typename T>
         void error(string msg1, T obj) {
             if (level <= ERROR) {
-                cout << "Error: " << msg1 << " " << obj << endl;
+                cout << H_ERROR << msg1 << " " << obj << endl;
             }
         }
 

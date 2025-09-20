@@ -2,6 +2,7 @@
 #define IBSTREE_H
 
 #include <iostream>
+#include <stdexcept>
 #include <vector>
 
 #include "ITreeNode.h"
@@ -38,18 +39,16 @@ class abstree : public ibstree {
       template<typename N>
       int getMaxValue(N* n) {
           if (n == nullptr) {
-            return 0;
+              throw std::invalid_argument( "Function getMaxValue: Null pointer argument." );  
           } 
           if (n->right == nullptr) {
             return n->data;
           }
-          int count = 0;
           int value = n->data;
           // Find right most leaf on the tree
           while (n->right != nullptr) {
             value = n->right->data; 
             n = n->right;
-            count++;
           }
           return value;
       }

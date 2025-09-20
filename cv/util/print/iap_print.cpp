@@ -21,15 +21,10 @@ void iap_print::printVector(const vector<uchar*>& v) {
     cout << " }" << endl;
 }
 
-void iap_print::printVector(vector<int>* v) {
-    if (!v) {
-        cout << "Cannot print vector. Invalid v." << endl;
-        return;
-    }
-            
+void iap_print::printVector(const vector<int>& v) {  
     cout << " Vector: { ";
-    for (int i=0; i < (int)v->size(); i++) {
-       cout << v->at(i) << " "; 
+    for (int i=0; i < (int)v.size(); i++) {
+       cout << v.at(i) << " "; 
     }
     cout << " }" << endl;
 }
