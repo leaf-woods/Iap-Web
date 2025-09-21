@@ -75,15 +75,15 @@ else
     #rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv.cpp $iap_github_base/util/convert/convert_bgrhsv.cpp
     #rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv_test.cpp $iap_github_base/util/convert/convert_bgrhsv_test.cpp  
     #rsync $dry_run -av $iap_cv_base/util/tree/ITreeNode.h $iap_github_base/util/tree/ITreeNode.h
-    rsync $dry_run -av $iap_cv_base/util/tree/ibstree.h $iap_github_base/util/tree/ibstree.h
+    #rsync $dry_run -av $iap_cv_base/util/tree/ibstree.h $iap_github_base/util/tree/ibstree.h
     #rsync $dry_run -av $iap_cv_base/util/tree/bstree/bstree.h $iap_github_base/util/tree/bstree/bstree.h
     #rsync $dry_run -av $iap_cv_base/util/tree/bstree/bstree.cpp $iap_github_base/util/tree/bstree/bstree.cpp
-    rsync $dry_run -av $iap_cv_base/util/tree/htree/hsvtree.h $iap_github_base/util/tree/htree/hsvtree.h
-    rsync $dry_run -av $iap_cv_base/util/tree/htree/hsvtree.cpp $iap_github_base/util/tree/htree/hsvtree.cpp
+    #rsync $dry_run -av $iap_cv_base/util/tree/htree/hsvtree.h $iap_github_base/util/tree/htree/hsvtree.h
+    #rsync $dry_run -av $iap_cv_base/util/tree/htree/hsvtree.cpp $iap_github_base/util/tree/htree/hsvtree.cpp
     #rsync $dry_run -av $iap_cv_base/util/tree/vtree/colorvaluetree.h $iap_github_base/util/tree/vtree/colorvaluetree.h
-    rsync $dry_run -av $iap_cv_base/util/tree/vtree/colorvaluetree.cpp $iap_github_base/util/tree/vtree/colorvaluetree.cpp
+    #rsync $dry_run -av $iap_cv_base/util/tree/vtree/colorvaluetree.cpp $iap_github_base/util/tree/vtree/colorvaluetree.cpp
     
-    rsync $dry_run -av $iap_cv_base/util/print/ $iap_github_base/util/print
+    #rsync $dry_run -av $iap_cv_base/util/print/ $iap_github_base/util/print
 
     rsync $dry_run -av $iap_cv_base/util/log/ $iap_github_base/util/log
 
@@ -97,7 +97,9 @@ else
     
     ##### TEST PACKAGES: Manually run rsync only #####
     
-    rsync $dry_run -av $iap_cv_test_base/util/tree/htree/hsvtreeTest.cpp $iap_github_test_base/util/tree/htree/hsvtreeTest.cpp
+    rsync $dry_run -av $iap_cv_test_base/util/log/testLog.cpp $iap_github_test_base/util/log/testLog.cpp
+
+    #rsync $dry_run -av $iap_cv_test_base/util/tree/htree/hsvtreeTest.cpp $iap_github_test_base/util/tree/htree/hsvtreeTest.cpp
 
     #rsync $dry_run -av $iap_cv_test_base/ $iap_github_test_base
     

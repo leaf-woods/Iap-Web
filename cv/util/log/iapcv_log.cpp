@@ -11,7 +11,7 @@ iapcv_log::iapcv_log(string cname) {
 }
 
 void iapcv_log::setLevel(int level) {
-    if (level<DEBUG || level>ERROR) {
+    if (level<TRACE || level>ERROR) {
         throw invalid_argument( "Invalid log level: " + to_string(level) );
     }
     this->level = level;
@@ -56,14 +56,20 @@ void iapcv_log::cprintf(const char* fmt, va_list args)
     cout << endl;
 }
 
+void iapcv_log::trace(string msg1) {
+    if (level == TRACE) {
+        cout << H_TRACE << msg1 << endl;
+    }
+}
+
 void iapcv_log::debug(string msg1) {
-    if (level == DEBUG) {
-        cout << H_DEBUG << msg1;
+    if (level <= DEBUG) {
+        cout << H_DEBUG << msg1 << endl;
     }
 }
 
 void iapcv_log::fdebug(const char* fmt ...) {
-    if (level == DEBUG) {
+    if (level <= DEBUG) {
         cout << H_DEBUG;
         va_list args;
         va_start(args, fmt);
@@ -113,13 +119,13 @@ void iapcv_log::error( string msg) {
  *************************************************************
  */     
 void iapcv_log::Debug(string msg) {
-    if (level == DEBUG) {
+    if (level <= DEBUG) {
         cout << msg << endl;
     }
 }
 
-void iapcv_log::fDebug(const char* fmt ...) {
-    if (level == DEBUG) {
+void iapcv_log::fTrace(const char* fmt ...) {
+    if (level == TRACE) {
         va_list args;
         va_start(args, fmt);
         cprintf(fmt, args);
@@ -145,8 +151,8 @@ void iapcv_log::Info(string msg1, int num) {
  *************************************************************
  */  
  void iapcv_log::debug_inline(string msg) {
-    if (level == DEBUG) {
-        cout << H_DEBUG << msg << " ";
+    if (level <= DEBUG) {
+        cout << H_DEBUG << " " << msg << " ";
     }
 }
 

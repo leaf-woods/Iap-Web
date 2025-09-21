@@ -28,11 +28,6 @@ using namespace std;
  * @20250902 
  * Since iap-web cv (analysis part) is not a web application, timestamp is not necessary.
  */
-/*
- * This header file is created under not normal scenario.
- * Usage: Custom class calls setLevel(int level).
- * If level == INFO, then logger->debug(msg) will be ignored.
- */
  /*
   * @20250909
   * https://en.cppreference.com/w/cpp/language/unqualified_lookup.html
@@ -48,6 +43,9 @@ using namespace std;
    */
 class iapcv_log {
     private: 
+        // We don't use const std::string.
+        // https://stackoverflow.com/questions/7571278/how-do-i-define-string-constants-in-c
+        const char* H_TRACE = "Trace: ";
         const char* H_DEBUG = "Debug: ";
         const char* H_INFO  = "Info: ";
         const char* H_WARN  = "Warn: ";
@@ -59,10 +57,11 @@ class iapcv_log {
         static string cnames;
 
     public:
-        static const int DEBUG = 0;
-        static const int INFO = 1;
-        static const int WARN = 2;
-        static const int ERROR = 3;
+        static const int TRACE = 0;
+        static const int DEBUG = 1;
+        static const int INFO = 2;
+        static const int WARN = 3;
+        static const int ERROR = 4;
 
     private:
         void cprintf(const char* fmt, va_list args);
@@ -73,11 +72,21 @@ class iapcv_log {
         void setLevel(int level);
         int getLevel();
         bool isDebug();
+        
+        void trace(string msg1);
+
+        template<typename T>
+        void trace(string msg1, T obj) {
+            if (level == TRACE) {
+                cout << H_TRACE << msg1 << " " << obj << endl;
+            }
+        }
+
         void debug(string msg1);
 
         template<typename T>
         void debug(string msg1, T obj) {
-            if (level == DEBUG) {
+            if (level <= DEBUG) {
                 cout << H_DEBUG << msg1 << " " << obj << endl;
             }
         }
@@ -115,16 +124,23 @@ class iapcv_log {
          *  For customer classes that do not want to print log levels.
          *************************************************************
          */
+        template<typename T>
+        void Trace(string msg1, T obj) {
+            if (level == TRACE) {
+                cout << msg1 << " " <<obj << endl;
+            }
+        }
+
+        void fTrace(const char* fmt, ...);
+
         void Debug(string msg);
 
         template<typename T>
         void Debug(string msg1, T obj) {
-            if (level == DEBUG) {
-                cout << msg1 << obj << endl;
+            if (level <= DEBUG) {
+                cout << msg1 << " " << obj << endl;
             }
         }
-
-        void fDebug(const char* fmt, ...);
 
         void Info(string msg);
         void Info(string msg1, int num);

@@ -62,50 +62,80 @@ int main(int argc, char* argv[]) {
 
     iapcv_log* log = new iapcv_log("testLog");
     
+    /*
+     * @20250919 
+     * At this moment we don't catch this error in project.
+     */
+    try {
+        log->setLevel(5);
+    }
+    catch (const std::invalid_argument& e) {
+        cout << "Exception: " << e.what() << endl;
+    }
+
+    cout << "Test Debug" << endl;
+    assert(iapcv_log::DEBUG==log->getLevel());
+    assert(log->isDebug());
     log->debug("msg-debug");
     log->debug("msg-debug", "msg2");
     log->debug("msg-debug", 1000);
-    assert(iapcv_log::DEBUG==log->getLevel());
-    assert(log->isDebug());
     log->fdebug("sss", "msg1-debug", "variadic function used.", "msg3");
     log->fdebug("sns", "msg1-debug", 10, "msg3");
     log->fdebug("ssf", "msg1-debug", "msg2", 3.1415926);
+    log->debug_inline("Line is called by debug_inline: ");
+    log->debug("Print function.");
+    log->debug("\n");
+    log->Debug("msg-debug");
+    log->Debug("msg-debug", "msg2");
+    log->Debug("msg-debug", 1000);
+    log->Debug("\n");
 
     log->setLevel(iapcv_log::INFO);
     // Not printed: debug
     log->debug("msg-debug not shown.");
+    cout << "Test Debug: Done" << endl;
+    cout << endl;
     
-    log->setLevel(iapcv_log::DEBUG);
-    log->Debug("msg-debug");
-    log->Debug("msg-debug", "msg2");
-    log->Debug("msg-debug", 1000);
-    log->fDebug("sss", "msg1-debug", "variadic function used.", "Debug with no header.");
-    log->fDebug("sns", "msg1-debug", 10, "Debug with no header.");
-    log->fDebug("ssf", "msg1-debug", "msg2", 3.1415926);
+    cout << "Test Trace" << endl;
+    log->setLevel(iapcv_log::TRACE);
+    log->trace("msg-trace");
+    log->trace("msg-trace", "msg2");
+    log->Trace("msg-trace", "msg2");
+    log->fTrace("sss", "msg1-trace", "variadic function used.", "Debug with no header.");
+    log->fTrace("sns", "msg1-trace", 10, "Debug with no header.");
+    log->fTrace("ssf", "msg1-trace", "msg2", 3.1415926);
+    log->fTrace("nsf", 10, "msg2", 3.1415926);
     cout << endl;
     cout << "Test variadict function with wrong format." << endl;
-    log->fDebug("ssd", "Message with wrong format.", "msg2", 3);
-    cout << endl;
-    log->fDebug("nsf", 10, "msg2", 3.1415926);
+    log->fTrace("ssd", "Message with wrong format.", "msg2", 3);
+    cout << "Test variadict function with wrong format: Done" << endl;
+    cout << "Test Trace: Done" << endl;
     cout << endl;
 
+    cout << "Test Info" << endl;
     log->setLevel(iapcv_log::INFO);
-    // Not printed: Debug
-    log->fDebug("sss", "msg1-debug", "msg2", "msg3");
+    // Not printed: TRACE, DEBUG
+    log->fTrace("sss", "msg1-trace", "msg2", "msg3");
+    log->debug("msg-debug");
     log->info("msg-info");
     log->info("msg-info", "msg2");
     log->info("msg-info", 1000);
     log->finfo("sss", "msg1-info", "msg2", "msg3");
     log->finfo("nsf", 10, "msg2", 3.1415926);
+    cout << "Test Info: Done" << endl;
     cout << endl;
 
+    cout << "Test Warn" << endl;
     log->setLevel(iapcv_log::WARN);
     // Not printed: Debug and info
-    log->fDebug("sss", "msg1-debug", "not shown", "msg3");
+    log->fTrace("sss", "msg1-trace", "not shown", "msg3");
+    log->fdebug("sss", "msg1-trace", "not shown", "msg3");
     log->finfo("sss", "msg1-info", "not shown", "msg3");
     log->warn("msg1-warn:", 1000);
+    cout << "Test Warn: Done" << endl;
     cout << endl;
 
+    cout << "Test Error" << endl;
     log->setLevel(iapcv_log::ERROR);
     // Only error message printed
     log->debug("msg-debug");
@@ -114,11 +144,23 @@ int main(int argc, char* argv[]) {
     log->error("msg-error");
     log->error("msg-error", "msg2");
     log->error("msg-error", 1000);
+    cout << "Test Error: Done" << endl;
+    cout << endl;
+
+     // Set level to TRACE, all logging level messages printed
+    log->setLevel(iapcv_log::TRACE);
+    log->trace("Set level to TRACE: all logging level messages printed.");
+    log->trace("\n");
+    log->debug("");
+    log->info("msg-info");
+    log->warn("msg-warn");
+    log->error("msg-error");
     cout << endl;
 
     // Set level to DEBUG, all logging level messages printed
     log->setLevel(iapcv_log::DEBUG);
-    log->debug_inline("Set level to DEBUG: all logging level messages printed.");
+    log->trace("msg-trace");
+    log->debug_inline("Set level to DEBUG: DEBUG, INFO, WARN, ERROR messages printed.");
     log->Debug("\n");
     log->debug("");
     log->info("msg-info");
@@ -152,6 +194,7 @@ int main(int argc, char* argv[]) {
 
     log->setLevel(iapcv_log::DEBUG);
     log->finfo("ssp", "Intance log: ", "addr:", log);
+    log->finfo("sps", "Intance log: ", log, "ok");
     cout << endl;
 
     delete log;
