@@ -36,7 +36,7 @@ bool_status* sky::isSky(string imageName) {
         return new bool_status(status::ERROR, false, "Cannot proceed with image: " + imageName);
     }
     ctx->desc->setDescData(* ctx->reader->getHsvImage(), imagecolorvalues::HSV);
-    ctx->desc->setHsvTree(hsvtree::HUE);
+    ctx->desc->setD3Tree(DimType::HSV, dimensions::HUE);
     auto t2 = chrono::high_resolution_clock::now();
     logger->info("Image data collection time: ", (int)chrono::duration_cast<chrono::microseconds>(t2-t1).count());
     
@@ -44,7 +44,7 @@ bool_status* sky::isSky(string imageName) {
     /// TODO: we can use imagecolordesc: BH[256] directly. Performance is
     /// a little slower since for some of test images, hsvtree has size under 10.
     ctx->desc->getAllHue(vh);
-    logger->debug("HSV tree size: ", vh->size());
+    logger->debug("D3tree size: ", vh->size());
     int count = 0;
     for (auto it=(*vh).begin(); it!=(*vh).end(); it++) {
         if ( blue->isBlue(*it) ) {

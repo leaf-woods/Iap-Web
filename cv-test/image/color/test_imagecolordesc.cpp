@@ -12,7 +12,7 @@ int main() {
 
     ctx->desc->setLogLevel(iapcv_log::INFO);
 
-    cout << "Test setDescData" << endl;
+    cout << "Test setDescData: BGR" << endl;
     cout << "Use file: " << imageName << endl;
     if (ctx->reader->read_image(false, imageName)) {
         ctx->desc->setDescData(*ctx->reader->getInputImage(), imagecolorvalues::BGR);
@@ -26,8 +26,8 @@ int main() {
     cout << "Test setDescData: Done." << endl;
     cout << endl;
 
-    // repeat previous action
-    cout << "Test setDescData reuse" << endl;
+    // repeat previous action setDescData()
+    cout << "Test setDescData BGR: reuse" << endl;
     cout << "Use file: " << imageName << endl;
     ctx->desc->setDescData(*ctx->reader->getInputImage(), imagecolorvalues::BGR);
     ctx->desc->printMap();
@@ -35,7 +35,6 @@ int main() {
     cout << "Test setDescData reuse: Done." << endl;
     cout << endl;
 
-    // repeat previous action
     cout << "Test setDescData reuse: change color type" << endl;
     cout << "Use file: " << imageName << endl;
     ctx->desc->setDescData(*ctx->reader->getHsvImage(), imagecolorvalues::HSV);
@@ -47,10 +46,148 @@ int main() {
     cout << "Test clear" << endl;
     cout << "Use file: " << imageName << endl;
     ctx->desc->clear();
+    color_desc_state* st = new color_desc_state();
+    st->s_color_map = ClearableState::just_cleared;
+    st->s_color_type = imagecolorvalues::HSV;
+    st->s_tree_cvt = ClearableState::just_cleared;
+    st->s_tree_d3t = ClearableState::just_cleared;
+    assert(ctx->desc->verifyState(*st));
     ctx->desc->printState();
     cout << "Test clear: Done." << endl;
     cout << endl;
 
+    cout << "Test set d3tree: Just cleared" << endl;
+    cout << "Use file: " << imageName << endl;
+    ctx->desc->setD3Tree(DimType::HSV, dimensions::HUE);
+    assert(ctx->desc->verifyState(*st));
+    cout << "Test set d3tree: Just cleared: Done" << endl;
+
+    cout << "Test set d3tree: Just created" << endl;
+    cout << "Use file: " << imageName << endl;
+    imagecolordesc* desc = new imagecolordesc();
+    desc->setPrint(ctx->getPrint());
+    desc->setConvertNum(ctx->getConvertNumber());
+    desc->setConvertHSV(ctx->getConvertBgrToHsv());
+    desc->setRange(ctx->getRange());
+    desc->setD3Tree(DimType::HSV, dimensions::HUE);
+    assert(ctx->desc->verifyState(*st));
+    delete desc;
+    cout << "Test set d3tree: Just created: Done" << endl;
+
+    cout << "Test setDescData BGR: Set HSV tree" << endl;
+    cout << "Use file: " << imageName << endl;
+    ctx->desc->setDescData(*ctx->reader->getInputImage(), imagecolorvalues::BGR);
+    ctx->desc->printMap();
+    ctx->desc->setD3Tree(DimType::HSV, dimensions::HUE);
+    ctx->desc->printD3Tree();
+    st->s_color_map = ClearableState::just_used;
+    st->s_color_type = imagecolorvalues::BGR;
+    st->s_tree_cvt = ClearableState::just_created;
+    st->s_tree_d3t = ClearableState::just_used;
+    assert(ctx->desc->verifyState(*st));
+    
+    cout << "Test setDescData BGR: Set HSV tree: Done." << endl;
+    cout << endl;
+
+    cout << "Test color_type BGR. Set BGR tree: BGR-B" << endl;
+    cout << "Use file: " << imageName << endl;
+    ctx->desc->setD3Tree(DimType::BGR, dimensions::B);
+    ctx->desc->printD3Tree();
+    assert(ctx->desc->verifyState(*st));
+    cout << "Test color_type BGR. Set BGR tree: BGR-B Done." << endl;
+    cout << endl;
+
+    cout << "Test color_type BGR. Set BGR tree: BGR-G" << endl;
+    cout << "Use file: " << imageName << endl;
+    ctx->desc->setD3Tree(DimType::BGR, dimensions::G);
+    ctx->desc->printD3Tree();
+    assert(ctx->desc->verifyState(*st));
+    cout << "Test color_type BGR. Set BGR tree: BGR-G Done." << endl;
+    cout << endl;
+
+    cout << "Test color_type BGR. Set BGR tree: BGR-R" << endl;
+    cout << "Use file: " << imageName << endl;
+    ctx->desc->setD3Tree(DimType::BGR, dimensions::R);
+    ctx->desc->printD3Tree();
+    assert(ctx->desc->verifyState(*st));
+    cout << "Test color_type BGR. Set BGR tree: BGR-R Done." << endl;
+    cout << endl;
+
+    cout << "Test setDescData HSV: Set BGR tree" << endl;
+    cout << "Use file: " << imageName << endl;
+    ctx->desc->setDescData(*ctx->reader->getHsvImage(), imagecolorvalues::HSV);
+    ctx->desc->printMap();
+    ctx->desc->setD3Tree(DimType::BGR, dimensions::B);
+    ctx->desc->printD3Tree();
+    ctx->desc->printState();
+    st->s_color_map = ClearableState::just_used;
+    st->s_color_type = imagecolorvalues::HSV;
+    st->s_tree_cvt = ClearableState::just_created;
+    st->s_tree_d3t = ClearableState::just_created;
+    assert(ctx->desc->verifyState(*st));
+    cout << "Test setDescData BGR: Set BGR tree: Done." << endl;
+    cout << endl;
+
+    cout << "Test setDescData HSV: Set HSV tree" << endl;
+    cout << "Use file: " << imageName << endl;
+    ctx->desc->setD3Tree(DimType::HSV, dimensions::SAT);
+    st->s_color_map = ClearableState::just_used;
+    st->s_color_type = imagecolorvalues::HSV;
+    st->s_tree_cvt = ClearableState::just_created;
+    st->s_tree_d3t = ClearableState::just_used;
+    assert(ctx->desc->verifyState(*st));
+    cout << "Test setDescData HSV: Set HSV tree: Done." << endl;
+    cout << endl;
+
+    cout << "Test setDescData HSV: Set XYZ tree" << endl;
+    cout << "Use file: " << imageName << endl;
+    ctx->desc->setD3Tree(DimType::XYZ, dimensions::D_X);
+    st->s_color_map = ClearableState::just_used;
+    st->s_color_type = imagecolorvalues::HSV;
+    st->s_tree_cvt = ClearableState::just_created;
+    st->s_tree_d3t = ClearableState::just_used;
+    assert(ctx->desc->verifyState(*st));
+    cout << "Test setDescData HSV: Set XYZ tree: Done." << endl;
+    cout << endl;
+
+    cout << "Test setDescData HSV: Set color value tree" << endl;
+    cout << "Use file: " << imageName << endl;
+    ctx->desc->setColorValueTree();
+    st->s_color_map = ClearableState::just_used;
+    st->s_color_type = imagecolorvalues::HSV;
+    st->s_tree_cvt = ClearableState::just_used;
+    st->s_tree_d3t = ClearableState::just_used;
+    assert(ctx->desc->verifyState(*st));
+    cout << "Test setDescData HSV: Set color value tree: Done." << endl;
+    cout << endl;
+
+    cout << "Test setDescData BGR: Set color value tree" << endl;
+    cout << "Use file: " << imageName << endl;
+    ctx->desc->setDescData(*ctx->reader->getInputImage(), imagecolorvalues::BGR);
+    ctx->desc->printMap();
+    ctx->desc->setColorValueTree();
+    ctx->desc->printD3Tree();
+    ctx->desc->printState();
+    st->s_color_map = ClearableState::just_used;
+    st->s_color_type = imagecolorvalues::BGR;
+    st->s_tree_cvt = ClearableState::just_used;
+    st->s_tree_d3t = ClearableState::just_created;
+    assert(ctx->desc->verifyState(*st));
+    cout << "Test setDescData BGR: Set color value tree: Done." << endl;
+    cout << endl;
+
+    cout << "Test setDescData BGR: Set BGR tree" << endl;
+    cout << "Use file: " << imageName << endl;
+    ctx->desc->setD3Tree(DimType::BGR, dimensions::B);
+    st->s_color_map = ClearableState::just_used;
+    st->s_color_type = imagecolorvalues::BGR;
+    st->s_tree_cvt = ClearableState::just_used;
+    st->s_tree_d3t = ClearableState::just_used;
+    assert(ctx->desc->verifyState(*st));
+    cout << "Test setDescData HSV: Set BGR tree: Done." << endl;
+    cout << endl;
+
+    delete st;
     delete ctx;
     return 0;
 }

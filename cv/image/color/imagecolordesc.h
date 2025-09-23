@@ -9,10 +9,18 @@
 #include "convertnumber.h"
 #include "convert_bgrhsv.h"
 #include "iapcv_log.h"
-#include "htree/hsvtree.h"
+#include "d3tree.h"
+#include "dimensions.h"
 #include "range.h"
 #include "vtree/colorvaluetree.h"
 
+struct color_desc_state {
+    public:
+        ClearableState s_color_map; 
+        int s_color_type;
+        ClearableState s_tree_cvt;
+        ClearableState s_tree_d3t;
+};
 class imagecolordesc : public iclearable{
     private:
       iapcv_log* logger;
@@ -23,9 +31,9 @@ class imagecolordesc : public iclearable{
       int color_type = imagecolorvalues::NOT_AVAILABLE;
 
       std::unordered_map<int, std::vector<int*>*>  *color_map;
-      std::unordered_map<int, std::vector<int*>*>  *compact_map;
+      //std::unordered_map<int, std::vector<int*>*>  *compact_map;
       colorvaluetree* t;
-      hsvtree* ht;
+      d3tree* d3t;
 
       iap_print* printer;
       convert_bgrhsv* calc;
@@ -44,9 +52,12 @@ class imagecolordesc : public iclearable{
       
       void clear();
       void init();
+      //@NOT USED
       std::vector<int*>* containsBGR(uchar b, uchar g, uchar r);
+      //@NOT USED
       std::vector<uchar*>* findB(uchar b);
-      std::vector<uchar*>* findPixelColors(uchar hue);
+      //@NOT USED
+      std::vector<uchar*> findPixelColors(uchar hue);
       int getColorType();
       void setDescData(const cv::Mat &mat, int type);
       void setLogLevel(int level);
@@ -54,14 +65,16 @@ class imagecolordesc : public iclearable{
       void setConvertHSV(convert_bgrhsv* calc);
       void setConvertNum(convertnumber* con);
       void setColorValueTree();
-      void setHsvTree(int hsv_dim);
+      void setD3Tree(DimType type, int dim);
       void setRange(range* rg);
       void printColorValueTree();
-      void printHsvTree();
+      void printD3Tree();
       void printMap();
       void printMinMax();
       void printState();
+      //@NOT USED
       std::string writeColorValueTreeContents(); 
+      //@NOT USED
       std::string writeContents(); 
 
       uchar* getLowerBoundHSV();
@@ -71,6 +84,7 @@ class imagecolordesc : public iclearable{
       int getImageSize();
 
       int countColor(int color);
+      bool verifyState(const color_desc_state& cst);
 
 };
 #endif

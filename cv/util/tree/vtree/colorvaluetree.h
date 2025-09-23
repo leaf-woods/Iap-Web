@@ -18,14 +18,13 @@ class Node : public ITreeNode
 
 class colorvaluetree : public abstree {
     private:
-      const std::string WARN_H;
-
       Node* root;
       
     private:
       Node* createNode(int data, int key);
       void deleteTree(Node* n);
       int getMaxValue(Node* n); 
+      //@NOT USED
       void getNodeContents(Node* n, std::string* s);
       Node* insertNode(Node* root, int data, int key);
       void printTree(Node* n);
@@ -37,6 +36,7 @@ class colorvaluetree : public abstree {
       void add(int data, int key);
       virtual void deleteTree(); 
       virtual int getMaxValue();
+      //@NOT USED
       std::string getContents();  
       virtual void printTree();
 };

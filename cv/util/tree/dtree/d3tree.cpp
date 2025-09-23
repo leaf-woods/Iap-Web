@@ -4,86 +4,84 @@
 #include <opencv2/core.hpp>
 
 #include "imagecolorvalues.h"
-#include "hsvtree.h" 
+#include "d3tree.h" 
 
 using namespace std;
 
 /*
  * We ensure when count = 0, root is nullptr.
+ *
+ * There is no restriction on size of v3. We suppose it is 3-elelment unsigned char array.
  */
-hsvtree::hsvtree() {
+d3tree::d3tree() {
     logger = new iapcv_log(typeid(this).name());
     count = 0;
     root = nullptr;
-    hsv_dim = HUE;
+    dim = dimensions::D_X;
 }
 
-hsvtree::~hsvtree() {
-    logger->Debug("Destructing hsvtree: root at: ", root);
+d3tree::~d3tree() {
+    logger->Debug("Destructing d3tree: root at: ", root);
     if (count > 0) {
         deleteTree(root);
     }
     logger->Debug("Root at: ", root);
     assert(!root);
 
-    /*
-     * @20250821
-     * Variable printer is injected using a setter. Therefore we don't release it here.
-     */
     printer = nullptr;
 
     delete logger;
 }
 
-HNode* hsvtree::createNode(uchar* hsv)
+D3Node* d3tree::createNode(unsigned char* v3)
 {
-    HNode* newNode = new HNode();
-    newNode->data = hsv[hsv_dim];
+    D3Node* newNode = new D3Node();
+    newNode->data = v3[dim];
     newNode->left = newNode->right = nullptr;
-    newNode->vecHsv = new vector<uchar*>();
-    newNode->vecHsv->push_back(hsv);
+    newNode->vec = new vector<unsigned char*>();
+    newNode->vec->push_back(v3);
 
     count++;
     logger->fTrace("snsp", "Created Node of: ", newNode->data, " at: ", newNode);
     return newNode;
 }
 
-HNode* hsvtree::insertNode(HNode* n, uchar* hsv)
+D3Node* d3tree::insertNode(D3Node* n, unsigned char* v3)
 {
     if (count == 0) {
-        root = createNode(hsv);
+        root = createNode(v3);
         logger->fTrace("snsp", "Root created of data: ", root->data, " at: ", root);
         return root;
     }
 
     if (n == nullptr) {
-        n = createNode(hsv);
+        n = createNode(v3);
         return n;
     }
 
-    if (hsv[hsv_dim] < n->data) {
-        n->left = insertNode(n->left, hsv);
+    if (v3[dim] < n->data) {
+        n->left = insertNode(n->left, v3);
     }
-    else if (hsv[hsv_dim] > n->data) { 
-        n->right = insertNode(n->right, hsv);
+    else if (v3[dim] > n->data) { 
+        n->right = insertNode(n->right, v3);
     }
     else {
-        // No new node is created. We add an entry in node n->vecHsv
-        logger->Trace("Data exists. Add hsv to existing vector of Data: ", n->data);
+        logger->Trace("Data exists. Add v3 to existing vector of Data: ", n->data);
         if (logger->getLevel()==iapcv_log::TRACE) {
-            printer->printPixelColor(imagecolorvalues::channel, hsv);
+            printer->printPixelColor(imagecolorvalues::channel, v3);
         }
-        n->vecHsv->push_back(hsv);
+        n->vec->push_back(v3);
     }
 
     return n;
 }
 
-void hsvtree::add(uchar* hsv) {
-    insertNode(root, hsv);
+void d3tree::add(size_t s, unsigned char* v3) {
+    assert(V_LEN == s);
+    insertNode(root, v3);
 }
 
-void hsvtree::deleteTree(HNode* n) {
+void d3tree::deleteTree(D3Node* n) {
     if (n == nullptr) {
         return;
     }
@@ -99,20 +97,13 @@ void hsvtree::deleteTree(HNode* n) {
     }
     
     n->data = 0;
-    if (n->vecHsv != nullptr) {
-        for (int i=0; i < (int)n->vecHsv->size(); i++) {
-            /* @20250821 Parameter uchar* is passed to function add(),
-             * therefore it is not our responsibility to handle the 
-             * memory release.
-             */
-            //cout << "type: " << typeid(n->vecHsv->at(i)).name() << endl;
-            //delete n->vecHsv->at(i);
-            n->vecHsv->at(i) = nullptr;
+    if (n->vec != nullptr) {
+        for (int i=0; i < (int)n->vec->size(); i++) {
+            n->vec->at(i) = nullptr;
         }
         
-
-        *n->vecHsv = vector<uchar*>();
-        delete n->vecHsv;
+        *n->vec = vector<unsigned char*>();
+        delete n->vec;
     }
     n->left = nullptr;
     n->right = nullptr;
@@ -127,40 +118,31 @@ void hsvtree::deleteTree(HNode* n) {
     }
 }
 
-void hsvtree::deleteTree() {
+void d3tree::deleteTree() {
     if (count == 0) {
         logger->Info("Empty tree.");
         assert(!root);
         return;
     }
-    logger->Debug("Deleting hsvtree.");
+    logger->Debug("Deleting d3tree.");
     deleteTree(root);
     logger->Debug("Tree deleted. Root: ", root);
 }
 
-void hsvtree::printTree(HNode* n) {
+void d3tree::printTree(D3Node* n) {
     if (n == nullptr) {
         return;
     }
-    cout << "HNode:" << n->data << " ";
-    printer->printVector(*n->vecHsv);
+    cout << "D3Node:" << n->data << " ";
+    printer->printVector(*n->vec);
 
     printTree(n->left);
     printTree(n->right);
 }
 
-void hsvtree::printTree() {
-    string dim;
-    if (hsv_dim==HUE) {
-        dim = "HUE";
-    }
-    else if (hsv_dim==SAT) {
-        dim = "SAT";
-    }
-    else if (hsv_dim==VAL) {
-        dim = "VAL";
-    }
-    cout << "Print hsvtree. Use hsv dimension: " << dim << " Size: " << count << endl;
+void d3tree::printTree() {
+    cout << "Print d3tree. Use dimension: " << dimensions::toString(type) << " : " << dimensions::toString(type, dim) << endl;
+    cout << "Size: " << count << endl;
     if (count == 0) {
         cout << "Empty tree." << endl;
         assert(!root);
@@ -172,27 +154,33 @@ void hsvtree::printTree() {
     cout << endl;
 }
 
-int hsvtree::getMaxValue() {
+int d3tree::getMaxValue() {
     return abstree::getMaxValue(root);
 }
 
-void hsvtree::setHsvDim(int hd) {
-    assert(hd==HUE || hd==SAT || hd==VAL);
-    hsv_dim = hd;
+void d3tree::setDim(DimType type, int d) {
+    if (count > 0) {
+        logger->error("Tree is not empty. Cannot change dimension type or dimension.");
+        return;
+    }
+    assert(type==DimType::XYZ || type==DimType::HSV || type==DimType::BGR);
+    assert(d==dimensions::D_X || d==dimensions::D_Y || d==dimensions::D_Z);
+    this->type = type;
+    dim = d;
 }
 
-vector<uchar*> hsvtree::findValues(int data) {
+vector<unsigned char*> d3tree::findValues(int data) {
     if (root == nullptr) {
         throw logic_error( "Function findValues: Invalid tree state: root is null." );
     }
-    HNode* n = abstree::findNode(root, data);
+    D3Node* n = abstree::findNode(root, data);
     if (n==nullptr) {
         return vector<uchar*>();
     }  
-    return copyVecFast(* n->vecHsv);
+    return copyVecFast(* n->vec);
 }
 
-void hsvtree::getTreeData(vector<int>* vh) {
+void d3tree::getTreeData(vector<int>* vh) {
     if (vh == nullptr) {
         throw invalid_argument( "Function getTreeData: Null pointer argument." );
     }
@@ -205,8 +193,12 @@ void hsvtree::getTreeData(vector<int>* vh) {
     abstree::traverseData(root, vh);
 }
 
-int hsvtree::getHSVDim() {
-    return hsv_dim;
+int d3tree::getDim() {
+    return dim;
+}
+
+DimType d3tree::getDimensionType(){
+    return type;
 }
 
 //https://stackoverflow.com/questions/644673/is-it-more-efficient-to-copy-a-vector-by-reserving-and-copying-or-by-creating-a
@@ -216,15 +208,13 @@ int hsvtree::getHSVDim() {
  /**
   * Customer classes are responsible to release memory of newVec, example use auto.
   */
-vector<uchar*> hsvtree::copyVecFast(const vector<uchar*>& original)
+vector<unsigned char*> d3tree::copyVecFast(const vector<unsigned char*>& original)
 {
-  std::vector<uchar*> newVec;
+  std::vector<unsigned char*> newVec;
   newVec.reserve(original.size());
   copy(original.begin(), original.end(), back_inserter(newVec));
   return newVec;
 }
-
-
 
 
 

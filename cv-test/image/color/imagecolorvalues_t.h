@@ -1,9 +1,9 @@
-#ifndef IMAGECOLORVALUES_H
-#define IMAGECOLORVALUES_H
+#ifndef IMAGECOLORVALUES_T_H
+#define IMAGECOLORVALUES_T_H
 
 #include <string>
 
-class imagecolorvalues {
+class imagecolorvalues_t {
     public:
       static const int NOT_AVAILABLE = -1;
       
@@ -24,7 +24,24 @@ class imagecolorvalues {
       static const int DELTA = 20;
       static const int M_DELTA = 15; 
 
+      static constexpr char* VAL_PURPLE = "Purple";
+      const char* VAL_GREEN = "Green";
+
     public:
+
+      std::string toString(int which) {
+          switch(which) {
+            case BLACK:
+              return "Black";
+              
+            case GREEN:
+              return VAL_GREEN;
+
+          break;
+          }
+          return "NA";
+      }
+
       static std::string getColorTypeVal(int type) {
           if (type == BGR) {
               return "BGR";
@@ -44,7 +61,7 @@ class imagecolorvalues {
               return "Black";
               
           case PURPLE:
-              return "Purple";
+              return VAL_PURPLE;
   
           case BLUE:
               return "Blue";

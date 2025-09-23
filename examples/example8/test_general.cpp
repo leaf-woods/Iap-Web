@@ -19,5 +19,10 @@ int main(int argc, char* argv[]) {
     mt3->create();
 
     cout << "mtest done." << endl;
+
+    cout << endl;
+    size_t len = sizeof(unsigned char*);
+    cout << "size of unsigned char*: " << len << endl;
+    cout << "size of unsigned char: " << sizeof(unsigned char) << endl;
     return 0;
 }

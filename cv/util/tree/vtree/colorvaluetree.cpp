@@ -37,7 +37,7 @@ Node* colorvaluetree::createNode(int data, int key)
     newNode->keys->push_back(key);
 
     count++;
-    logger->fDebug("snsp", "Created node of: ", data, " at: ", newNode);
+    logger->fTrace("snsp", "Created node of: ", data, " at: ", newNode);
     
     return newNode;
 }
@@ -46,7 +46,7 @@ Node* colorvaluetree::insertNode(Node* n, int data, int key)
 {
     if (count == 0) {
         root = createNode(data, key);
-        logger->fDebug("snsp", "Root created of data: ", data, " at: ", root);
+        logger->fTrace("snsp", "Root created of data: ", data, " at: ", root);
         return root;
     }
 
@@ -70,8 +70,8 @@ Node* colorvaluetree::insertNode(Node* n, int data, int key)
 }
 
 void colorvaluetree::add(int data, int key) {
-    if (data <= 0 ) {
-        logger->Info("Can not add data. Invalid data entry: ");
+    if (data <= 0 || key < 0) {
+        logger->error("Can not add data. Invalid data entry: ");
         printer->printKV(data, key);
         return;
     }
@@ -139,12 +139,12 @@ void colorvaluetree::deleteTree(Node* n) {
         return;
     }
 
-    logger->Debug("Delete left child of node: ", n->data);
+    logger->Trace("Delete left child of node: ", n->data);
     deleteTree(n->left);
-    logger->Debug("Delete right child of node: ", n->data);
+    logger->Trace("Delete right child of node: ", n->data);
     deleteTree(n->right);
 
-    logger->Debug("Delete node: ", n->data);
+    logger->Trace("Delete node: ", n->data);
 
     if (n == root) {
         //root->data = 0;
@@ -167,7 +167,7 @@ void colorvaluetree::deleteTree(Node* n) {
     n = nullptr;
     
     count--;
-    logger->Debug("Current size: ", count);
+    logger->Trace("Current size: ", count);
     if (count == 0) {
         logger->Debug("Root deleted at addr:", root);
         assert(!root);

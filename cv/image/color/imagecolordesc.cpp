@@ -24,6 +24,11 @@ using namespace std;
   * color_type is set to NOT_AVAILABE in header file. Each setDescData() call will change
   * color_type accordingly. Neither init() or clear() will change color_type.
   */
+  /*
+   * @20250921
+   * At this moment, we do not have any request to remove created tree without changing color_map,
+   * i.e., calling of setDescData().
+   */
 imagecolordesc::imagecolordesc() {
     logger = new iapcv_log(typeid(this).name());
     init();
@@ -34,8 +39,8 @@ imagecolordesc::~imagecolordesc() {
     if (t != nullptr) {
         t->setLogLevel(iapcv_log::ERROR);
     }
-    if (ht != nullptr) {
-        ht->setLogLevel(iapcv_log::ERROR);
+    if (d3t != nullptr) {
+        d3t->setLogLevel(iapcv_log::ERROR);
     }
 
     logger->debug("Destructing imagecolordesc. ");
@@ -51,14 +56,14 @@ imagecolordesc::~imagecolordesc() {
 
 void imagecolordesc::init() {
     color_map = new unordered_map<int, vector<int*>*>();
-    compact_map = new unordered_map<int, vector<int*>*>();
+    //compact_map = new unordered_map<int, vector<int*>*>();
     
     /*
      * @20250914
      * Ready to use by customer classes.
      */
     t = new colorvaluetree();
-    ht = new hsvtree();
+    d3t = new d3tree();
 
     for (int i=0; i< 256; i++) {
         BH[i] = 0;
@@ -80,7 +85,7 @@ void imagecolordesc::clear() {
     // Just cleared
     if (color_map==nullptr) {
         logger->info("Color Map is null.");
-        assert(t == nullptr && ht == nullptr);
+        assert(t == nullptr && d3t == nullptr);
         return;
     }
     // Just created.
@@ -88,22 +93,21 @@ void imagecolordesc::clear() {
         logger->info("Map is clear.");
         delete color_map;
         color_map = nullptr;
-        if (t != nullptr) {
-            if (t->size() > 0) {
-                logger->error("Color value tree size: ", t->size());
-                t->deleteTree();
-            }
-            delete t;
-            t = nullptr;
+        
+        if (t->size() > 0) {
+            logger->error("Color value tree size: ", t->size());
+            t->deleteTree();
         }
-        if (ht != nullptr) {
-            if (ht->size() > 0) {
-                logger->error("HSV tree size: ", ht->size());
-                ht->deleteTree();
-            }
-            delete ht;
-            ht = nullptr;
+        delete t;
+        t = nullptr;
+        
+        if (d3t->size() > 0) {
+            logger->error("D3Tree size: ", d3t->size());
+            d3t->deleteTree();
         }
+        delete d3t;
+        d3t = nullptr;
+        
         return;
     }
 
@@ -122,23 +126,24 @@ void imagecolordesc::clear() {
     delete color_map;
     color_map = nullptr;
 
+    /*
     if (compact_map->size() > 0) {
         clearMap(*compact_map);
         *compact_map = unordered_map<int, std::vector<int*>*>();
         delete compact_map;
         compact_map = nullptr;
-    }
+    }*/
     
     if (t->size()>0) {
         t->deleteTree();
     }
     delete t;
     t = nullptr;
-    if (ht->size()>0) {
-        ht->deleteTree();
+    if (d3t->size()>0) {
+        d3t->deleteTree();
     }
-    delete ht;
-    ht = nullptr;
+    delete d3t;
+    d3t = nullptr;
 }
 
 void imagecolordesc::clearMap(unordered_map<int, vector<int*>*>& m) {
@@ -154,14 +159,14 @@ void imagecolordesc::clearMap(unordered_map<int, vector<int*>*>& m) {
 }
 
 void imagecolordesc::clearSTDVector(vector<int*>* v) {
-    logger->debug("Clear vector: vector size: ", v->size());
+    logger->trace("Clear vector: vector size: ", v->size());
     
     int s = v->size();
     for (int i=0; i < s; i++) {
         delete v->at(i);
     }
     *v = vector<int*>();
-    logger->debug("Clear vector: vector elements deleted.");
+    logger->trace("Clear vector: vector elements deleted.");
 }
 
 /**
@@ -184,9 +189,13 @@ vector<uchar*>* imagecolordesc::findB(uchar b) {
     return v;
 }
 
-vector<uchar*>* imagecolordesc::findPixelColors(uchar hue) {
+/**
+ * Customer classes are responsible to release memory of newVec, example use auto.
+ */
+vector<uchar*> imagecolordesc::findPixelColors(uchar hue) {
     assert(color_type==imagecolorvalues::HSV);
-    return ht->findValues(hue);
+    assert(d3t!=nullptr && d3t->getDimensionType()==DimType::HSV);
+    return d3t->findValues(hue);
 }
 
 vector<int*>* imagecolordesc::containsBGR(uchar b, uchar g, uchar r) {
@@ -302,7 +311,16 @@ void imagecolordesc::setDescData(const cv::Mat& mat, int type) {
 }
 
 void imagecolordesc::setColorValueTree() {
-    assert(color_map->size()>0);
+    // Just cleared
+    if (color_map == nullptr) {
+        logger->info("Data cleared. Can not set color value tree.");
+        return;
+    }
+    // Just created
+    if (color_map->size()==0) {
+        logger->info("No data to set color value tree.");
+        return;
+    } 
     t->setLogLevel(this->logger->getLevel());
     logger->debug("Set color value tree.");
     
@@ -315,28 +333,49 @@ void imagecolordesc::setColorValueTree() {
     }
 }
 
-void imagecolordesc::setHsvTree(int hsv_dim) {
-    assert(color_map->size()>0); 
-    logger->debug("Set hsv tree.");
-    ht->setLogLevel(this->logger->getLevel());
-    ht->setPrint(printer);
-    ht->setHsvDim(hsv_dim);
+void imagecolordesc::setD3Tree(DimType type, int dim) {
+    if (imagecolorvalues::HSV == color_type && DimType::BGR == type) {
+        logger->error("Unsupported operation.");
+        return;
+    }
+    // Just cleared
+    if (color_map == nullptr) {
+        logger->info("Data cleared. Can not set d3tree.");
+        return;
+    }
+    // Just created
+    if (color_map->size()==0) {
+        logger->info("No data to set d3tree.");
+        return;
+    } 
+    logger->debug("Set d3tree.");
+    if (d3t->size()>0) {
+        d3t->deleteTree();
+    }
+    d3t->setLogLevel(this->logger->getLevel());
+    d3t->setPrint(printer);
+    d3t->setDim(type, dim);
     uchar arr[imagecolorvalues::channel] = {0}; 
     int key = 0;
     for (auto it=color_map->begin(); it!=color_map->end(); it++) {
         key = it->first;
-        auto hsv = new uchar[imagecolorvalues::channel]{0};
+        auto v3 = new uchar[imagecolorvalues::channel]{0};
         convert->setUChar3(key, arr);
-        if (color_type == imagecolorvalues::BGR) {
-            calc->toHsvCV(imagecolorvalues::channel, hsv, arr[0], arr[1], arr[2]);
+        if (color_type == imagecolorvalues::BGR && type == DimType::HSV) {
+            calc->toHsvCV(imagecolorvalues::channel, v3, arr[0], arr[1], arr[2]);
         }
+        /*  Unsupported operation
+        else if (color_type == imagecolorvalues::HSV && type == DimType::BGR) {            
+        }
+        */
         else {
-            hsv[0] = arr[0]; hsv[1] = arr[1]; hsv[2] = arr[2];
+            v3[0] = arr[0]; v3[1] = arr[1]; v3[2] = arr[2];
         }
         
         //printer->printPixelColor(imagecolorvalues::channel, hsv);
-        ht->add(hsv);
+        d3t->add(imagecolorvalues::channel, v3);
     }
+    logger->debug("D3Tree set up.");
 }
 
 /// TODO: test with all black and all white images
@@ -439,8 +478,8 @@ void imagecolordesc::printColorValueTree() {
     t->printTree();
 }
 
-void imagecolordesc::printHsvTree() {
-    ht->printTree();
+void imagecolordesc::printD3Tree() {
+    d3t->printTree();
 }
 
 void imagecolordesc::printState() {
@@ -457,13 +496,79 @@ void imagecolordesc::printState() {
     else {
         cout << "Size of color value tree: " << t->size() << endl;
     }
-    if (ht == nullptr) {
-        cout << "hsv tree: null" << endl;
+    if (d3t == nullptr) {
+        cout << "d3tree: null" << endl;
     } 
     else {
-        cout << "Size of hsv tree: " << ht->size() << endl;
+        cout << "Size of d3tree: " << d3t->size() << endl;
     }
     printMinMax();
+}
+
+bool imagecolordesc::verifyState(const color_desc_state& cst) {
+    bool verified = true;
+    if (cst.s_color_type != color_type ) {
+        logger->error("color type: expected: ", cst.s_color_type);
+        verified = false;
+    }
+    if (cst.s_color_map == ClearableState::just_cleared) {
+        if (color_map != nullptr) {
+            logger->error("color map state: expected: ", static_cast<int>(cst.s_color_map));
+            verified = false;
+        }
+    } 
+    else if (cst.s_color_map == ClearableState::just_created) {
+        if (color_map == nullptr || color_map->size()>0) {
+            logger->error("color map state: expected: ", static_cast<int>(cst.s_color_map));
+            verified = false;
+        }
+    }
+    else if (cst.s_color_map == ClearableState::just_used) {
+        if (color_map == nullptr || color_map->size()==0) {
+            logger->error("color map state: expected: ", static_cast<int>(cst.s_color_map));
+            verified = false;
+        }
+    } 
+    
+    if (cst.s_tree_cvt == ClearableState::just_cleared) {
+        if (t != nullptr) {
+            logger->error("color value tree state: expected: ", static_cast<int>(cst.s_tree_cvt));
+            verified = false;
+        }
+    } 
+    else if (cst.s_tree_cvt == ClearableState::just_created) {
+        if (t == nullptr || t->size()>0) {
+            logger->error("color value tree state: expected: ", static_cast<int>(cst.s_tree_cvt));
+            verified = false;
+        }
+    }
+    else if (cst.s_tree_cvt == ClearableState::just_used) {
+        if (t == nullptr || t->size()==0) {
+            logger->error("color value tree state: expected: ", static_cast<int>(cst.s_tree_cvt));
+            verified = false;
+        }
+    } 
+    
+    if (cst.s_tree_d3t == ClearableState::just_cleared) {
+        if (d3t != nullptr) {
+            logger->error("color value tree state: expected: ", static_cast<int>(cst.s_tree_d3t));
+            verified = false;
+        }
+    } 
+    else if (cst.s_tree_d3t == ClearableState::just_created) {
+        if (d3t == nullptr || d3t->size()>0) {
+            logger->error("color value tree state: expected: ", static_cast<int>(cst.s_tree_d3t));
+            verified = false;
+        }
+    }
+    else if (cst.s_tree_d3t == ClearableState::just_used) {
+        if (d3t == nullptr || d3t->size()==0) {
+            logger->error("color value tree state: expected: ", static_cast<int>(cst.s_tree_d3t));
+            verified = false;
+        }
+    }  
+    
+    return verified;
 }
 
 void imagecolordesc::setPrint(iap_print* p) {
@@ -499,11 +604,11 @@ uchar* imagecolordesc::getUpperBoundHSV() {
 }
 
 void imagecolordesc::getAllHue(std::vector<int>* vh) {
-    if (vh == nullptr || ht == nullptr ) {
+    if (vh == nullptr || d3t == nullptr ) {
         logger->info("Cannot get hue.");
         return;
     }
-    ht->getTreeData(vh);
+    d3t->getTreeData(vh);
 }
 
 int imagecolordesc::getImageSize() {
@@ -524,7 +629,7 @@ int imagecolordesc::countColor(int color) {
     uchar bgr[imagecolorvalues::channel] = {0};
     for (auto it=color_map->begin(); it!=color_map->end(); it++) {
         convert->setUChar3(it->first, bgr);
-        if (bgr[0]<=20 && bgr[1]<=20 && bgr[2] <=20) {
+        if (bgr[0]<=20 && bgr[1]<=20 && bgr[2] <=20) { /// TODO
             count+=it->second->size();
         }
     }

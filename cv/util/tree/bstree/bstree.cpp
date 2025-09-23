@@ -31,7 +31,7 @@ ITreeNode* bstree::createNode(int data)
     newNode->data = data;
     newNode->left = newNode->right = nullptr;
     count++;
-    logger->fDebug("snsp", "Created Node of: ", data, " at: ", newNode);
+    logger->fTrace("snsp", "Created Node of: ", data, " at: ", newNode);
     
     return newNode;
 }
@@ -40,7 +40,7 @@ ITreeNode* bstree::insertNode(ITreeNode* n, int data)
 {
     if (count == 0) {
         root = createNode(data);
-        logger->fDebug("snsp", "Root created of data: ", data, " at: ", root);
+        logger->fTrace("snsp", "Root created of data: ", data, " at: ", root);
         return root;
     }
 
@@ -56,7 +56,7 @@ ITreeNode* bstree::insertNode(ITreeNode* n, int data)
         n->right = insertNode(n->right, data);
     }
     else {
-        logger->Debug("Node already exists for data: ", data);
+        logger->Trace("Node already exists for data: ", data);
     }
     return n;
 }
@@ -106,13 +106,13 @@ void bstree::deleteTree(ITreeNode* n) {
         return;
     }
 
-    logger->Debug("Delete left child of Node: ", n->data);
+    logger->Trace("Delete left child of Node: ", n->data);
     deleteTree(n->left);
     
-    logger->Debug("Delete right child of Node: ", n->data);
+    logger->Trace("Delete right child of Node: ", n->data);
     deleteTree(n->right);
 
-    logger->Debug("Delete Node: ", n->data);
+    logger->Trace("Delete Node: ", n->data);
     
     /*
      * @20250814
@@ -142,7 +142,7 @@ void bstree::deleteTree(ITreeNode* n) {
 
     count--;
     
-    logger->Debug("Current size: ", count);
+    logger->Trace("Current size: ", count);
     if (count == 0) {
         logger->Debug("Root deleted at addr:", root);
         assert(!root);

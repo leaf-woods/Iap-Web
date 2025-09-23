@@ -75,6 +75,11 @@ class imagecontext {
             delete logger;
         }
 
+        iap_print* getPrint() { return printer; }
+        convertnumber* getConvertNumber() { return convert; }
+        convert_bgrhsv* getConvertBgrToHsv() {  return calc; }
+        range* getRange() { return rg; }
+
         void setLogLevel(int level) { logger->setLevel(level); }
         
         void setImgCtxLogsLevel(int level) { 

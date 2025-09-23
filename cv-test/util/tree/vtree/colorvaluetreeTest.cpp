@@ -12,10 +12,9 @@ int main(int argc, char* argv[]) {
     cout << "Test-1 colorvaluetree" << endl;
     colorvaluetree t;
     t.setPrint(p);
-    for (int i=0; i<1; i++) {
-        t.add(i, i*1000);
-    }
-    cout << endl;
+    t.add(0, 0);
+    t.add(1, -1);
+    assert(t.size()==0);
     t.printTree();
     t.deleteTree();
     assert(t.size()==0);
@@ -82,6 +81,7 @@ int main(int argc, char* argv[]) {
     }
     assert(2==pt->size());
     pt->deleteTree();  // Comment on this line to generate memory leak.
+    delete pt;
     cout << "Test-5 colorvaluetree completed." << endl;
     cout << endl;
 
@@ -126,6 +126,9 @@ int main(int argc, char* argv[]) {
     pt->add(3, 100);
     pt->add(6, 200);
     assert(9==pt->size());
+    pt->add(20, 200);
+    assert(10==pt->size());
+    assert(20==pt->getMaxValue());
     s = pt->getContents();
     cout << "Contents: " << endl;
     cout << s << endl;

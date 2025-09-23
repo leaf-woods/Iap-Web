@@ -22,7 +22,7 @@ INCLUDES = -I$(dir_image)/color \
 		   -I$(dir_util)/log \
            -I$(dir_util)/print \
 		   -I$(dir_util)/tree \
-           -I$(dir_util)/tree/htree \
+           -I$(dir_util)/tree/dtree \
 		   -I$(dir_util)/tree/vtree \
            -I/usr/include/opencv4
 
@@ -40,18 +40,19 @@ SRCS = test_imagecolordesc.cpp \
        $(dir_util)/convert/convertnumber.cpp \
 	   $(dir_util)/convert/convert_bgrhsv.cpp \
 	   $(dir_util)/tree/vtree/colorvaluetree.cpp \
-	   $(dir_util)/tree/htree/hsvtree.cpp \
+	   $(dir_util)/tree/dtree/d3tree.cpp \
 	   $(dir_util)/print/iap_print.cpp 
 
 # define the C object files 
 OBJS = $(SRCS:.c=.o)
 
 # define the executable file 
+# https://www.gnu.org/software/make/manual/html_node/Static-Usage.html#Static-Usage
 MAIN = test_colordesc
  
 .PHONY: depend clean
 
-all : $(MAIN)
+all : test_colorvalues $(MAIN)
 	@echo  Simple compiler named runtest has been compiled
 
 $(MAIN) : $(OBJS) 
@@ -60,8 +61,16 @@ $(MAIN) : $(OBJS)
 .c.o :
 	$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
 
+test_colorvalues : testImageColorValues.o
+	$(CC) -o test_colorvalues testImageColorValues.o
+testImageColorValues.o : testImageColorValues.cpp
+	$(CC) -c testImageColorValues.cpp 
+
 clean :
 	$(RM) *.o *~ $(MAIN)
+ifneq (,$(wildcard test_colorvalues))
+	rm  test_colorvalues
+endif
 
 depend : $(SRCS)
 	makedepend $(INCLUDES) $^

@@ -25,7 +25,7 @@ INCLUDES = -I$(dir_ctx) \
 		   -I$(dir_util)/log \
            -I$(dir_util)/print \
 		   -I$(dir_util)/tree \
-           -I$(dir_util)/tree/htree \
+           -I$(dir_util)/tree/dtree \
 		   -I$(dir_util)/tree/vtree \
            -I/usr/include/opencv4
 
@@ -43,7 +43,7 @@ SRCS = main.cpp \
        $(dir_util)/convert/convertnumber.cpp \
 	   $(dir_util)/convert/convert_bgrhsv.cpp \
 	   $(dir_util)/tree/vtree/colorvaluetree.cpp \
-	   $(dir_util)/tree/htree/hsvtree.cpp \
+	   $(dir_util)/tree/dtree/d3tree.cpp \
 	   $(dir_util)/log/iapcv_log.cpp \
 	   $(dir_util)/print/iap_print.cpp 
 

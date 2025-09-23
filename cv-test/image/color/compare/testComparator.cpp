@@ -57,8 +57,16 @@ int main(int argc, char* argv[]) {
     b = 0; g = 0; r = 235;
     assert(255==compt->getBasicColorKey(b, g, r));
 
+    // Don't know color name
+    b = 127; g = 127; r = 127;
+    assert(8355711==compt->getBasicColorKey(b, g, r));
+    b = 111; g = 127; r = 127;
+    assert(imagecolorvalues::NOT_AVAILABLE==compt->getBasicColorKey(b, g, r));
+
     b = 0; g = 0; r = 100;
     assert(imagecolorvalues::NOT_AVAILABLE==compt->getBasicColorKey(b, g, r));
+
+
 
     delete compt;
 

@@ -5,13 +5,6 @@
 using namespace std;
 
 void iap_print::printVector(const vector<uchar*>& v) {
-    /*
-    if (!v) {
-        cout << "Cannot print vector. Invalid v." << endl;
-        return;
-    }
-        */
-            
     cout << " Vector: { ";
     for (int i=0; i < (int)v.size(); i++) {
         cout << "[" << static_cast<unsigned>(v.at(i)[0]) << ", " 
@@ -27,6 +20,39 @@ void iap_print::printVector(const vector<int>& v) {
        cout << v.at(i) << " "; 
     }
     cout << " }" << endl;
+}
+
+void iap_print::printVector(const vector<unsigned char*>& v, bool fixed_len) {
+    if (fixed_len) {
+        printVector(v);
+        return;
+    }
+
+    int count = 0;
+    cout << " Vector: { ";
+    for (int i=0; i < (int)v.size(); i++) {
+       count = check_size(v.at(i));
+       cout << "unsigned char array length: [" << count << "] ";
+       for (int j=0; j<count; j++) {
+           cout <<  static_cast<unsigned>(v.at(i)[j]) << ", ";
+       }
+       cout << " ; ";
+    }
+    cout << " }" << endl;
+}
+
+// https://stackoverflow.com/questions/4180818/finding-the-length-of-a-character-array-in-c
+int iap_print::check_size(unsigned char *ptr)
+{
+    int offset = 0;
+    //int count = 0;
+
+    while (*(ptr + offset) != '\0')
+    {
+        //++count;
+        ++offset;
+    }
+    return offset;
 }
 
 void iap_print::printPixelColor(size_t channel, uchar* array) {
