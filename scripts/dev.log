@@ -7,3 +7,6 @@ rsync -av --dry-run --include=="*.cpp" --include=="makefile" --exclude="*.o" --e
 find ./cv-test -type f -name 'makefile' | xargs sed -i 's/iap_cv_base/iap_ghl_cv_base/g'
 
 https://www.w3schools.com/colors/colors_picker.asp
+
+# use pipe directly to find a string 'test_base/makefile' in build_iap.sh then find string '#rsync' in the found line.
+sed -n '/test_base\/makefile/p' build_iap.sh  | sed -n '/#rsync/p'
