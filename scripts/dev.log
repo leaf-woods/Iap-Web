@@ -5,3 +5,5 @@ rsync --dry-run -av --exclude='*.o' --exclude='*.log' --exclude='*-bak' $src $de
 rsync -av --dry-run --include=="*.cpp" --include=="makefile" --exclude="*.o" --exclude="*.log" --exclude="*bak" $source $desc
 
 find ./cv-test -type f -name 'makefile' | xargs sed -i 's/iap_cv_base/iap_ghl_cv_base/g'
+
+https://www.w3schools.com/colors/colors_picker.asp
