@@ -4,7 +4,9 @@
 #include <opencv2/core.hpp>
 
 #include "imagecolorvalues.h"
+#include "imagereader.h"
 #include "pixel_comparator.h"
+//#include "sky_init_train.h"
 
 using namespace std;
 int main(int argc, char* argv[]) {
@@ -66,10 +68,44 @@ int main(int argc, char* argv[]) {
     b = 0; g = 0; r = 100;
     assert(imagecolorvalues::NOT_AVAILABLE==compt->getBasicColorKey(b, g, r));
 
+    // test isColor()
+    imagereader* reader = new imagereader();
+    string fname = "/home/linye020603/iap-web/cv-test/test-data/image/test-color-band-v.jpg";
+    cout << "Use file: " << fname << endl;
+    reader->read_image(false, fname);
+    cv::Mat* mat = reader->getInputImage();
+    
+    assert(compt->isColor(imagecolorvalues::RED, mat->at<cv::Vec3b>(0, 170)));
+    assert(compt->isColor(imagecolorvalues::ORANGE, mat->at<cv::Vec3b>(70, 170)));
+    assert(compt->isColor(imagecolorvalues::ORANGE, mat->at<cv::Vec3b>(67, 170)));
+    assert(compt->isColor(imagecolorvalues::ORANGE, mat->at<cv::Vec3b>(75, 170)));
+    assert(compt->isColor(imagecolorvalues::ORANGE, mat->at<cv::Vec3b>(97, 170)));
+    assert(compt->isColor(imagecolorvalues::ORANGE, mat->at<cv::Vec3b>(98, 170)));
+    assert(compt->isColor(imagecolorvalues::YELLOW, mat->at<cv::Vec3b>(100, 170)));
+    assert(compt->isColor(imagecolorvalues::YELLOW, mat->at<cv::Vec3b>(116, 170)));
+    assert(compt->isColor(imagecolorvalues::YELLOW, mat->at<cv::Vec3b>(118, 170)));
+    cv::Vec3b color;
+    color[0] = 127; color[1] = 255; color[2] = 255; 
+    assert(compt->isColor(imagecolorvalues::L75_YELLOW, color));
 
+    assert(compt->isColor(imagecolorvalues::GREEN, mat->at<cv::Vec3b>(180, 170)));
+    cout << mat->at<cv::Vec3b>(119, 170) << endl;
+    assert(compt->isColor(imagecolorvalues::L50_GREEN, mat->at<cv::Vec3b>(119, 170)));
+    assert(compt->isColor(imagecolorvalues::BLUE, mat->at<cv::Vec3b>(223, 170)));
+    assert(compt->isColor(imagecolorvalues::BLUE, mat->at<cv::Vec3b>(207, 170)));
+    assert(compt->isColor(imagecolorvalues::PURPLE, mat->at<cv::Vec3b>(265, 170)));
+    assert(compt->isColor(imagecolorvalues::PURPLE, mat->at<cv::Vec3b>(250, 170)));
+    assert(compt->isColor(imagecolorvalues::PURPLE, mat->at<cv::Vec3b>(253, 170)));
+    assert(compt->isColor(imagecolorvalues::BLACK, mat->at<cv::Vec3b>(318, 170)));
+
+    // test isSky()
+    //sky_init_train* tr = new sky_init_train();
+    
 
     delete compt;
-
+    delete reader;
+    //delete tr;
+    
     cout << "Test pixel_comparator: Done." << endl;
 
     return 0;

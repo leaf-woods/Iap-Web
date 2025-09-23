@@ -29,30 +29,39 @@ bool pixel_comparator::isColor(int which, const cv::Vec3b& color) {
       case imagecolorvalues::BLACK:
         return color[0]<=imagecolorvalues::DELTA && color[1]<=imagecolorvalues::DELTA && color[2]<=imagecolorvalues::DELTA;
 
-      case imagecolorvalues::PURPLE:  // 127, 0, 255
-        return (color[0]<=127+imagecolorvalues::M_DELTA || color[0]>=127-imagecolorvalues::M_DELTA) \
-               && color[1]<=imagecolorvalues::DELTA && color[2]>=255-imagecolorvalues::DELTA;
+      case imagecolorvalues::PURPLE:  // 127, 0, 255  R, G, B
+        return (color[2]<=127+imagecolorvalues::M_DELTA || color[2]>=127-imagecolorvalues::M_DELTA) \
+               && color[1]<=imagecolorvalues::DELTA && color[0]>=255-imagecolorvalues::DELTA;
 
       case imagecolorvalues::BLUE:  // 0, 0, 255
-        return color[0]<=imagecolorvalues::DELTA  \
-               && color[1]<=imagecolorvalues::DELTA && color[2]>=255-imagecolorvalues::DELTA;
+        return color[2]<=imagecolorvalues::DELTA  \
+               && color[1]<=imagecolorvalues::DELTA && color[0]>=255-imagecolorvalues::DELTA;
 
       case imagecolorvalues::GREEN:  // 0, 255, 0
-        return color[0]<=imagecolorvalues::DELTA  \
-               && color[1]>=255-imagecolorvalues::DELTA && color[2]<=imagecolorvalues::DELTA;
+        return color[2]<=imagecolorvalues::DELTA  \
+               && color[1]>=255-imagecolorvalues::DELTA && color[0]<=imagecolorvalues::DELTA;
+
+      case imagecolorvalues::L50_GREEN:  // 127, 255, 0
+        return color[2]>=127-imagecolorvalues::M_DELTA && color[2]<=127+imagecolorvalues::M_DELTA \
+               && color[1]>=255-imagecolorvalues::DELTA && color[0]<=imagecolorvalues::DELTA;
 
       case imagecolorvalues::YELLOW:  // 255, 255, 0
-        return color[0]>=255-imagecolorvalues::DELTA  \
-               && color[1]>=255-imagecolorvalues::DELTA && color[2]<=imagecolorvalues::DELTA;
+        return color[2]>=255-imagecolorvalues::DELTA  \
+               && color[1]>=255-imagecolorvalues::DELTA && color[0]<=imagecolorvalues::DELTA;
+
+      case imagecolorvalues::L75_YELLOW:  // 255, 255, 127
+        return color[2]>=255-imagecolorvalues::DELTA  \
+               && color[1]>=255-imagecolorvalues::DELTA && \
+               color[0]>=127-imagecolorvalues::M_DELTA && color[0]<=127 + imagecolorvalues::M_DELTA;
 
       case imagecolorvalues::ORANGE:  // 255, 127, 0
-        return color[0]>=255-imagecolorvalues::DELTA \
+        return color[2]>=255-imagecolorvalues::DELTA \
                && (color[1]<=127+imagecolorvalues::M_DELTA || color[1]>=127-imagecolorvalues::M_DELTA) \
-               && color[2]<=imagecolorvalues::DELTA;
+               && color[0]<=imagecolorvalues::DELTA;
 
       case imagecolorvalues::RED:  // 255, 0, 0
-        return color[0]>=255-imagecolorvalues::DELTA  \
-               && color[1]<=imagecolorvalues::DELTA && color[2]<=imagecolorvalues::DELTA;
+        return color[2]>=255-imagecolorvalues::DELTA  \
+               && color[1]<=imagecolorvalues::DELTA && color[0]<=imagecolorvalues::DELTA;
 
     break;
     }

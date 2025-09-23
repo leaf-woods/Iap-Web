@@ -141,10 +141,31 @@ int main(int argc, char* argv[]) {
     assert(b==bgr[0] && g==bgr[1] && r==bgr[2]);
     printPixelColor(3, bgr);
 
+    cout << endl;
     b = 0; g = 0; r = 240;
     n = convert->getInt(b, g, r);
     cout << "Red: " << "key: " << n << " ";
     printColor(b, g, r);
+
+    // L50_GREEN
+    cout << endl;
+    b = 0; g = 255; r = 127;
+    n = convert->getInt(b, g, r);
+    cout << "L50_GREEN: " << "key: " << n << " ";
+    printColor(b, g, r);
+    convert->setUChar3(n, bgr);
+    assert(b==bgr[0] && g==bgr[1] && r==bgr[2]);
+    printPixelColor(3, bgr);
+
+    // L75_YELLOW
+    cout << endl;
+    b = 127; g = 255; r = 255;
+    n = convert->getInt(b, g, r);
+    cout << "L75_YELLOW: " << "key: " << n << " ";
+    printColor(b, g, r);
+    convert->setUChar3(n, bgr);
+    assert(b==bgr[0] && g==bgr[1] && r==bgr[2]);
+    printPixelColor(3, bgr);
     
     return 0;
 }
