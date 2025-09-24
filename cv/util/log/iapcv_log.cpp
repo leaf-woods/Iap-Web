@@ -25,6 +25,11 @@ bool iapcv_log::isDebug() {
     return level==DEBUG;
 }
 
+// https://stackoverflow.com/questions/13294067/how-to-convert-string-to-char-array-in-c
+/**
+ * std::string variables and string literals are different in function cprintf(). They cannot be replaced
+ * with each other when calling cprintf().
+ */
 void iapcv_log::cprintf(const char* fmt, va_list args) 
 {
     while (*fmt != '\0')
@@ -33,6 +38,10 @@ void iapcv_log::cprintf(const char* fmt, va_list args)
             char* s = va_arg(args, char*);
             cout << string(s) << ' ';
         }
+        else if (*fmt == 'v') {
+            string s = va_arg(args, string);
+            cout << string(s) << ' ';
+        }   
         else if (*fmt == 'n') {
             int s = va_arg(args, int);
             cout << to_string(s) << ' ';

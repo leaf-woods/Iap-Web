@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "iapcv_log.h"
+#include "region_desc.h"
 
 using namespace std;
 
@@ -15,6 +16,10 @@ void simple_printf(const char* fmt...) // C-style "const char* fmt, ..." is also
     {
         if (*fmt == 's') {
             char* s = va_arg(args, char*);
+            cout << string(s) << ' ';
+        }
+        else if (*fmt == 'v') {
+            string s = va_arg(args, string);
             cout << string(s) << ' ';
         }
         else if (*fmt == 'n') {
@@ -57,8 +62,17 @@ void print(int n_args, ...) // C-style "const char* fmt, ..." is also valid
 }
 
 int main(int argc, char* argv[]) {
+    cout << "Test simple_printf" << endl;
     simple_printf("dcffsn", 3, 'a', 1.999, 42.5, "msg1", 1000);
+    string t1 = "t1";
+    simple_printf("dcffsnv", 3, 'a', 1.999, 42.5, "msg1", 1000, t1);
+    cout << "Test simple_printf: Done" << endl;
+    cout << endl;
+    
+    cout << "Test print" << endl;
     print(2, "msg1", "msg2");
+    cout << "Test print: Done" << endl;
+    cout << endl;
 
     iapcv_log* log = new iapcv_log("testLog");
     
@@ -197,6 +211,31 @@ int main(int argc, char* argv[]) {
     log->finfo("sps", "Intance log: ", log, "ok");
     cout << endl;
 
+    /* 
+     * Dangling pointers when passing string variable to fdebug(...) in region_builder.cpp
+     * Fixed by: separate string literal( const char*) and string variable in cprintf().
+     * See example8/test_general.cpp for difference between char array (char*) and string.
+     */
+    RegionDesc desc = RegionDesc::sky;
+    string s = region_desc::toString(desc);
+    cout << "s: " << s << endl;
+    char* cs = &s[0];
+    log->finfo("snsnss", "Pixel not in region: row: ", 2, " col: ", 17, " for: ", &region_desc::toString(desc)[0]);       
+    log->finfo("snsnss", "Pixel not in region: row: ", 2, " col: ", 17, " for: ", &s[0]);
+    log->finfo("snsnss", "Pixel not in region: row: ", 2, " col: ", 17, " for: ", cs);
+    log->finfo("snsnss", "Pixel not in region: row: ", 2, " col: ", 17, " for: ", "sky");  
+    log->finfo("snsnsv", "Pixel not in region: row: ", 2, " col: ", 17, " for: ", region_desc::toString(desc));      
+    try {
+        log->finfo("vnsnsv", "Pixel not in region: row: ", 2, " col: ", 17, " for: ", region_desc::toString(desc));      
+        // Not printing
+        log->info("Cannot proceed logging."); 
+    }
+    catch (const exception& e) {
+        // Followed to failed logging's header
+        cout << "Exception caught" << endl;
+        cout << "Cause: " << endl;
+        cout << e.what() << endl;
+    }
     delete log;
     return 0;
 }

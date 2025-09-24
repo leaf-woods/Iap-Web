@@ -117,14 +117,13 @@ class region_builder : public iclearable {
       ~region_builder();
 
       void clear();
-      void get_col_span(const cv::Mat& mat, int c, int r);
-      void get_row_span(const cv::Mat& mat, int c, int r);
-
       void explore_hort(const cv::Mat& mat, const span_node& row_sp);
       void explore_vert(const cv::Mat& mat, const span_node& col_sp);
-
       void explore(const cv::Mat& mat, int r, int c);
       void explore_r(const cv::Mat& mat, int row, int col);
+      void get_col_span(const cv::Mat& mat, int c, int r);
+      void get_row_span(const cv::Mat& mat, int c, int r);
+      bool getNextStartPoint(size_t s, int* pixel);
       void printMap(string which, const map<int, vector<int*>*>& m);
       void printQueue(string which, std::deque<span_node*>* q);
       void setLogLevel(int level);

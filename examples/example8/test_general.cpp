@@ -17,12 +17,29 @@ int main(int argc, char* argv[]) {
 
     mtest* mt3;
     mt3->create();
-
     cout << "mtest done." << endl;
+    cout << endl;
 
+    cout << "Test: length of char and char*" << endl;
     cout << endl;
     size_t len = sizeof(unsigned char*);
     cout << "size of unsigned char*: " << len << endl;
     cout << "size of unsigned char: " << sizeof(unsigned char) << endl;
+    cout << "Test: length of char and char*: Done" << endl;
+    cout << endl;
+
+    // https://stackoverflow.com/questions/1287306/difference-between-string-and-char-types-in-c
+    std::string myString = "Hello World";
+    cout << "string: " << myString << endl;
+    int length = myString.length();
+    const char *myStringChars = myString.c_str();
+    for (int i=0; i<length; i++) {
+        cout << myStringChars[i];
+    }
+    cout << endl;
+    cout << "Out of bound: offset: length " << myStringChars[length] << endl;
+    cout << "Out of bound: offset: length+1 " << myStringChars[length+1] << endl;
+    cout << endl;
+    
     return 0;
 }

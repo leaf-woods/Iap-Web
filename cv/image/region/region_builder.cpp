@@ -19,7 +19,7 @@ region_builder::region_builder() {
     init();
     sta = new bool_status(status::NORMAL, false);
     logger = new iapcv_log(typeid(this).name());
-    logger->setLevel(iapcv_log::INFO);
+    logger->setLevel(iapcv_log::DEBUG);
 }
 
 region_builder::~region_builder() {
@@ -135,7 +135,7 @@ void region_builder::explore(const cv::Mat& mat, int row, int col) {
     checkInBound(mat, row, col, *sta);
     if (! sta->getResult()) {
         if (sta->isNormal()) {
-            logger->finfo("snsnss", "Pixel not in region: row: ", row, " col: ", col, " ", region_desc::toString(desc));
+            logger->finfo("snsnsv", "Pixel not in region: row: ", row, " col: ", col, " for: ", region_desc::toString(desc));
         }
         else {
             logger->error(sta->getMsg());
@@ -183,7 +183,7 @@ void region_builder::explore(const cv::Mat& mat, int row, int col) {
         //logger->debug("Explore vert completed.");
         //printQueue("rows", rows);
         //printMap("rows", *rows_map);
-        cout << endl;
+        
         /*
          * cols->size(): 0
          * rows->size(): 9
@@ -203,7 +203,6 @@ void region_builder::explore(const cv::Mat& mat, int row, int col) {
         //logger->debug("Explore hort completed.");
         //printQueue("cols", cols);
         //printMap("cols", *cols_map);
-        cout << endl;
     }
   }
     logger->fdebug("snsnsn", "count: ", count, " count col: ", count_exp_col, " count row: ", count_exp_row);
@@ -286,7 +285,7 @@ void region_builder::explore_r(const cv::Mat& mat, int row, int col) {
         //logger->debug("Explore hort completed.");
         //printQueue("cols", cols);
         //printMap("cols", *cols_map);
-        cout << endl;
+        //cout << endl;
       }
 
       while (cols->size() > 0) {
@@ -300,7 +299,7 @@ void region_builder::explore_r(const cv::Mat& mat, int row, int col) {
         //logger->debug("Explore vert completed.");
         //printQueue("rows", rows);
         //printMap("rows", *rows_map);
-        cout << endl;
+        //cout << endl;
         /*
          * cols->size(): 0
          * rows->size(): 9
@@ -700,5 +699,33 @@ void region_builder::setRegionDesc(RegionDesc desc) {
 
 void region_builder::setRegionEvaluator(region_evaluator* eval) {
     this->evaluator = eval;
+}
+
+bool region_builder::getNextStartPoint(size_t s, int* pixel) {
+    assert(s==2 && pixel != nullptr);
+    if (rows_map == nullptr) {
+        logger->error("Map is null.");
+        return false;
+    }
+    if (rows_map->size() == 0) {
+        logger->error("Map is empty.");
+        return false;
+    }
+    int count = 0; 
+    for (auto it=rows_map->begin(); it!=rows_map->end(); it++) {
+        if (it->second->at(0)[0] >= 1) {
+                pixel[0] = count; pixel[1] = it->second->at(0)[0] - 1;
+                logger->fdebug("snsns", "Found at [", pixel[0], ", ", pixel[1], "]");
+                return true;
+        }
+        if (it->second->at(0)[1] <= W-2) {
+                pixel[0] = count; pixel[1] = it->second->at(0)[1] + 1;
+                logger->fdebug("snsns", "Found at [", pixel[0], ", ", pixel[1], "]");
+                return true;
+        }
+        count++;
+    }
+    logger->error("Cannot find an available pixel.");
+    return false;
 }
 
