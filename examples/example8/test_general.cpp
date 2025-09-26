@@ -40,6 +40,16 @@ int main(int argc, char* argv[]) {
     cout << "Out of bound: offset: length " << myStringChars[length] << endl;
     cout << "Out of bound: offset: length+1 " << myStringChars[length+1] << endl;
     cout << endl;
+
+    cout << "Test pass by address" << endl;
+    mtest* mp = new mtest();
+    vector<int>* v1 = new vector<int>();
+    v1->push_back(0);
+    mp->testPassByAddress(*v1);
+    delete mp;
+    delete v1;
+    cout << "Test pass by address: Done" << endl;
+    cout << endl;
     
     return 0;
 }

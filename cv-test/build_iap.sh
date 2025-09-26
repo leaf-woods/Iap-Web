@@ -96,8 +96,8 @@ else
     
     #rsync $dry_run -av $iap_cv_base/image/color/ $iap_github_base/image/color
     
-    rsync $dry_run -av $iap_cv_base/image/region/region_builder.cpp $iap_github_base/image/region/region_builder.cpp
-    rsync $dry_run -av $iap_cv_base/image/region/region_builder.h $iap_github_base/image/region/region_builder.h
+    #rsync $dry_run -av $iap_cv_base/image/region/region_builder.cpp $iap_github_base/image/region/region_builder.cpp
+    #rsync $dry_run -av $iap_cv_base/image/region/region_builder.h $iap_github_base/image/region/region_builder.h
 
     #rsync $dry_run -av $iap_cv_base/image/region/ $iap_github_base/image/region
 
@@ -126,7 +126,7 @@ else
     
     #rsync $dry_run -av $iap_cv_base/util/print/ $iap_github_base/util/print
 
-    rsync $dry_run -av $iap_cv_base/util/log/ $iap_github_base/util/log
+    #rsync $dry_run -av $iap_cv_base/util/log/ $iap_github_base/util/log
 
     #rsync $dry_run -av $iap_cv_base/main.cpp $iap_github_base/main.cpp
 fi
