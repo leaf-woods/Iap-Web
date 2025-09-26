@@ -11,6 +11,7 @@ class mtest {
         mtest* create();
         mtest* create(std::string msg);
         void testPassByAddress(std::vector<int>& vec);
+        void testPassByAddressConst(const std::vector<int>& vec);
         void printVector(const std::vector<int>& v);
 };
 

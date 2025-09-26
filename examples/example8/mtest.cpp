@@ -41,6 +41,16 @@ void mtest::testPassByAddress(vector<int>& vec) {
     cout << endl;
 }
 
+void mtest::testPassByAddressConst(const vector<int>& vec) {
+    cout << "pass by address const" << endl;
+    v0 = vec;
+    cout << "vec addr: " << &vec << endl;
+    cout << "v0 addr: " << &v0 << endl;
+    v0.push_back(1);
+    cout << "vec size: " << vec.size() << endl;
+    cout << "v0 size: " << v0.size() << endl;
+}
+
 void mtest::printVector(const vector<int>& v) {  
     cout << " Vector: { ";
     for (int i=0; i < (int)v.size(); i++) {

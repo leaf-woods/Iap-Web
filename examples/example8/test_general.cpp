@@ -46,6 +46,7 @@ int main(int argc, char* argv[]) {
     vector<int>* v1 = new vector<int>();
     v1->push_back(0);
     mp->testPassByAddress(*v1);
+    mp->testPassByAddressConst(*v1);
     delete mp;
     delete v1;
     cout << "Test pass by address: Done" << endl;
