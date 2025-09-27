@@ -4,9 +4,8 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include "pixel_comparator.h"
-#include "region_builder.h"
-#include "region_evaluator.h"
+#include "iapcv_env.h"
+#include "regioncontext.h"
 //#include "sky_init_train.h"
 
 
@@ -51,39 +50,36 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 
+    iapcv_env* env = iapcv_env::getInstance();
+    string basePath = env->getDevTestImgBase();
+    string imgName = "test-color-band-v.jpg";
+
     cout << "Test region" << endl;
 
-    pixel_comparator* comp = new pixel_comparator();
-    region_evaluator* evaluator = new region_evaluator();
-    region_builder* builder = new region_builder();
-    
-    evaluator->setComparator(comp);
-    builder->setRegionEvaluator(evaluator);
+    regioncontext* region_ctx = new regioncontext();
 
-    string fname = "/home/linye020603/iap-web/cv-test/test-data/image/test-color-band-v.jpg";
+    string fname = basePath + "/" + imgName;
     cout << "Use file: " << fname << endl;
     cv::Mat input = cv::imread(fname);
     
     cout << "Test exploration" << endl;
-    builder->setRegionDesc(RegionDesc::black);
-    builder->explore(input, 315, 0);
-    builder->explore(input, 319, 0);
-    builder->explore(input, 315, 349);
-    builder->explore(input, 319, 349);
+    region_ctx->builder->setRegionDesc(RegionDesc::black);
+    region_ctx->builder->explore(input, 315, 0);
+    region_ctx->builder->explore(input, 319, 0);
+    region_ctx->builder->explore(input, 315, 349);
+    region_ctx->builder->explore(input, 319, 349);
 
-    builder->explore(input, 0, 0);
-    builder->explore(input, 0, 350);
-
-    cout << endl;
-    builder->setRegionDesc(RegionDesc::purple);
-    builder->explore(input, 0, 0); 
+    region_ctx->builder->explore(input, 0, 0);
+    region_ctx->builder->explore(input, 0, 350);
 
     cout << endl;
-    builder->explore(input, 175, 250); 
+    region_ctx->builder->setRegionDesc(RegionDesc::purple);
+    region_ctx->builder->explore(input, 0, 0); 
 
-    delete builder;
-    delete evaluator;
-    delete comp;
+    cout << endl;
+    region_ctx->builder->explore(input, 175, 250); 
+
+    delete region_ctx;
 
     return 0; // executed after test_region life time ends
 

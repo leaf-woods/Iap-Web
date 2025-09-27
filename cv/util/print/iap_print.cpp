@@ -22,6 +22,7 @@ void iap_print::printVector(const vector<int>& v) {
     cout << " }" << endl;
 }
 
+/// TODO 
 void iap_print::printVector(const vector<unsigned char*>& v, bool fixed_len) {
     if (fixed_len) {
         printVector(v);
@@ -39,6 +40,16 @@ void iap_print::printVector(const vector<unsigned char*>& v, bool fixed_len) {
        cout << " ; ";
     }
     cout << " }" << endl;
+}
+
+void iap_print::printVector(const vector<int*>& v, size_t s) {
+    cout << " Vector: { ";
+    if (s == 2) {
+        for (int i=0; i<v.size(); i++) {
+            cout << " [ " << v.at(i)[0] << " , " << v.at(i)[1] << " ] ";
+        }
+        cout << " }" << endl;
+    } 
 }
 
 // https://stackoverflow.com/questions/4180818/finding-the-length-of-a-character-array-in-c

@@ -68,7 +68,9 @@ class iapcv_log {
     
     public:
         iapcv_log(string cname);
-        
+        /// TODO: Since iapcv_log is provided by iapcv_context, we need to find other ways to record all iapcv_log clients.
+        iapcv_log() {} 
+
         void setLevel(int level);
         int getLevel();
         bool isDebug();

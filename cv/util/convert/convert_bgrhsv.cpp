@@ -10,10 +10,6 @@
 
 using namespace std;
 
-convert_bgrhsv::convert_bgrhsv() {}
-
-convert_bgrhsv::~convert_bgrhsv() {}
-
 /*
  * Dangerous parameter uchar* hsv
  * If caller is: uchar* hsv; then calls toHsvCV(hsv, b, g, r) we get SMF.
