@@ -21,10 +21,13 @@ region_builder::region_builder() {
 }
 
 region_builder::~region_builder() {
-    logger.info("Destruct region builder.");
+    logger->info("Destruct region builder.");
     clear();
     evaluator = nullptr;
     exp = nullptr;
+    mbounds = nullptr;
+    printer = nullptr;
+    logger = nullptr;
     delete sta;
     sta = nullptr;
 }
@@ -71,12 +74,12 @@ void region_builder::clear() {
 
     //https://stackoverflow.com/questions/56688963/how-to-free-the-memory-occupied-by-a-queuestl
     if (cols->size()>0) {
-        logger.error("Queue cols is not empty. Size: ", cols->size());
+        logger->error("Queue cols is not empty. Size: ", cols->size());
         cols->clear();
         deque<span_node*>().swap(*cols);
     }
     if (rows->size()>0) {
-        logger.error("Queue rows is not empty. Size: ", rows->size());
+        logger->error("Queue rows is not empty. Size: ", rows->size());
         rows->clear();
         deque<span_node*>().swap(*rows);
     }
@@ -109,7 +112,7 @@ void region_builder::checkInBound(const cv::Mat& mat, int r, int c, bool_status&
 void region_builder::countRegion() {
     if (rows_map->size()==0 || cols_map->size()==0) {
         assert(cols_map->size()==rows_map->size());
-        logger.info("Map is empty.");
+        logger->info("Map is empty.");
         return;
     }
     count = 0;
@@ -125,7 +128,7 @@ void region_builder::countRegion() {
             count+=countVector(*value);
         }
     }
-    logger.debug("size: ", count);
+    logger->debug("size: ", count);
 }
 
 int region_builder::countVector(const vector<int*>& v) {
@@ -150,29 +153,29 @@ void region_builder::init() {
  */
 void region_builder::explore(cv::Mat& mat, int row, int col) {
     if (mat.rows <= 0 || mat.cols <= 0) {
-        logger.info("Invalid matrix.");
+        logger->info("Invalid matrix.");
         return;
     }
     if (row < 0 || row >= mat.rows) {
-        logger.info("Row out of bound: ", row);
+        logger->info("Row out of bound: ", row);
         return;
     }
     if (col < 0 || col >= mat.cols) {
-        logger.info("Col out of bound: ", col);
+        logger->info("Col out of bound: ", col);
         return;
     }
 
     assert(desc > RegionDesc::na);
-    logger.info("Explore: ", region_desc::toString(desc));
+    logger->info("Explore: ", region_desc::toString(desc));
 
     sta->clear();
     checkInBound(mat, row, col, *sta);
     if (! sta->getResult()) {
         if (sta->isNormal()) {
-            logger.finfo("snsnsv", "Pixel not in region: row: ", row, " col: ", col, " for: ", region_desc::toString(desc));
+            logger->finfo("snsnsv", "Pixel not in region: row: ", row, " col: ", col, " for: ", region_desc::toString(desc));
         }
         else {
-            logger.error(sta->getMsg());
+            logger->error(sta->getMsg());
         }
         return;
     }
@@ -189,15 +192,17 @@ void region_builder::explore(cv::Mat& mat, int row, int col) {
         init(); 
     }
     
-    W = mat.cols;
     H = mat.rows;
+    W = mat.cols;
+    mbounds->setOH(H);
+    mbounds->setOW(W);
     
     auto t1 = chrono::high_resolution_clock::now();
 
     exp->setRegionDesc(desc);
     exp->explore(mat, row, col, *rows, *cols, *rows_map, *cols_map);
 
-    //logger.fdebug("snsnsn", "count: ", count, " count col: ", count_exp_col, " count row: ", count_exp_row);
+    //logger->fdebug("snsnsn", "count: ", count, " count col: ", count_exp_col, " count row: ", count_exp_row);
     
     rpt->printMap("cols", *cols_map);
     rpt->printMap("rows", *rows_map);
@@ -205,18 +210,18 @@ void region_builder::explore(cv::Mat& mat, int row, int col) {
     cout << "size: " << size() << endl;
 
     auto t2 = chrono::high_resolution_clock::now();
-    logger.info("Total process time: ", (int)chrono::duration_cast<chrono::microseconds>(t2-t1).count());
+    logger->info("Total process time: ", (int)chrono::duration_cast<chrono::microseconds>(t2-t1).count());
 }
 
-void region_builder::setLogger(iapcv_log& logger) {
+void region_builder::setLogger(iapcv_log* logger) {
     this->logger = logger;
 }
 
 void region_builder::setLogLevel(int level) {
-    this->logger.setLevel(level);
+    this->logger->setLevel(level);
 }
 
-void region_builder::setPrint(iap_print& print) {
+void region_builder::setPrint(iap_print* print) {
     this->printer = print;
 }
 
@@ -240,33 +245,43 @@ int region_builder::size() {
     return count;
 }
 
+void region_builder::setMatrixBounds(matrix_bounds* mb) {
+    this->mbounds = mb;
+}
 
+void region_builder::setSubMatrix(int r, int c, int num_rs, int num_cs) {
+    mbounds->setSubMatrix(r, c, num_rs, num_cs);
+}
+
+void region_builder::useMatrix() {
+    mbounds->useMatrix();
+}
 
 bool region_builder::getNextStartPoint(size_t s, int* pixel) {
     assert(s==2 && pixel != nullptr);
     if (rows_map == nullptr) {
-        logger.error("Map is null.");
+        logger->error("Map is null.");
         return false;
     }
     if (rows_map->size() == 0) {
-        logger.error("Map is empty.");
+        logger->error("Map is empty.");
         return false;
     }
     int count = 0; 
     for (auto it=rows_map->begin(); it!=rows_map->end(); it++) {
         if (it->second->at(0)[0] >= 1) {
                 pixel[0] = count; pixel[1] = it->second->at(0)[0] - 1;
-                logger.fdebug("snsns", "Found at [", pixel[0], ", ", pixel[1], "]");
+                logger->fdebug("snsns", "Found at [", pixel[0], ", ", pixel[1], "]");
                 return true;
         }
         if (it->second->at(0)[1] <= W-2) {
                 pixel[0] = count; pixel[1] = it->second->at(0)[1] + 1;
-                logger.fdebug("snsns", "Found at [", pixel[0], ", ", pixel[1], "]");
+                logger->fdebug("snsns", "Found at [", pixel[0], ", ", pixel[1], "]");
                 return true;
         }
         count++;
     }
-    logger.error("Cannot find an available pixel.");
+    logger->error("Cannot find an available pixel.");
     return false;
 }
 

@@ -12,6 +12,7 @@
 #include "iapcv_log.h"
 #include "iap_print.h"
 #include "iclearable.h"
+#include "matrix_bounds.h"
 #include "pixel_comparator.h"
 #include "region_desc.h"
 #include "region_evaluator.h"
@@ -34,7 +35,7 @@ class region_builder : public iclearable {
 
       static const int INVALID = -1;
 
-      int W = 0; int H = 0;
+      int H=0; int W=0;
 
       RegionDesc desc = RegionDesc::na;
 
@@ -44,8 +45,8 @@ class region_builder : public iclearable {
       std::map<int, vector<int*>*>* rows_map;
       std::map<int, vector<int*>*>* cols_map;
 
-      iapcv_log logger;
-      iap_print printer;
+      iapcv_log* logger;
+      iap_print* printer;
       region_print* rpt;
 
       int count;
@@ -53,6 +54,7 @@ class region_builder : public iclearable {
       region_explore* exp;
 
       bool_status* sta;
+      matrix_bounds* mbounds;
 
     public:
 
@@ -99,14 +101,17 @@ class region_builder : public iclearable {
       //void explore_r(const cv::Mat& mat, int row, int col);
       bool getNextStartPoint(size_t s, int* pixel);
       
-      void setLogger(iapcv_log& logger);
+      void setLogger(iapcv_log* logger);
       void setLogLevel(int level);
-      void setPrint(iap_print& printer);
+      void setMatrixBounds(matrix_bounds* mb);
+      void setPrint(iap_print* printer);
       void setRegionPrint(region_print* p);
       void setRegionDesc(RegionDesc desc);
       void setRegionEvaluator(region_evaluator* eval);
       void setRegionExplore(region_explore* exp);
+      void setSubMatrix(int r, int c, int num_rs, int num_cs);
       int size();
+      void useMatrix();
       
       
 };

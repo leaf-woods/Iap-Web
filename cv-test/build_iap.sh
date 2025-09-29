@@ -34,8 +34,8 @@ iap_github_test_base=/home/linye020603/github-local/Iap-Web/cv-test;
 
 test_and_main() {
     echo "Update project make and build: test_and_main";
-    #rsync $dry_run -av $iap_cv_test_base/makefile $iap_github_test_base/makefile
-    #rsync $dry_run -av $iap_cv_test_base/runtests.sh $iap_github_test_base/runtests.sh
+    rsync $dry_run -av $iap_cv_test_base/makefile $iap_github_test_base/makefile
+    rsync $dry_run -av $iap_cv_test_base/runtests.sh $iap_github_test_base/runtests.sh
 
     #rsync $dry_run -av $iap_cv_base/makefile $iap_github_base/makefile 
 }
@@ -51,12 +51,16 @@ test_iap() {
        
     #rsync $dry_run -av $iap_cv_test_base/image/color/ $iap_github_test_base/image/color
 
+    #rsync $dry_run -av $iap_cv_test_base/image/color/datatype/ $iap_github_test_base/image/color/datatype
+
     #rsync $dry_run -av $iap_cv_test_base/image/color/compare/testComparator.cpp $iap_github_test_base/image/color/compare/testComparator.cpp
     #rsync $dry_run -av $iap_cv_test_base/image/color/compare/ $iap_github_test_base/image/color/compare
 
     #rsync $dry_run -av $iap_cv_test_base/image/region/test_region.cpp $iap_github_test_base/image/region/test_region.cpp
     #rsync $dry_run -av $iap_cv_test_base/image/region/makefile $iap_github_test_base/image/region/makefile
     
+    #rsync $dry_run -av $iap_cv_test_base/image/train/policies/ $iap_github_test_base/image/train/policies
+
     #rsync $dry_run -av $iap_cv_test_base/util/convert/test_convertnumber.cpp $iap_github_test_base/util/convert/test_convertnumber.cpp
 
     #rsync $dry_run -av $iap_cv_test_base/util/log/testLog.cpp $iap_github_test_base/util/log/testLog.cpp
@@ -99,6 +103,7 @@ else
     #rsync $dry_run -av $iap_cv_base/image/color/compare/ $iap_github_base/image/color/compare
 
     #rsync $dry_run -av $iap_cv_base/image/color/datatype/status/status.h $iap_github_base/image/color/datatype/status/status.h
+    #rsync $dry_run -av $iap_cv_base/image/color/datatype/sub_matr.h $iap_github_base/image/color/datatype/sub_matr.h
     
     #rsync $dry_run -av $iap_cv_base/image/color/ $iap_github_base/image/color
     
@@ -116,13 +121,15 @@ else
     #rsync $dry_run -av $iap_cv_base/image/toolbox/sky.h $iap_github_base/image/toolbox/sky.h
     #rsync $dry_run -av $iap_cv_base/image/toolbox/sky.cpp $iap_github_base/image/toolbox/sky.cpp
 
+    rsync $dry_run -av $iap_cv_base/image/train/ $iap_github_base/image/train
+
     #rsync $dry_run -av $iap_cv_base/io/ $iap_github_base/io
 
     #rsync $dry_run -av $iap_cv_base/manage/iclearable.h $iap_github_base/manage/iclearable.h
 
     #rsync $dry_run -av $iap_cv_base/util/convert/convertnumber.cpp $iap_github_base/util/convert/convertnumber.cpp
-    rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv.h $iap_github_base/util/convert/convert_bgrhsv.h
-    rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv.cpp $iap_github_base/util/convert/convert_bgrhsv.cpp
+    #rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv.h $iap_github_base/util/convert/convert_bgrhsv.h
+    #rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv.cpp $iap_github_base/util/convert/convert_bgrhsv.cpp
     #rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv_test.cpp $iap_github_base/util/convert/convert_bgrhsv_test.cpp  
     
     #rsync $dry_run -av $iap_cv_base/util/log/iapcv_log.h $iap_github_base/util/log/iapcv_log.h

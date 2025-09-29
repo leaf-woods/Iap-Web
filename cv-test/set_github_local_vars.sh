@@ -48,11 +48,11 @@ done < <(tail -n "+$start" "$input" | head -n $count)
 # https://askubuntu.com/questions/289160/how-to-read-file-starting-from-a-specific-number-of-line-within-the-while-read
 
 # cv-test/makefile
-use=$(grep 'test_base/makefile' build_iap.sh | grep 'rync');
+use=$(grep 'test_base/makefile' build_iap.sh | grep 'rsync');
 if [[ -n "$use" ]]
 then
     check=$(grep '#rsync' <<< $use);
-    if [[ -z check ]]
+    if [[ -z $check ]]
     then
         echo "Processing file: ./makefile";
         sed -i -e 's/iap_cv_example_base/iap_ghl_cv_example_base/g' -e 's/iap-web\/util/github-local\/Iap-Web\/examples/' makefile;
@@ -61,11 +61,11 @@ then
 fi
 
 # cv-test/runtests.sh
-use=$(grep 'test_base/runtests.sh' build_iap.sh | grep 'rync');
+use=$(grep 'test_base/runtests.sh' build_iap.sh | grep 'rsync');
 if [[ -n "$use" ]]
 then
     check=$(grep '#rsync' <<< $use);
-    if [[ -z check ]]
+    if [[ -z $check ]]
     then
         echo "Processing file: ./runtests.sh";
         sed -i -e 's/iap_cv_example_base/iap_ghl_cv_example_base/g' -e 's/iap-web\/util/github-local\/Iap-Web\/examples/' runtests.sh;
@@ -74,11 +74,11 @@ then
 fi
 
 # cv/makefile
-use=$(grep 'cv_base/makefile' build_iap.sh | grep 'rync');
+use=$(grep 'cv_base/makefile' build_iap.sh | grep 'rsync');
 if [[ -n "$use" ]]
 then
     check=$(grep '#rsync' <<< $use);
-    if [[ -z check ]]
+    if [[ -z $check ]]
     then
         echo "Processing file: ../cv/makefile";
         sed -i -e 's/iap_cv_base/iap_ghl_cv_base/g' -e 's/iap-web/github-local\/Iap-Web/' ../cv/makefile;    

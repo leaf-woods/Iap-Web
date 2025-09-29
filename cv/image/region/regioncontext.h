@@ -2,6 +2,7 @@
 #define REGION_CONTEXT_H
 
 #include "iapcv_context.h"
+#include "matrix_bounds.h"
 #include "pixel_comparator.h"
 #include "region_builder.h"
 #include "region_evaluator.h"
@@ -18,12 +19,14 @@ class regioncontext {
         pixel_comparator* compr;
         region_explore* explore;
         region_print* rpt;
+        matrix_bounds* mbounds;
 
     public:
         regioncontext() {
             iap_ctx = new iapcv_context();
 
             builder = new region_builder();
+            mbounds = new matrix_bounds();
             eval = new region_evaluator();
             compr = new pixel_comparator();
             rpt = new region_print();
@@ -33,18 +36,21 @@ class regioncontext {
             builder->setRegionEvaluator(eval);
             builder->setRegionPrint(rpt);
             builder->setRegionExplore(explore);
+            builder->setMatrixBounds(mbounds);
 
-            builder->setPrint(*iap_ctx->printer);
-            builder->setLogger(*iap_ctx->logger);
+            builder->setPrint(iap_ctx->printer);
+            builder->setLogger(iap_ctx->logger);
 
-            explore->setRegionEvaluator(*eval);
-            explore->setLogger(*iap_ctx->logger);
-            explore->setRegionPrint(*rpt);
+            explore->setRegionEvaluator(eval);
+            explore->setLogger(iap_ctx->logger);
+            explore->setRegionPrint(rpt);
+            explore->setMatrixBounds(mbounds);
         }
 
         ~regioncontext() {
             delete builder;
             delete explore;
+            delete mbounds;
             delete eval;
             delete compr;
             delete rpt;
