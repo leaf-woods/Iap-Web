@@ -23,9 +23,9 @@ region_builder::region_builder() {
 region_builder::~region_builder() {
     logger->info("Destruct region builder.");
     clear();
-    evaluator = nullptr;
     exp = nullptr;
     mbounds = nullptr;
+    evaluator = nullptr;
     printer = nullptr;
     logger = nullptr;
     delete sta;
@@ -55,6 +55,10 @@ void region_builder::clear() {
         cols = nullptr;
         delete rows; 
         rows = nullptr;
+        assert(dv!=nullptr && dv->size()==0);
+        delete dv;
+        dv = nullptr;
+        return;
     }
 
     // Just used.
@@ -71,6 +75,12 @@ void region_builder::clear() {
     *rows_map = map<int, std::vector<int*>*>();
     delete rows_map;
     rows_map = nullptr;
+
+    if (dv->size() > 0) {
+        clearVector(*dv);
+    }
+    delete dv;
+    dv = nullptr;
 
     //https://stackoverflow.com/questions/56688963/how-to-free-the-memory-occupied-by-a-queuestl
     if (cols->size()>0) {
@@ -145,6 +155,7 @@ void region_builder::init() {
 
     rows_map = new map<int, vector<int*>*>();
     cols_map = new map<int, vector<int*>*>();
+    dv = new vector<int*>();
 }
 
 /*
@@ -203,11 +214,13 @@ void region_builder::explore(cv::Mat& mat, int row, int col) {
     exp->explore(mat, row, col, *rows, *cols, *rows_map, *cols_map);
 
     //logger->fdebug("snsnsn", "count: ", count, " count col: ", count_exp_col, " count row: ", count_exp_row);
-    
+
     rpt->printMap("cols", *cols_map);
     rpt->printMap("rows", *rows_map);
     countRegion();
     cout << "size: " << size() << endl;
+
+    exp->explore_diag(mat, dv);
 
     auto t2 = chrono::high_resolution_clock::now();
     logger->info("Total process time: ", (int)chrono::duration_cast<chrono::microseconds>(t2-t1).count());

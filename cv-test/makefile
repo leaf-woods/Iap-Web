@@ -11,6 +11,7 @@ all:
 	cd $(dir_test_image)/color/compare && $(MAKE)
 	cd $(dir_test_image)/color/datatype && $(MAKE)
 	cd $(dir_test_image)/region && $(MAKE)
+	cd $(dir_test_image)/region/explore && $(MAKE)
 	cd $(dir_test_image)/train/policies && $(MAKE)
 	cd $(dir_test_util)/convert && $(MAKE)
 	cd $(dir_test_util)/log && $(MAKE)
@@ -26,6 +27,7 @@ clean:
 	cd $(dir_test_image)/color/compare && $(MAKE) clean
 	cd $(dir_test_image)/color/datatype && $(MAKE) clean
 	cd $(dir_test_image)/region && $(MAKE) clean
+	cd $(dir_test_image)/region/explore && $(MAKE) clean
 	cd $(dir_test_image)/train/policies && $(MAKE) clean
 	cd $(dir_test_util)/convert && $(MAKE) clean
 	cd $(dir_test_util)/log && $(MAKE) clean

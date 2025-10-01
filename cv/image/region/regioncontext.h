@@ -48,8 +48,8 @@ class regioncontext {
         }
 
         ~regioncontext() {
-            delete builder;
             delete explore;
+            delete builder;
             delete mbounds;
             delete eval;
             delete compr;

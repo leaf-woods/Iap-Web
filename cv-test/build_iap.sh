@@ -59,6 +59,9 @@ test_iap() {
     #rsync $dry_run -av $iap_cv_test_base/image/region/test_region.cpp $iap_github_test_base/image/region/test_region.cpp
     #rsync $dry_run -av $iap_cv_test_base/image/region/makefile $iap_github_test_base/image/region/makefile
     
+    rsync $dry_run -av $iap_cv_test_base/image/region/explore/testRegionExplore.cpp $iap_github_test_base/image/region/explore/testRegionExplore.cpp
+    rsync $dry_run -av $iap_cv_test_base/image/region/explore/makefile $iap_github_test_base/image/region/explore/makefile
+    
     #rsync $dry_run -av $iap_cv_test_base/image/train/policies/ $iap_github_test_base/image/train/policies
 
     #rsync $dry_run -av $iap_cv_test_base/util/convert/test_convertnumber.cpp $iap_github_test_base/util/convert/test_convertnumber.cpp
@@ -107,21 +110,21 @@ else
     
     #rsync $dry_run -av $iap_cv_base/image/color/ $iap_github_base/image/color
     
-    #rsync $dry_run -av $iap_cv_base/image/region/region_builder.cpp $iap_github_base/image/region/region_builder.cpp
-    #rsync $dry_run -av $iap_cv_base/image/region/region_builder.h $iap_github_base/image/region/region_builder.h
+    rsync $dry_run -av $iap_cv_base/image/region/region_builder.cpp $iap_github_base/image/region/region_builder.cpp
+    rsync $dry_run -av $iap_cv_base/image/region/region_builder.h $iap_github_base/image/region/region_builder.h
     #rsync $dry_run -av $iap_cv_base/image/region/region_print.cpp $iap_github_base/image/region/region_print.cpp
     #rsync $dry_run -av $iap_cv_base/image/region/region_print.h $iap_github_base/image/region/region_print.h
-    #rsync $dry_run -av $iap_cv_base/image/region/regioncontext.h $iap_github_base/image/region/regioncontext.h
+    rsync $dry_run -av $iap_cv_base/image/region/regioncontext.h $iap_github_base/image/region/regioncontext.h
 
     #rsync $dry_run -av $iap_cv_base/image/region/ $iap_github_base/image/region
     
     #rsync $dry_run -av $iap_cv_base/image/region/datatype/ $iap_github_base/image/region/datatype
-    #rsync $dry_run -av $iap_cv_base/image/region/explore/ $iap_github_base/image/region/explore
+    rsync $dry_run -av $iap_cv_base/image/region/explore/ $iap_github_base/image/region/explore
 
     #rsync $dry_run -av $iap_cv_base/image/toolbox/sky.h $iap_github_base/image/toolbox/sky.h
     #rsync $dry_run -av $iap_cv_base/image/toolbox/sky.cpp $iap_github_base/image/toolbox/sky.cpp
 
-    rsync $dry_run -av $iap_cv_base/image/train/ $iap_github_base/image/train
+    #rsync $dry_run -av $iap_cv_base/image/train/ $iap_github_base/image/train
 
     #rsync $dry_run -av $iap_cv_base/io/ $iap_github_base/io
 

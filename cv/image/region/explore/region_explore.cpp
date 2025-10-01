@@ -13,12 +13,13 @@ region_explore::~region_explore() {
     cols = nullptr;
     rows = nullptr;
     cols_map = nullptr;
-    rows_map = nullptr;
-
+    rows_map = nullptr;  
+    dv = nullptr;
     logger = nullptr;
     mbounds = nullptr;
     evaluator = nullptr;
     rpt = nullptr;
+    
     delete sta;
 }
 
@@ -97,8 +98,6 @@ void region_explore::explore(cv::Mat& mat, int row, int col, std::deque<span_nod
     W = mat.cols;
     H = mat.rows;
     
-    auto t1 = chrono::high_resolution_clock::now();
-    
     get_col_span(mat, row, col);
     vector<int*>* v = new vector<int*>(); 
     cols_map->insert(make_pair(cols->front()->offset, v));
@@ -124,10 +123,6 @@ void region_explore::explore(cv::Mat& mat, int row, int col, std::deque<span_nod
         //logger->debug("Explore vert completed.");
         //absr_explore::printQueue("rows", *rows);
         //printMap("rows", *rows_map);
-        
-        
-        //assert( count==1 && cols->size()==0 && rows->size()==9 && cols_map->size()== 1 && rows_map->size()== 0 );
-         
       }
     
       while (rows->size() > 0) {
@@ -144,14 +139,6 @@ void region_explore::explore(cv::Mat& mat, int row, int col, std::deque<span_nod
     }
   }
     logger->fdebug("snsnsn", "count: ", count, " count col: ", count_exp_col, " count row: ", count_exp_row);
-    rpt->printMap("cols", *cols_map);
-    cout << endl;
-    rpt->printMap("rows", *rows_map);
-    //countRegion();
-    //cout << "size: " << size() << endl;
-
-    auto t2 = chrono::high_resolution_clock::now();
-    logger->info("Total process time: ", (int)chrono::duration_cast<chrono::microseconds>(t2-t1).count());
 }
 
 int region_explore::get_top(const cv::Mat& mat, int r, int c) {
@@ -381,6 +368,93 @@ void region_explore::explore_hort(const cv::Mat& mat, const span_node& row_sp) {
         }
     }
     //logger->debug("New entry generated: ", count_newentry, " New bounds generated: ", count_newbounds);
+}
+
+void region_explore::explore_diag(const cv::Mat& mat, vector<int*>* dvec) {
+    if (rows_map == nullptr || rows_map->size() == 0) {
+        logger->info("Rows map not available.");
+        return;
+    }
+    this->dv = dvec;
+    for (auto it=rows_map->begin(); it!=rows_map->end(); it++) {
+        for (int i=0; i<it->second->size(); i++) {
+            /*
+            if (it->second->at(i)[0] == it->second->at(i)[1]) {
+                /// TODO
+                continue;
+            }
+                */
+            
+            // if upper is connected, then skip upper left
+            if (it->first > 0) {
+                auto sch = rows_map->find(it->first - 1);
+                if (sch == rows_map->end()) {
+                    // check upper left and upper right
+                    if (it->second->at(i)[0] > 0) {
+                        checkDiagnal(mat, it->first-1, it->second->at(i)[0]-1);
+                    }
+                    if (it->second->at(i)[1] < mat.cols -1) {
+                        checkDiagnal(mat, it->first-1, it->second->at(i)[0]+1);
+                    }
+                }
+                else {
+                    if (!contains(*sch->second, it->second->at(i)[0])) {
+                        // check upper left
+                        if (it->second->at(i)[0] > 0) {
+                            checkDiagnal(mat, it->first-1, it->second->at(i)[0]-1);
+                        }
+                    }
+                    if (!contains(*sch->second, it->second->at(i)[1])) {
+                        // check upper right
+                        if (it->second->at(i)[1] < mat.cols -1) {
+                            checkDiagnal(mat, it->first-1, it->second->at(i)[0]+1);
+                        }
+                    }
+                } 
+            }
+            if (it->first < mat.rows-1) {
+                auto sch2 = rows_map->find(it->first + 1);
+                if (sch2 == rows_map->end()) {
+                    // check lower left and lower right
+                    if (it->second->at(i)[0] > 0) {
+                        checkDiagnal(mat, it->first+1, it->second->at(i)[0]-1);
+                    }
+                    if (it->second->at(i)[1] < mat.cols -1) {
+                        checkDiagnal(mat, it->first+1, it->second->at(i)[0]+1);
+                    }
+                }
+                else {
+                    if (!contains(*sch2->second, it->second->at(i)[0])) {
+                        // check lower left
+                        if (it->second->at(i)[0] > 0) {
+                            checkDiagnal(mat, it->first+1, it->second->at(i)[0]-1);
+                        }
+                    }
+                    if (!contains(*sch2->second, it->second->at(i)[1])) {
+                        // check lower right
+                        if (it->second->at(i)[1] < mat.cols -1) {
+                            checkDiagnal(mat, it->first+1, it->second->at(i)[0]+1);
+                        }
+                    }
+                }
+            }   
+        }  
+    }
+}
+
+void region_explore::checkDiagnal(const cv::Mat& mat, int r, int c) {
+    logger->fdebug("snsn", "Check diagonal pixel. Row: ", r, " Col: ", c);
+    evaluator->evaluate(desc, mat.at<cv::Vec3b>(r, c), *sta); 
+    if (! sta->isNormal()) {
+        logger->error(sta->getMsg());
+    }
+    else if (! sta->getResult()) {
+        logger->finfo("snsns", "Diagnol pixel: row ", r, " col: ", c, " not connected.");
+    }
+    else {
+        logger->finfo("snsns", "Diagnol pixel: row ", r, " col: ", c, " is connected.");
+        dv->push_back(new int[]{r, c});
+    }
 }
 
 void region_explore::setLogger(iapcv_log* logger) {

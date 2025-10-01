@@ -56,6 +56,8 @@ class region_builder : public iclearable {
       bool_status* sta;
       matrix_bounds* mbounds;
 
+      vector<int*>* dv;
+
     public:
 
       static const int IN_BOUND = 10000;
@@ -74,7 +76,7 @@ class region_builder : public iclearable {
       void checkInBound(const cv::Mat& mat, int r, int c, bool_status& sta);
       void clearMap(map<int, vector<int*>*>& m);
 
-      /*
+      
       template<typename T>
       void clearVector(vector<T*>& v) {
           logger->debug("clear vector: size: ", v.size());
@@ -86,7 +88,7 @@ class region_builder : public iclearable {
           v = vector<T*>();
           logger->debug("clear vector: vector elements deleted.");
       }
-      */
+      
 
       void countRegion();
       int countVector(const vector<int*>& v);
