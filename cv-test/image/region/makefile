@@ -1,9 +1,9 @@
-iap_ghl_cv_base=/home/linye020603/github-local/Iap-Web/cv
-dir_context=$(iap_ghl_cv_base)/context
-dir_io=$(iap_ghl_cv_base)/io
-dir_image=$(iap_ghl_cv_base)/image
-dir_manage=$(iap_ghl_cv_base)/manage
-dir_util=$(iap_ghl_cv_base)/util
+iap_cv_base=/home/linye020603/iap-web/cv
+dir_context=$(iap_cv_base)/context
+dir_io=$(iap_cv_base)/io
+dir_image=$(iap_cv_base)/image
+dir_manage=$(iap_cv_base)/manage
+dir_util=$(iap_cv_base)/util
 
 INCLUDES = -I$(dir_context)/ \
            -I$(dir_image)/color \

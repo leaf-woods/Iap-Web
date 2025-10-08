@@ -52,6 +52,7 @@ class region_explore {
         void adjustBounds(bounds& b, int begin, int end, const std::vector<int*>& v);
         void checkDiagnal(const cv::Mat& mat, int r, int c);
         bool contains(const std::vector<int*>& v, int n);
+        bool containsOnMap(int row, int col);
         span_node* createSpanNode(int type, int offset, int lower, int upper);
         void explore_hort(const cv::Mat& mat, const span_node& row_sp);
         void explore_vert(const cv::Mat& mat, const span_node& col_sp);

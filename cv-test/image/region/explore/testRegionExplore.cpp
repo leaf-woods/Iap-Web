@@ -35,6 +35,8 @@ int main(int argc, char* argv[]) {
 
     region_ctx->builder->setRegionDesc(RegionDesc::sky);
     region_ctx->builder->explore(*trainM, 0, 0); 
+    cout << "Test explore diagonal: Done" << endl;
+    cout << endl;
 
     // Restore two pixels' color
     color = trainM->at<cv::Vec3b>(0, 1);
@@ -48,10 +50,8 @@ int main(int argc, char* argv[]) {
     color[2] = 0;
     trainM->at<cv::Vec3b>(cv::Point(1, 0)) = color;
 
-    cout << "Test explore diagonal" << endl;
     region_ctx->builder->setRegionDesc(RegionDesc::sky);
     region_ctx->builder->explore(*trainM, 0, 0); 
-    cout << "Test explore diagonal: Done" << endl;
     cout << endl;
 
     delete tr;

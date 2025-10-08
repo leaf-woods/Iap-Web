@@ -43,6 +43,7 @@ class sky_init_train {
         std::string getImageName();
         cv::Mat* getMatrixTrain();
         cv::Mat* getInputImage();
+        cv::Mat* getHsvImage();
 
         void printTrainR();
         void test_dist();

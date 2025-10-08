@@ -36,3 +36,10 @@ void region_print::printSpan(const span_node& sp) {
     }
     cout << sp.offset << " bounds: [ " << sp.span[0] << " , " << sp.span[1] << " ]" << endl;
 }
+
+void region_print::printBorderPixelsDiff(const vector<border_pixel_diff_node*>& bv) {
+    cout << "Print border pixels diff. size: " << bv.size() << endl;
+    for (int i=0; i<bv.size(); i++) {
+        bv.at(i)->print();
+    }
+}

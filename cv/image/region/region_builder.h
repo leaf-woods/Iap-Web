@@ -1,6 +1,7 @@
 #ifndef REGION_BUILDER_H
 #define REGION_BUILDER_H
 
+#include <bitset>
 #include <deque>
 #include <map>
 
@@ -8,6 +9,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include "border_pixel_diff_node.h"
 #include "imagecolorvalues.h"
 #include "iapcv_log.h"
 #include "iap_print.h"
@@ -50,6 +52,7 @@ class region_builder : public iclearable {
       region_print* rpt;
 
       int count;
+      int count_internal;
       region_evaluator* evaluator;
       region_explore* exp;
 
@@ -57,6 +60,7 @@ class region_builder : public iclearable {
       matrix_bounds* mbounds;
 
       vector<int*>* dv;
+      vector<border_pixel_diff_node*>* bv;
 
     public:
 
@@ -74,6 +78,8 @@ class region_builder : public iclearable {
 
     private:
       void checkInBound(const cv::Mat& mat, int r, int c, bool_status& sta);
+      void checkNorth(int row, int col, std::bitset<8>& x);
+      void checkSouth(int row, int col, std::bitset<8>& x);
       void clearMap(map<int, vector<int*>*>& m);
 
       
@@ -88,19 +94,25 @@ class region_builder : public iclearable {
           v = vector<T*>();
           logger->debug("clear vector: vector elements deleted.");
       }
-      
-
-      void countRegion();
+      void computeDelta(cv::Vec<unsigned char, 3>& entry, cv::Vec<unsigned char, 3>& neighbor, cv::Vec<int, 3>& df);
+      void containsNorth(const vector<int*>& v, int n, std::bitset<8>& x);
+      void containsSouth(const vector<int*>& v, int n, std::bitset<8>& x);
+      void countRegionPixels();
       int countVector(const vector<int*>& v);
       void init();
+      void setBorderPixelsDiff(const cv::Mat& mat, int row, int col, bitset<8>& x);
+      void setPixelDiff(const cv::Mat& mat, int row, int col, border_pixel_diff_node& bn, direction dr);
+      bool verifyBorderPixels(const border_pixel_diff_node& bn);
 
     public:
       region_builder();
       ~region_builder();
 
       void clear();
+      void computeBorders(const cv::Mat& mat);
       void explore(cv::Mat& mat, int r, int c);
       //void explore_r(const cv::Mat& mat, int row, int col);
+      void getAllBorderPixels(const cv::Mat& mat);
       bool getNextStartPoint(size_t s, int* pixel);
       
       void setLogger(iapcv_log* logger);

@@ -24,6 +24,7 @@ class iap_print {
         void printPixelColor(cv::Vec<unsigned char, 3> entry, std::string type);
         void printPixelIndex(size_t dim, int* array);
         void printKV(int key, int value);
+        void printCVMatrixPixel(const cv::Mat& mat, int row, int col, std::string type);
 
         std::string formattedNumToStr(int num);
 };

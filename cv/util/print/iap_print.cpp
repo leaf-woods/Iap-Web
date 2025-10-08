@@ -122,3 +122,9 @@ string iap_print::formattedNumToStr(int num) {
     return to_string(num);
     
 }
+
+void iap_print::printCVMatrixPixel(const cv::Mat& mat, int row, int col, string type) {
+    cout << "Print pixel color of: Row: " << row << " Col: " << col << " ";
+    cv::Vec<unsigned char, 3> entry = mat.at<cv::Vec3b>(row, col);
+    printPixelColor(entry, type);
+}

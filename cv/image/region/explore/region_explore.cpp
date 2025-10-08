@@ -376,80 +376,81 @@ void region_explore::explore_diag(const cv::Mat& mat, vector<int*>* dvec) {
         return;
     }
     this->dv = dvec;
+
+    // https://www.geeksforgeeks.org/cpp/how-to-find-the-last-element-in-a-map-in-cpp/
+    auto lastPair = prev(rows_map->end());
+    int lastRowOnMap = lastPair->first;
+
+    int left = 0; 
+    int right = 0;
     for (auto it=rows_map->begin(); it!=rows_map->end(); it++) {
         for (int i=0; i<it->second->size(); i++) {
-            /*
-            if (it->second->at(i)[0] == it->second->at(i)[1]) {
-                /// TODO
-                continue;
+            left = it->second->at(i)[0];
+            right = it->second->at(i)[1];
+            //cout << "Processing: row: " << it->first << " left: " << left << " right: " << right << endl;
+            if (it->first == 0) {
+                if (left > 0) {
+                    if (!containsOnMap(it->first+1, left-1)) { 
+                        checkDiagnal(mat, it->first+1, left-1);
+                    }
+                }
+                if (right < W-1) {
+                    if (it->first == lastRowOnMap || !containsOnMap(it->first+1, right+1)) { 
+                        checkDiagnal(mat, it->first+1, right+1);
+                    } 
+                }
             }
-                */
-            
-            // if upper is connected, then skip upper left
-            if (it->first > 0) {
-                auto sch = rows_map->find(it->first - 1);
-                if (sch == rows_map->end()) {
-                    // check upper left and upper right
-                    if (it->second->at(i)[0] > 0) {
-                        checkDiagnal(mat, it->first-1, it->second->at(i)[0]-1);
-                    }
-                    if (it->second->at(i)[1] < mat.cols -1) {
-                        checkDiagnal(mat, it->first-1, it->second->at(i)[0]+1);
+            else if (it->first == lastRowOnMap) {
+                if (left > 0) {
+                    if (!containsOnMap(it->first-1, left-1)) {
+                        checkDiagnal(mat, it->first-1, left-1);
                     }
                 }
-                else {
-                    if (!contains(*sch->second, it->second->at(i)[0])) {
-                        // check upper left
-                        if (it->second->at(i)[0] > 0) {
-                            checkDiagnal(mat, it->first-1, it->second->at(i)[0]-1);
-                        }
+
+                if (right < W-1) {
+                    if (!containsOnMap(it->first-1, right+1)) {
+                        checkDiagnal(mat, it->first-1, right+1);
                     }
-                    if (!contains(*sch->second, it->second->at(i)[1])) {
-                        // check upper right
-                        if (it->second->at(i)[1] < mat.cols -1) {
-                            checkDiagnal(mat, it->first-1, it->second->at(i)[0]+1);
-                        }
-                    }
-                } 
+                }
             }
-            if (it->first < mat.rows-1) {
-                auto sch2 = rows_map->find(it->first + 1);
-                if (sch2 == rows_map->end()) {
-                    // check lower left and lower right
-                    if (it->second->at(i)[0] > 0) {
-                        checkDiagnal(mat, it->first+1, it->second->at(i)[0]-1);
+            else {
+                if (left > 0) {
+                    if (!containsOnMap(it->first-1, left-1)) {
+                        checkDiagnal(mat, it->first-1, left-1);
                     }
-                    if (it->second->at(i)[1] < mat.cols -1) {
-                        checkDiagnal(mat, it->first+1, it->second->at(i)[0]+1);
+                    if ( !containsOnMap(it->first+1, left-1)) {
+                        checkDiagnal(mat, it->first+1, left-1);
                     }
                 }
-                else {
-                    if (!contains(*sch2->second, it->second->at(i)[0])) {
-                        // check lower left
-                        if (it->second->at(i)[0] > 0) {
-                            checkDiagnal(mat, it->first+1, it->second->at(i)[0]-1);
-                        }
+                
+                if (right < W-1) {
+                    if (!containsOnMap(it->first-1, right+1)) {
+                        checkDiagnal(mat, it->first-1, right+1);
                     }
-                    if (!contains(*sch2->second, it->second->at(i)[1])) {
-                        // check lower right
-                        if (it->second->at(i)[1] < mat.cols -1) {
-                            checkDiagnal(mat, it->first+1, it->second->at(i)[0]+1);
-                        }
+                    if (it->first == lastRowOnMap && !containsOnMap(it->first+1, right+1)) {
+                        checkDiagnal(mat, it->first+1, right+1);
                     }
                 }
-            }   
+            }
         }  
     }
 }
 
+bool region_explore::containsOnMap(int row, int col) {
+    //cout << "containsOnMap: row: " << row << " col: " << col << endl;
+    auto sch = rows_map->find(row);
+    assert(sch != rows_map->end());
+    return contains(*sch->second, col);
+}
+
 void region_explore::checkDiagnal(const cv::Mat& mat, int r, int c) {
-    logger->fdebug("snsn", "Check diagonal pixel. Row: ", r, " Col: ", c);
+    //logger->fdebug("snsn", "Check diagonal pixel. Row: ", r, " Col: ", c);
     evaluator->evaluate(desc, mat.at<cv::Vec3b>(r, c), *sta); 
     if (! sta->isNormal()) {
         logger->error(sta->getMsg());
     }
     else if (! sta->getResult()) {
-        logger->finfo("snsns", "Diagnol pixel: row ", r, " col: ", c, " not connected.");
+        //logger->finfo("snsns", "Diagnol pixel: row ", r, " col: ", c, " not connected.");
     }
     else {
         logger->finfo("snsns", "Diagnol pixel: row ", r, " col: ", c, " is connected.");

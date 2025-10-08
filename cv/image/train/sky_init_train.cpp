@@ -86,7 +86,7 @@ void sky_init_train::setup() {
             setupWeakCloud(train, 7, 16, 18);
 
     // Row 8
-            setupCloud(train, 8, 3, 14);
+            setupCloud(train, 8, 3, 12);
             setupCloud(train, 8, 16, 22);
             
     // Row 9
@@ -332,4 +332,8 @@ cv::Mat* sky_init_train::getMatrixTrain() {
 
 cv::Mat* sky_init_train::getInputImage() {
     return &input;
+}
+
+cv::Mat* sky_init_train::getHsvImage() {
+    return &hsvImage;
 }

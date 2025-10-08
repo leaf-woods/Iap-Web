@@ -13,6 +13,7 @@ cd $dir_test_image/color/compare && ./testComparator
 cd $dir_test_image/color/datatype && ./testSubMatr
 cd $dir_test_image/color/datatype && ./testMatrixBounds
 cd $dir_test_image/region && ./testRegion
+cd $dir_test_image/region/datatype && ./testBorderPixelDiffNode
 cd $dir_test_image/region/explore && ./testRegionExplore
 cd $dir_test_image/train/policies && ./testBorders
 cd $dir_test_util/convert && ./bgrhsvTest

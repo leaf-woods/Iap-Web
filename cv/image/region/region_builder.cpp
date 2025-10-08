@@ -58,6 +58,9 @@ void region_builder::clear() {
         assert(dv!=nullptr && dv->size()==0);
         delete dv;
         dv = nullptr;
+        assert(bv!=nullptr && bv->size()==0);
+        delete bv;
+        bv = nullptr;
         return;
     }
 
@@ -81,6 +84,13 @@ void region_builder::clear() {
     }
     delete dv;
     dv = nullptr;
+
+    if (bv->size() > 0) {
+        bv->clear();
+        *bv = vector<border_pixel_diff_node*>();
+    }
+    delete bv;
+    bv = nullptr;
 
     //https://stackoverflow.com/questions/56688963/how-to-free-the-memory-occupied-by-a-queuestl
     if (cols->size()>0) {
@@ -119,7 +129,7 @@ void region_builder::checkInBound(const cv::Mat& mat, int r, int c, bool_status&
     evaluator->evaluate(desc, mat.at<cv::Vec3b>(r, c), sta); 
 }
 
-void region_builder::countRegion() {
+void region_builder::countRegionPixels() {
     if (rows_map->size()==0 || cols_map->size()==0) {
         assert(cols_map->size()==rows_map->size());
         logger->info("Map is empty.");
@@ -150,12 +160,16 @@ int region_builder::countVector(const vector<int*>& v) {
 }
 
 void region_builder::init() {
+    count = 0;
+    count_internal = 0;
     rows = new deque<span_node*>();
     cols = new deque<span_node*>();
 
     rows_map = new map<int, vector<int*>*>();
     cols_map = new map<int, vector<int*>*>();
     dv = new vector<int*>();
+
+    bv = new vector<border_pixel_diff_node*>();
 }
 
 /*
@@ -203,6 +217,7 @@ void region_builder::explore(cv::Mat& mat, int row, int col) {
         init(); 
     }
     
+    /// TODO
     H = mat.rows;
     W = mat.cols;
     mbounds->setOH(H);
@@ -217,11 +232,21 @@ void region_builder::explore(cv::Mat& mat, int row, int col) {
 
     rpt->printMap("cols", *cols_map);
     rpt->printMap("rows", *rows_map);
-    countRegion();
+    countRegionPixels();
     cout << "size: " << size() << endl;
 
     exp->explore_diag(mat, dv);
+    
+    auto t2 = chrono::high_resolution_clock::now();
+    logger->info("Total process time: ", (int)chrono::duration_cast<chrono::microseconds>(t2-t1).count());
+}
 
+void region_builder::computeBorders(const cv::Mat& mat) {
+    logger->info("Compute borders.");
+    auto t1 = chrono::high_resolution_clock::now();
+    getAllBorderPixels(mat);
+    cout << "internal: " << count_internal << endl;
+    rpt->printBorderPixelsDiff(*bv);
     auto t2 = chrono::high_resolution_clock::now();
     logger->info("Total process time: ", (int)chrono::duration_cast<chrono::microseconds>(t2-t1).count());
 }
@@ -296,6 +321,386 @@ bool region_builder::getNextStartPoint(size_t s, int* pixel) {
     }
     logger->error("Cannot find an available pixel.");
     return false;
+}
+
+// Currently, we use one region. We need to record color difference which
+// means we can't use _00.JPG train matrix.
+// Definition of border pixels:
+// If a pixel p on region R has a neighbor pixel p' such that p' is not on region R, then p is called a border pixel.
+void region_builder::getAllBorderPixels(const cv::Mat& mat) {
+    if (rows_map == nullptr || rows_map->size() == 0) {
+        logger->info("Rows map not available.");
+        return;
+    }
+    assert(H>1 && W>1);
+
+    int s = 0;
+    int r=0; int c=0;
+    for (auto it=rows_map->begin(); it!=rows_map->end(); it++) {
+        for (int i=0; i<it->second->size(); i++) {
+            s = it->second->at(i)[1] - it->second->at(i)[0] + 1;
+            for (int j=it->second->at(i)[0]; j<=it->second->at(i)[1]; j++) {
+                r = it->first;
+                c = j;
+                logger->fdebug("snsn", "Get all border pixels. Current: Row: ", r, " Col: ", c);
+                bitset x = bitset<8>(0); 
+                // Scenarios on rows_map:
+                //   Has p': If pixel p is span sp's lower bound pixel and p-col > 0; 
+                //   Has p': If pixel p is span sp's upper bound pixel and p-col < mat.cols-1;
+                if (j==0 && c>0) {
+                    // Set nb_delta
+                    x.set(static_cast<int>(direction::west), true);
+                    checkNorth(r, c, x);
+                    checkSouth(r, c, x);
+                }
+                else if (j==s-1 && c<W-1) {
+                    // Set nb_delta
+                    x.set(static_cast<int>(direction::east), true);
+                    checkNorth(r, c, x);
+                    checkSouth(r, c, x);
+                } 
+                else {
+                    checkNorth(r, c, x);
+                    checkSouth(r, c, x);
+                }
+
+                logger->debug("Border pixels: ", x.to_string());
+                setBorderPixelsDiff(mat, r, c, x); 
+            }
+        }
+    } 
+
+    logger->info("bv size: ", bv->size());
+}
+
+void region_builder::checkNorth(int row, int col, bitset<8>& x) {
+    //logger->debug("Check north.");
+    if (row == 0) {
+        return;
+    }
+
+    x.set(0, true);
+    x.set(1, true);
+    x.set(2, true);
+    auto sch = rows_map->find(row-1);
+    if (sch != rows_map->end()) {
+        // All possible topn: 000, 010, etc.
+        // No matter *sch->second contains (row-1, col) or not
+        containsNorth(*sch->second, col, x);
+        return;
+    } 
+}
+
+// Brute force
+void region_builder::containsNorth(const vector<int*>& v, int n, bitset<8>& x) {
+    //logger->debug("contains north: ", n); cout << "current x: " << x.to_string() << endl;
+    for (int i=0; i<v.size(); i++) {
+        //printer->printVector(v, 2);
+
+        // After bit shift: 0b11100000
+        if (static_cast<unsigned char>(x.to_ulong() << 5) == 0) {
+            return;
+        }
+
+        if (n > 0) {
+            if (v.at(i)[0] <= n-1 && n-1 <= v.at(i)[1]) {
+                x.set(static_cast<int>(direction::north_west), false);
+            }
+        }
+        else {
+           x.set(static_cast<int>(direction::north_west), false); 
+        }
+
+        if (v.at(i)[0] <= n && n <= v.at(i)[1]) {
+            x.set(static_cast<int>(direction::north), false);
+        }
+
+        if (n < W-1) {
+            if (v.at(i)[0] <= n+1 && n+1 <= v.at(i)[1]) {
+                x.set(static_cast<int>(direction::north_east), false);
+            }
+        }
+        else {
+            x.set(static_cast<int>(direction::north_east), false);
+        }
+    }
+}
+
+void region_builder::checkSouth(int row, int col, bitset<8>& x) {
+    if (row == H-1) {
+        return;
+    }
+
+    x.set(4, true);
+    x.set(5, true);
+    x.set(6, true);
+    auto sch = rows_map->find(row+1);
+    if (sch != rows_map->end()) {
+        // All possible topn: 000, 010, etc.
+        // No matter *sch->second contains (row-1, col) or not
+        containsSouth(*sch->second, col, x);
+        return;
+    }
+}
+
+void region_builder::containsSouth(const vector<int*>& v, int n, bitset<8>& x) {
+    for (int i=0; i<v.size(); i++) {
+        // After bit shift: 0b11100000
+        if (static_cast<unsigned char>(x.to_ulong() << 1 >> 5) == 0) {
+            return;
+        }
+
+        if (n > 0) {
+            if (v.at(i)[0] <= n-1 && n-1 <= v.at(i)[1]) {
+                x.set(static_cast<int>(direction::south_west), false);
+            }
+        }
+        else {
+           x.set(static_cast<int>(direction::south_west), false); 
+        }
+        
+        if (v.at(i)[0] <= n && n <= v.at(i)[1]) {
+            x.set(static_cast<int>(direction::south), false);
+        }
+
+        if (n < W-1) {
+            if (v.at(i)[0] <= n+1 && n+1 <= v.at(i)[1]) {
+                x.set(static_cast<int>(direction::south_east), false);
+            }
+        }
+        else {
+            x.set(static_cast<int>(direction::south_east), false);
+        }
+    }
+}
+
+
+void region_builder::setBorderPixelsDiff(const cv::Mat& mat, int row, int col, bitset<8>& x) {
+    logger->fdebug("snsnsv", "Set border pixels diff. Current pixel: row: ", row, " col: ", col, " neighbors: ", x.to_string());
+    if (static_cast<unsigned char>(x.to_ulong()) == 0) {
+        logger->fdebug("snsn", "Pixel has no border. Row: ", row, " Col: ", col);
+        count_internal++;
+        return;
+    }
+
+    border_pixel_diff_node* bn = new border_pixel_diff_node();
+    bn->index[0] = row;
+    bn->index[1] = col;
+    if (row == 0) {
+        if (col == 0) {
+            // south, south_east, east
+            if (x[static_cast<int>(direction::south)]) {
+                setPixelDiff(mat, row, col, *bn, direction::south);
+            }
+            if (x[static_cast<int>(direction::south_east)]) {
+                setPixelDiff(mat, row, col, *bn, direction::south_east);
+            }
+            if (x[static_cast<int>(direction::east)]) {
+                setPixelDiff(mat, row, col, *bn, direction::east);
+            }
+        }
+        else if (col == W-1) {
+            // west, south_west, south
+            if (x[static_cast<int>(direction::west)]) {
+                setPixelDiff(mat, row, col, *bn, direction::west);
+            }
+            if (x[static_cast<int>(direction::south_west)]) {
+                setPixelDiff(mat, row, col, *bn, direction::south_west);
+            }
+            if (x[static_cast<int>(direction::south)]) {
+                setPixelDiff(mat, row, col, *bn, direction::south);
+            }
+        }
+        else {
+            // west, south_west, south, south_east, east
+            if (x[static_cast<int>(direction::west)]) {
+                setPixelDiff(mat, row, col, *bn, direction::west);
+            }
+            if (x[static_cast<int>(direction::south_west)]) {
+                setPixelDiff(mat, row, col, *bn, direction::south_west);
+            }
+            if (x[static_cast<int>(direction::south)]) {
+                setPixelDiff(mat, row, col, *bn, direction::south);
+            }
+            if (x[static_cast<int>(direction::south_east)]) {
+                setPixelDiff(mat, row, col, *bn, direction::south_east);
+            }
+            if (x[static_cast<int>(direction::east)]) {
+                setPixelDiff(mat, row, col, *bn, direction::east);
+            }
+        }
+    }
+    else if ( row == H - 1) {
+        if ( col == 0) {
+            // north, north_east, east
+            if (x[static_cast<int>(direction::north)]) {
+                setPixelDiff(mat, row, col, *bn, direction::north);
+            }
+            if (x[static_cast<int>(direction::north_east)]) {
+                setPixelDiff(mat, row, col, *bn, direction::north_east);
+            }
+            if (x[static_cast<int>(direction::east)]) {
+                setPixelDiff(mat, row, col, *bn, direction::east);
+            }
+        }
+        else if (col == W-1) {
+            // north, north_west, west
+            if (x[static_cast<int>(direction::north)]) {
+                setPixelDiff(mat, row, col, *bn, direction::north);
+            }
+            if (x[static_cast<int>(direction::north_west)]) {
+                setPixelDiff(mat, row, col, *bn, direction::north_west);
+            }
+            if (x[static_cast<int>(direction::west)]) {
+                setPixelDiff(mat, row, col, *bn, direction::west);
+            }
+        }
+        else {
+            // west, north_west, north, north_east, east
+            if (x[static_cast<int>(direction::west)]) {
+                setPixelDiff(mat, row, col, *bn, direction::west);
+            }
+            if (x[static_cast<int>(direction::north_west)]) {
+                setPixelDiff(mat, row, col, *bn, direction::north_west);
+            }
+            if (x[static_cast<int>(direction::north)]) {
+                setPixelDiff(mat, row, col, *bn, direction::north);
+            }
+            if (x[static_cast<int>(direction::north_east)]) {
+                setPixelDiff(mat, row, col, *bn, direction::north_east);
+            }
+            if (x[static_cast<int>(direction::east)]) {
+                setPixelDiff(mat, row, col, *bn, direction::east);
+            }
+        }
+    }
+    else {
+        if ( col == 0) {
+            // north, north_east, east, south_east, south
+            if (x[static_cast<int>(direction::north)]) {
+                setPixelDiff(mat, row, col, *bn, direction::north);
+            }
+            if (x[static_cast<int>(direction::north_east)]) {
+                setPixelDiff(mat, row, col, *bn, direction::north_east);
+            }
+            if (x[static_cast<int>(direction::east)]) {
+                setPixelDiff(mat, row, col, *bn, direction::east);
+            }
+            if (x[static_cast<int>(direction::south_east)]) {
+                setPixelDiff(mat, row, col, *bn, direction::south_east);
+            }
+            if (x[static_cast<int>(direction::south)]) {
+                setPixelDiff(mat, row, col, *bn, direction::south);
+            }
+        }
+        else if (col == W-1) {
+            // north, north_west, west, south_west, south
+            if (x[static_cast<int>(direction::north)]) {
+                setPixelDiff(mat, row, col, *bn, direction::north);
+            }
+            if (x[static_cast<int>(direction::north_west)]) {
+                setPixelDiff(mat, row, col, *bn, direction::north_west);
+            }
+            if (x[static_cast<int>(direction::west)]) {
+                setPixelDiff(mat, row, col, *bn, direction::west);
+            }
+            if (x[static_cast<int>(direction::south_west)]) {
+                setPixelDiff(mat, row, col, *bn, direction::south_west);
+            }
+            if (x[static_cast<int>(direction::south)]) {
+                setPixelDiff(mat, row, col, *bn, direction::south);
+            }
+        }
+        else {
+            // all
+            if (x[static_cast<int>(direction::north_east)]) {
+                setPixelDiff(mat, row, col, *bn, direction::north_east);
+            }
+            if (x[static_cast<int>(direction::north)]) {
+                setPixelDiff(mat, row, col, *bn, direction::north);
+            }
+            if (x[static_cast<int>(direction::north_west)]) {
+                setPixelDiff(mat, row, col, *bn, direction::north_west);
+            }
+            if (x[static_cast<int>(direction::west)]) {
+                setPixelDiff(mat, row, col, *bn, direction::west);
+            }
+            if (x[static_cast<int>(direction::south_west)]) {
+                setPixelDiff(mat, row, col, *bn, direction::south_west);
+            }
+            if (x[static_cast<int>(direction::south)]) {
+                setPixelDiff(mat, row, col, *bn, direction::south);
+            }
+            if (x[static_cast<int>(direction::south_east)]) {
+                setPixelDiff(mat, row, col, *bn, direction::south_east);
+            }
+            if (x[static_cast<int>(direction::east)]) {
+                setPixelDiff(mat, row, col, *bn, direction::east);
+            }
+        }
+    }
+    bv->push_back(bn);
+    //cout << "Set border pixel done. ";
+    //bn->print();
+    assert(verifyBorderPixels(*bn));
+}
+
+bool region_builder::verifyBorderPixels(const border_pixel_diff_node& bn) {
+    for (int i=0; i<8; i++) {
+        if (bn.diff[i][0] != 0 || bn.diff[i][1] != 0 || bn.diff[i][2] != 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void region_builder::setPixelDiff(const cv::Mat& mat, int row, int col, border_pixel_diff_node& bn, direction dr) {
+    // We don't assert here
+    cv::Vec<unsigned char, 3> entry = mat.at<cv::Vec3b>(row, col);
+    cv::Vec<unsigned char, 3> neighbor;
+    
+    switch (dr) {
+        case direction::north_east:
+            neighbor = mat.at<cv::Vec3b>(row-1, col+1);
+            computeDelta(entry, neighbor, bn.diff[0]);
+            return;
+        case direction::north:
+            neighbor = mat.at<cv::Vec3b>(row-1, col);
+            computeDelta(entry, neighbor, bn.diff[1]);
+            return;
+        case direction::north_west:
+            neighbor = mat.at<cv::Vec3b>(row-1, col-1);
+            computeDelta(entry, neighbor, bn.diff[2]);
+            return;
+        case direction::west:
+            neighbor = mat.at<cv::Vec3b>(row, col-1);
+            computeDelta(entry, neighbor, bn.diff[3]);
+            return;
+        case direction::south_west:
+            neighbor = mat.at<cv::Vec3b>(row+1, col-1);
+            computeDelta(entry, neighbor, bn.diff[4]);
+            return;
+        case direction::south:
+            neighbor = mat.at<cv::Vec3b>(row+1, col);
+            computeDelta(entry, neighbor, bn.diff[5]);
+            return;
+        case direction::south_east:
+            neighbor = mat.at<cv::Vec3b>(row+1, col+1);
+            computeDelta(entry, neighbor, bn.diff[6]);
+            return;
+        case direction::east:
+            neighbor = mat.at<cv::Vec3b>(row, col+1);
+            computeDelta(entry, neighbor, bn.diff[7]);
+            return;
+        default:
+            break;
+    }
+}
+
+void region_builder::computeDelta(cv::Vec<unsigned char, 3>& entry, cv::Vec<unsigned char, 3>& neighbor, cv::Vec<int, 3>& df) {
+    df[0] = static_cast<int>(entry[0]) - static_cast<int>(neighbor[0]);
+    df[1] = static_cast<int>(entry[1]) - static_cast<int>(neighbor[1]);
+    df[2] = static_cast<int>(entry[2]) - static_cast<int>(neighbor[2]);
 }
 
 

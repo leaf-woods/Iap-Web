@@ -22,8 +22,10 @@ int main() {
 
     regioncontext* region_ctx = new regioncontext();
 
+    region_ctx->builder->setLogLevel(iapcv_log::INFO);
     region_ctx->builder->setRegionDesc(RegionDesc::sky);
     region_ctx->builder->explore(*trainM, 0, 0); 
+    region_ctx->builder->computeBorders(*tr->getHsvImage()); 
     
     int next[2] = {0};
     if (region_ctx->builder->getNextStartPoint(2, next)) {
