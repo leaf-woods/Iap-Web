@@ -10,13 +10,13 @@
 #include <opencv2/imgproc.hpp>
 
 #include "border_pixel_diff_node.h"
+#include "eval_policy.h"
 #include "imagecolorvalues.h"
 #include "iapcv_log.h"
 #include "iap_print.h"
 #include "iclearable.h"
 #include "matrix_bounds.h"
 #include "pixel_comparator.h"
-#include "region_desc.h"
 #include "region_evaluator.h"
 #include "region_explore.h"
 #include "span_node.h"
@@ -39,8 +39,6 @@ class region_builder : public iclearable {
 
       int H=0; int W=0;
 
-      RegionDesc desc = RegionDesc::na;
-
       std::deque<span_node*>* rows;
       std::deque<span_node*>* cols;
 
@@ -61,6 +59,8 @@ class region_builder : public iclearable {
 
       vector<int*>* dv;
       vector<border_pixel_diff_node*>* bv;
+
+      eval_policy* po;
 
     public:
 
@@ -118,14 +118,16 @@ class region_builder : public iclearable {
       void setLogger(iapcv_log* logger);
       void setLogLevel(int level);
       void setMatrixBounds(matrix_bounds* mb);
+      void setEvalPolicy(eval_policy* po);
       void setPrint(iap_print* printer);
       void setRegionPrint(region_print* p);
-      void setRegionDesc(RegionDesc desc);
       void setRegionEvaluator(region_evaluator* eval);
       void setRegionExplore(region_explore* exp);
       void setSubMatrix(int r, int c, int num_rs, int num_cs);
       int size();
       void useMatrix();
+
+      eval_policy* getEvalPolicy();
       
       
 };

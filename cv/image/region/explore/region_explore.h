@@ -7,13 +7,14 @@
 
 #include <opencv2/core.hpp>
 
-#include "status.h"
+#include "eval_params.h"
+#include "eval_policy.h"
 #include "iapcv_log.h"
 #include "matrix_bounds.h"
-#include "region_desc.h"
 #include "region_evaluator.h"
 #include "region_print.h"
 #include "span_node.h"
+#include "status.h"
 
 struct bounds {
     static const int SKIP = 1;
@@ -32,7 +33,7 @@ class region_explore {
 
         int H;
         int W;
-        RegionDesc desc;
+        
         region_evaluator* evaluator;
         region_print* rpt;
         iapcv_log* logger;
@@ -47,6 +48,9 @@ class region_explore {
         std::vector<int*>* dv;
 
         matrix_bounds* mbounds;
+
+        eval_policy* po;
+        eval_params* pm;
 
     private:
         void adjustBounds(bounds& b, int begin, int end, const std::vector<int*>& v);
@@ -70,10 +74,10 @@ class region_explore {
 
         void explore(cv::Mat& mat, int row, int col, std::deque<span_node*>& rows, std::deque<span_node*>& cols, std::map<int, vector<int*>*>& rows_map, std::map<int, vector<int*>*>& cols_map);
         void explore_diag(const cv::Mat& mat, vector<int*>* dv);
+        void setEvalPolicy(eval_policy* po);
         void setLogger(iapcv_log* logger);
         void setMatrixBounds(matrix_bounds* mb);
         void setRegionEvaluator(region_evaluator* eval);
-        void setRegionDesc(RegionDesc desc);
         void setRegionPrint(region_print* p);
         
 };

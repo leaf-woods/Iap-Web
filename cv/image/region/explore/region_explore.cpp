@@ -7,6 +7,7 @@ using namespace std;
 
 region_explore::region_explore() {
     sta = new bool_status(status::NORMAL, false);
+    pm = new eval_params();
 }
 
 region_explore::~region_explore() {
@@ -19,8 +20,11 @@ region_explore::~region_explore() {
     mbounds = nullptr;
     evaluator = nullptr;
     rpt = nullptr;
-    
+    po = nullptr;
+
     delete sta;
+    pm->clearParams();
+    delete pm;
 }
 
 void region_explore::adjustBounds(bounds& b, int begin, int end, const vector<int*>& v) {
@@ -95,9 +99,14 @@ void region_explore::explore(cv::Mat& mat, int row, int col, std::deque<span_nod
     this->rows_map = &rs_map;
     this->cols_map = &cs_map;
 
-    W = mat.cols;
-    H = mat.rows;
+    W = mbounds->getW();
+    H = mbounds->getH();
     
+    pm->clearParams();
+    if (po->getPolicy() == Policies::similar_base_00) {
+        pm->setParam1(ParamName::key1, mat.at<cv::Vec3b>(row, col));
+    }
+
     get_col_span(mat, row, col);
     vector<int*>* v = new vector<int*>(); 
     cols_map->insert(make_pair(cols->front()->offset, v));
@@ -146,8 +155,10 @@ int region_explore::get_top(const cv::Mat& mat, int r, int c) {
         return r;
     }
     
+    // We have different scenarios that we take different parameters to do the same job.
     for (int cursor=r; cursor >= mbounds->top(); cursor--) { 
-        evaluator->evaluate(desc, mat.at<cv::Vec3b>(cursor, c), *sta); 
+        pm->setParam2(ParamName::key2, mat.at<cv::Vec3b>(cursor, c));
+        evaluator->evaluate(*po, *pm, *sta); 
         if (! sta->isNormal()) {
             return INVALID;
         } 
@@ -164,7 +175,8 @@ int region_explore::get_bottom(const cv::Mat& mat, int r, int c) {
     }
 
     for (int cursor=r; cursor <= mbounds->bottom(); cursor++) {
-        evaluator->evaluate(desc, mat.at<cv::Vec3b>(cursor, c), *sta); 
+        pm->setParam2(ParamName::key2, mat.at<cv::Vec3b>(cursor, c));
+        evaluator->evaluate(*po, *pm, *sta); 
         if (! sta->isNormal()) {
             return INVALID;
         }
@@ -195,7 +207,8 @@ int region_explore::get_left(const cv::Mat& mat, int r, int c) {
     }
     
     for (int cursor=c; cursor >= mbounds->left(); cursor--) {
-        evaluator->evaluate(desc, mat.at<cv::Vec3b>(r, cursor), *sta); 
+        pm->setParam2(ParamName::key2, mat.at<cv::Vec3b>(r, cursor));
+        evaluator->evaluate(*po, *pm, *sta); 
         if (! sta->isNormal()) {
             return INVALID;
         }
@@ -212,7 +225,8 @@ int region_explore::get_right(const cv::Mat& mat, int r, int c) {
     }
 
     for (int cursor=c; cursor <= mbounds->right(); cursor++) {
-        evaluator->evaluate(desc, mat.at<cv::Vec3b>(r, cursor), *sta); 
+        pm->setParam2(ParamName::key2, mat.at<cv::Vec3b>(r, cursor));
+        evaluator->evaluate(*po, *pm, *sta); 
         if (! sta->isNormal()) {
             return INVALID;
         }
@@ -381,6 +395,8 @@ void region_explore::explore_diag(const cv::Mat& mat, vector<int*>* dvec) {
     auto lastPair = prev(rows_map->end());
     int lastRowOnMap = lastPair->first;
 
+    int firstRowOnMap = rows_map->begin()->first; 
+
     int left = 0; 
     int right = 0;
     for (auto it=rows_map->begin(); it!=rows_map->end(); it++) {
@@ -388,7 +404,7 @@ void region_explore::explore_diag(const cv::Mat& mat, vector<int*>* dvec) {
             left = it->second->at(i)[0];
             right = it->second->at(i)[1];
             //cout << "Processing: row: " << it->first << " left: " << left << " right: " << right << endl;
-            if (it->first == 0) {
+            if (it->first == firstRowOnMap) {
                 if (left > 0) {
                     if (!containsOnMap(it->first+1, left-1)) { 
                         checkDiagnal(mat, it->first+1, left-1);
@@ -427,7 +443,7 @@ void region_explore::explore_diag(const cv::Mat& mat, vector<int*>* dvec) {
                     if (!containsOnMap(it->first-1, right+1)) {
                         checkDiagnal(mat, it->first-1, right+1);
                     }
-                    if (it->first == lastRowOnMap && !containsOnMap(it->first+1, right+1)) {
+                    if (!containsOnMap(it->first+1, right+1)) {
                         checkDiagnal(mat, it->first+1, right+1);
                     }
                 }
@@ -438,6 +454,7 @@ void region_explore::explore_diag(const cv::Mat& mat, vector<int*>* dvec) {
 
 bool region_explore::containsOnMap(int row, int col) {
     //cout << "containsOnMap: row: " << row << " col: " << col << endl;
+    //cout << endl;
     auto sch = rows_map->find(row);
     assert(sch != rows_map->end());
     return contains(*sch->second, col);
@@ -445,7 +462,8 @@ bool region_explore::containsOnMap(int row, int col) {
 
 void region_explore::checkDiagnal(const cv::Mat& mat, int r, int c) {
     //logger->fdebug("snsn", "Check diagonal pixel. Row: ", r, " Col: ", c);
-    evaluator->evaluate(desc, mat.at<cv::Vec3b>(r, c), *sta); 
+    pm->setParam2(ParamName::key2, mat.at<cv::Vec3b>(r, c));
+    evaluator->evaluate(*po, *pm, *sta); 
     if (! sta->isNormal()) {
         logger->error(sta->getMsg());
     }
@@ -470,12 +488,12 @@ void region_explore::setRegionEvaluator(region_evaluator* eval) {
     this->evaluator = eval;
 }
         
-void region_explore::setRegionDesc(RegionDesc desc){
-    this->desc = desc;
-}
-        
 void region_explore::setRegionPrint(region_print* p){
     this->rpt = p;
+}
+
+void region_explore::setEvalPolicy(eval_policy* po) {
+    this->po = po;
 }
 
 

@@ -12,6 +12,7 @@ INCLUDES = -I$(dir_context) \
 		   -I$(dir_image)/color/datatype/status \
 		   -I$(dir_image)/region \
 		   -I$(dir_image)/region/datatype \
+		   -I$(dir_image)/region/evaluate \
 		   -I$(dir_image)/region/explore \
 		   -I$(dir_image)/train \
 		   -I$(dir_io) \
@@ -23,17 +24,16 @@ INCLUDES = -I$(dir_context) \
 
 LIBS = -lopencv_core -lopencv_imgcodecs -lopencv_imgproc
 
-OBJS = testBorders.o \
-       region_builder.o region_explore.o region_evaluator.o region_print.o \
+OBJS = region_builder.o region_explore.o region_evaluator.o region_print.o \
 	   matrix_bounds.o \
 	   pixel_comparator.o \
 	   iapcv_log.o iap_print.o \
 	   sky_init_train.o iapcv_env.o
 	
-all : testBorders
+all : testBorders testCloud
 
-testBorders : $(OBJS)
-	g++ -o testBorders $(OBJS) $(LIBS)
+testBorders : testBorders.o $(OBJS)
+	g++ -o testBorders testBorders.o $(OBJS) $(LIBS)
 testBorders.o : testBorders.cpp
 	g++ -c testBorders.cpp $(INCLUDES)
 test_region.o : test_region.cpp
@@ -44,8 +44,8 @@ region_explore.o : $(dir_image)/region/explore/region_explore.cpp
 	g++ -c $(dir_image)/region/explore/region_explore.cpp $(INCLUDES)
 region_print.o : $(dir_image)/region/region_print.cpp
 	g++ -c $(dir_image)/region/region_print.cpp $(INCLUDES)
-region_evaluator.o : $(dir_image)/region/region_evaluator.cpp
-	g++ -c $(dir_image)/region/region_evaluator.cpp $(INCLUDES)
+region_evaluator.o : $(dir_image)/region/evaluate/region_evaluator.cpp
+	g++ -c $(dir_image)/region/evaluate/region_evaluator.cpp $(INCLUDES)
 matrix_bounds.o : $(dir_image)/region/datatype/matrix_bounds.cpp
 	g++ -c $(dir_image)/region/datatype/matrix_bounds.cpp $(INCLUDES)
 pixel_comparator.o : $(dir_image)/color/compare/pixel_comparator.cpp
@@ -59,10 +59,19 @@ sky_init_train.o : $(dir_image)/train/sky_init_train.cpp
 iapcv_env.o : $(dir_io)/iapcv_env.cpp
 	g++ -c $(dir_io)/iapcv_env.cpp
 
+testCloud : testCloud.o $(OBJS)
+	g++ -o testCloud testCloud.o $(OBJS) $(LIBS)
+testCloud.o : testCloud.cpp
+	g++ -c testCloud.cpp $(INCLUDES)
+
+
 clean : 
 ifneq (,$(wildcard *.o))
 	rm  *.o
 endif
 ifneq (,$(wildcard testBorders))
 	rm  testBorders
+endif
+ifneq (,$(wildcard testCloud))
+	rm  testCloud
 endif

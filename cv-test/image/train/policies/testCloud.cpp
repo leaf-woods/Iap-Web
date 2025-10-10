@@ -2,14 +2,11 @@
 
 #include <opencv2/core.hpp>
 
-#include "eval_policy.h"
 #include "iapcv_env.h"
 #include "regioncontext.h"
 #include "sky_init_train.h"
 
-using namespace std;
-
-int main() {
+int main(int argc, char* argv[]) {
     iapcv_env* env = iapcv_env::getInstance();
 
     string basePath = env->getDevTestImgBase();
@@ -20,23 +17,20 @@ int main() {
     sky_init_train* tr = new sky_init_train(basePath, imgName);
     
     cv::Mat* trainM = tr->getMatrixTrain();
-    cv::Mat* hsvImage = tr->getHsvImage();
 
     regioncontext* region_ctx = new regioncontext();
 
     region_ctx->builder->setLogLevel(iapcv_log::INFO);
-    region_ctx->builder->getEvalPolicy()->setPolicy(Policies::similar_base_00);
-    region_ctx->builder->explore(*hsvImage, 0, 0); 
-    //region_ctx->builder->computeBorders(*tr->getHsvImage()); 
+    region_ctx->builder->getEvalPolicy()->setPolicy(RegionDesc::cloud);
+    region_ctx->builder->explore(*trainM, 20, 1); 
+    region_ctx->builder->computeBorders(*tr->getHsvImage()); 
 
-    int next[2] = {0};
-    if (region_ctx->builder->getNextStartPoint(2, next)) {
-        //cout << "found next." << endl;
-        //region_ctx->builder->explore(*trainM, next[0], next[1]);
-    }
+    // We see small H delta ( at most 1) for both cloud and sky regions.
+    // We use _11.JPG
+    // Policy: explore(0, 0). If delta H = 1, delta S >= 5, we consider it is different region.
+    
 
     delete tr;
-
     delete region_ctx;
 
     return 0;

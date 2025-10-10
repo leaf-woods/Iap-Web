@@ -13,6 +13,7 @@ INCLUDES = -I$(dir_context)/ \
 		   -I$(dir_manage)/ \
 		   -I$(dir_image)/region \
 		   -I$(dir_image)/region/datatype \
+		   -I$(dir_image)/region/evaluate \
 		   -I$(dir_image)/region/explore \
 		   -I$(dir_image)/train \
 		   -I$(dir_io) \
@@ -49,8 +50,8 @@ matrix_bounds.o : $(dir_image)/region/datatype/matrix_bounds.cpp
 	g++ -c $(dir_image)/region/datatype/matrix_bounds.cpp $(INCLUDES)
 region_explore.o : $(dir_image)/region/explore/region_explore.cpp
 	g++ -c $(dir_image)/region/explore/region_explore.cpp $(INCLUDES)
-region_evaluator.o : $(dir_image)/region/region_evaluator.cpp
-	g++ -c $(dir_image)/region/region_evaluator.cpp $(INCLUDES)
+region_evaluator.o : $(dir_image)/region/evaluate/region_evaluator.cpp
+	g++ -c $(dir_image)/region/evaluate/region_evaluator.cpp $(INCLUDES)
 pixel_comparator.o : $(dir_image)/color/compare/pixel_comparator.cpp
 	g++ -c $(dir_image)/color/compare/pixel_comparator.cpp $(INCLUDES)
 iapcv_log.o : $(dir_util)/log/iapcv_log.cpp

@@ -3,8 +3,9 @@
 
 #include <opencv2/core.hpp>
 
+#include "eval_params.h"
+#include "eval_policy.h"
 #include "pixel_comparator.h"
-#include "region_desc.h"
 #include "status.h"
 
 /*
@@ -16,11 +17,15 @@ class region_evaluator {
     private:
         pixel_comparator* comparator;
 
+    private:
+        void evaluateDesc(RegionDesc desc, cv::Vec3b color, bool_status& sta);
+
     public:
       region_evaluator();
       ~region_evaluator();
 
-      void evaluate(RegionDesc desc, cv::Vec3b color, bool_status& sta);
+      void evaluateInBound(eval_policy& po, cv::Vec3b color, bool_status& sta);
+      void evaluate(eval_policy& po, eval_params& pm,  bool_status& sta);
       void setComparator(pixel_comparator* comparator);
 
       /*

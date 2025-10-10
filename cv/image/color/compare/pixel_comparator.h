@@ -3,6 +3,8 @@
 
 #include <opencv2/core.hpp>
 
+#include "region_desc.h"
+
 enum class BasicNum {
     enzero_like = 0,
     en127_like = 1,
@@ -48,8 +50,10 @@ class pixel_comparator {
       pixel_comparator();
 
       bool similar(int which, const cv::Vec3b& color1, const cv::Vec3b& color2); 
+      bool similar_base_00(const cv::Vec3b& color1, const cv::Vec3b& color2);
       bool isColor(int which, const cv::Vec3b& color);
       bool isSky(int which, const cv::Vec3b& color);
+      RegionDesc contents_sky_cloud(const cv::Vec3b& color);
       int getBasicColorKey(unsigned char b, unsigned char g, unsigned char r);
 };
 #endif

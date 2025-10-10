@@ -1,8 +1,10 @@
+#include <cstdlib>
+#include <iostream>
+
 #include "imagecolorvalues.h"
 #include "pixel_comparator.h"
-#include "region_desc.h"
 
-
+using namespace std;
 pixel_comparator::pixel_comparator() {
     setupTable();
 }
@@ -14,11 +16,33 @@ bool pixel_comparator::similar(int which, const cv::Vec3b& color1, const cv::Vec
     return false;
 }
 
+// delta_H <= 1, delta_S <= 5
+bool pixel_comparator::similar_base_00(const cv::Vec3b& color1, const cv::Vec3b& color2) {
+  cout << "color1: { " << static_cast<int>(color1[0]) << " , " << static_cast<int>(color1[1]) << " , " << static_cast<int>(color1[2]) << " }" << endl;
+  cout << "color2: { " << static_cast<int>(color2[0]) << " , " << static_cast<int>(color2[1]) << " , " << static_cast<int>(color2[2]) << " }" << endl;
+
+  if (abs(static_cast<int>(color1[0]) - static_cast<int>(color2[0])) <= 1 && abs(static_cast<int>(color1[1]) - static_cast<int>(color2[1])) <= 5) {
+       
+      return true;
+    }
+    return false;
+}
+
 bool pixel_comparator::isSky(int which, const cv::Vec3b& color) {
     if (which == static_cast<int>(RegionDesc::sky)) {
         return color[0]==1;
     }
     return false;
+}
+
+RegionDesc pixel_comparator::contents_sky_cloud(const cv::Vec3b& color) {
+    if (color[0] == 1) {
+        return RegionDesc::sky;
+    }
+    if (color[1] == 1) {
+        return RegionDesc::cloud;
+    }
+    return RegionDesc::na;
 }
 
 /*

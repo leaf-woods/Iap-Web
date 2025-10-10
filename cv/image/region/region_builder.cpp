@@ -26,6 +26,7 @@ region_builder::~region_builder() {
     exp = nullptr;
     mbounds = nullptr;
     evaluator = nullptr;
+    po = nullptr;
     printer = nullptr;
     logger = nullptr;
     delete sta;
@@ -126,7 +127,7 @@ void region_builder::clearMap(map<int, vector<int*>*>& m) {
 }
 
 void region_builder::checkInBound(const cv::Mat& mat, int r, int c, bool_status& sta) {
-    evaluator->evaluate(desc, mat.at<cv::Vec3b>(r, c), sta); 
+    evaluator->evaluateInBound(*po, mat.at<cv::Vec3b>(r, c), sta); 
 }
 
 void region_builder::countRegionPixels() {
@@ -190,19 +191,21 @@ void region_builder::explore(cv::Mat& mat, int row, int col) {
         return;
     }
 
-    assert(desc > RegionDesc::na);
-    logger->info("Explore: ", region_desc::toString(desc));
+    assert(po->getPolicy() != Policies::na);
+    logger->info("Explore: ", po->getPolicyVal());
 
     sta->clear();
-    checkInBound(mat, row, col, *sta);
-    if (! sta->getResult()) {
-        if (sta->isNormal()) {
-            logger->finfo("snsnsv", "Pixel not in region: row: ", row, " col: ", col, " for: ", region_desc::toString(desc));
+    if (po->getPolicy() == Policies::r_desc) {
+        checkInBound(mat, row, col, *sta);
+        if (! sta->getResult()) {
+            if (sta->isNormal()) {
+                logger->finfo("snsnsv", "Pixel not in region: row: ", row, " col: ", col, " for: ", po->getPolicyVal());
+            }
+            else {
+                logger->error(sta->getMsg());
+            }
+            return;
         }
-        else {
-            logger->error(sta->getMsg());
-        }
-        return;
     }
     
     // Just cleared.
@@ -225,7 +228,6 @@ void region_builder::explore(cv::Mat& mat, int row, int col) {
     
     auto t1 = chrono::high_resolution_clock::now();
 
-    exp->setRegionDesc(desc);
     exp->explore(mat, row, col, *rows, *cols, *rows_map, *cols_map);
 
     //logger->fdebug("snsnsn", "count: ", count, " count col: ", count_exp_col, " count row: ", count_exp_row);
@@ -263,8 +265,12 @@ void region_builder::setPrint(iap_print* print) {
     this->printer = print;
 }
 
-void region_builder::setRegionDesc(RegionDesc desc) {
-    this->desc = desc;
+void region_builder::setEvalPolicy(eval_policy* po) {
+    this->po = po;
+}
+
+eval_policy* region_builder::getEvalPolicy() {
+    return this->po;
 }
 
 void region_builder::setRegionEvaluator(region_evaluator* eval) {
@@ -641,7 +647,8 @@ void region_builder::setBorderPixelsDiff(const cv::Mat& mat, int row, int col, b
     }
     bv->push_back(bn);
     //cout << "Set border pixel done. ";
-    //bn->print();
+    bn->print();
+    cout << "Verify pixel. Row: " << row << " Col: " << col << " x: " << x.to_string() << endl;
     assert(verifyBorderPixels(*bn));
 }
 

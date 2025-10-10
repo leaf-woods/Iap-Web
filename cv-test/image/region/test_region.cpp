@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
     cv::Mat input = cv::imread(fname);
     
     cout << "Test exploration" << endl;
-    region_ctx->builder->setRegionDesc(RegionDesc::black);
+    region_ctx->builder->getEvalPolicy()->setPolicy(RegionDesc::black);
     region_ctx->builder->explore(input, 315, 0);
     region_ctx->builder->explore(input, 319, 0);
     region_ctx->builder->explore(input, 315, 349);
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
     region_ctx->builder->explore(input, 0, 350);
 
     cout << endl;
-    region_ctx->builder->setRegionDesc(RegionDesc::purple);
+    region_ctx->builder->getEvalPolicy()->setPolicy(RegionDesc::purple);
     region_ctx->builder->explore(input, 0, 0); 
 
     cout << endl;

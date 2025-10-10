@@ -20,6 +20,7 @@ class regioncontext {
         region_explore* explore;
         region_print* rpt;
         matrix_bounds* mbounds;
+        eval_policy* po;
 
     public:
         regioncontext() {
@@ -31,12 +32,14 @@ class regioncontext {
             compr = new pixel_comparator();
             rpt = new region_print();
             explore = new region_explore(); 
+            po = new eval_policy();
 
             eval->setComparator(compr);
             builder->setRegionEvaluator(eval);
             builder->setRegionPrint(rpt);
             builder->setRegionExplore(explore);
             builder->setMatrixBounds(mbounds);
+            builder->setEvalPolicy(po);
 
             builder->setPrint(iap_ctx->printer);
             builder->setLogger(iap_ctx->logger);
@@ -45,12 +48,14 @@ class regioncontext {
             explore->setLogger(iap_ctx->logger);
             explore->setRegionPrint(rpt);
             explore->setMatrixBounds(mbounds);
+            explore->setEvalPolicy(po);
         }
 
         ~regioncontext() {
             delete explore;
             delete builder;
             delete mbounds;
+            delete po;
             delete eval;
             delete compr;
             delete rpt;

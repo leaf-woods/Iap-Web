@@ -96,11 +96,13 @@ void sky_init_train::setup() {
     // Row 10
             setupCloud(train, 10, 0, 7);
             setupCloud(train, 10, 11, 18);
-            setupCloud(train, 10, 20, 22);
+            setupWeakCloud(train, 10, 20, 22);
 
     // Row 11
             setupCloud(train, 11, 0, 14);
-            setupCloud(train, 11, 16, 22);
+            setupCloud(train, 11, 16, 18);
+            setupWeakCloud(train, 11, 20, 20);
+            setupCloud(train, 11, 21, 22);
 
     // Row 12
             setupWeakCloud(train, 12, 0, 6);

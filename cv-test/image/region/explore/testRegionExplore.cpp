@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
 
     regioncontext* region_ctx = new regioncontext();
 
-    region_ctx->builder->setRegionDesc(RegionDesc::sky);
+    region_ctx->builder->getEvalPolicy()->setPolicy(RegionDesc::sky);
     region_ctx->builder->explore(*trainM, 0, 0); 
     cout << "Test explore diagonal: Done" << endl;
     cout << endl;
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
     color[2] = 0;
     trainM->at<cv::Vec3b>(cv::Point(1, 0)) = color;
 
-    region_ctx->builder->setRegionDesc(RegionDesc::sky);
+    region_ctx->builder->getEvalPolicy()->setPolicy(RegionDesc::sky);
     region_ctx->builder->explore(*trainM, 0, 0); 
     cout << endl;
 
