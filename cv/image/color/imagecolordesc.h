@@ -8,9 +8,10 @@
 
 #include "convertnumber.h"
 #include "convert_bgrhsv.h"
-#include "iapcv_log.h"
 #include "d3tree.h"
 #include "dimensions.h"
+#include "iapcv_log.h"
+#include "imagecolorvalues.h"
 #include "range.h"
 #include "vtree/colorvaluetree.h"
 

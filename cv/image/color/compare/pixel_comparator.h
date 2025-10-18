@@ -1,15 +1,17 @@
 #ifndef PIXEL_COMPARATOR_H
 #define PIXEL_COMPARATOR_H
 
+#include <unordered_map>
+
 #include <opencv2/core.hpp>
 
 #include "region_desc.h"
 
 enum class BasicNum {
-    enzero_like = 0,
-    en127_like = 1,
-    en255_like = 2,
-    eninvalid 
+    emzero_like = 0,
+    em127_like = 1,
+    em255_like = 2,
+    eminvalid 
 };
 
 // 
@@ -39,21 +41,31 @@ enum class BasicNum {
 
 class pixel_comparator {
     private:
+      static const int INVALID_KEY = -1;
       // Automatically allocated array cannot be deleted.
-      int basic_color_table[3][3][3] = {0}; 
+      static int basic_color_table[3][3][3]; 
+
+      static std::unordered_map<int, int> color_map;
 
     private:
-      void setupTable();
+      static void setupTable();
+
       BasicNum getBasicNum(unsigned char c);
 
     public:
       pixel_comparator();
 
-      bool similar(int which, const cv::Vec3b& color1, const cv::Vec3b& color2); 
-      bool similar_base_00(const cv::Vec3b& color1, const cv::Vec3b& color2);
+      RegionDesc compareValue_00(const cv::Vec3b& color);
+      RegionDesc contents_sky_cloud_ma(const cv::Vec3b& color);
+
+      bool compareNeighbor(const cv::Vec3b& color1, const cv::Vec3b& color2);
+      bool compareStart(const cv::Vec3b& startColor, const cv::Vec3b& color2); 
+
       bool isColor(int which, const cv::Vec3b& color);
-      bool isSky(int which, const cv::Vec3b& color);
-      RegionDesc contents_sky_cloud(const cv::Vec3b& color);
+      bool isSky_ma(int which, const cv::Vec3b& color);
+      bool equals(const cv::Vec3b& color1, const cv::Vec3b& color2) ;
       int getBasicColorKey(unsigned char b, unsigned char g, unsigned char r);
+
+      bool similar(int which, const cv::Vec3b& color1, const cv::Vec3b& color2); 
 };
 #endif

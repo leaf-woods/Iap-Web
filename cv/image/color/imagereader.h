@@ -5,6 +5,7 @@
 
 #include "iapcv_log.h"
 #include "iap_print.h"
+#include "imagecolorvalues.h"
 
 /*
  * @20250830
@@ -30,7 +31,7 @@ class imagereader {
       cv::Mat* getHueMask();
       double getNonZeroPercent();
       void printPixelColorValues(int x, int y);
-      void printPixelColor(int x, int y, int type);
+      void printPixelColor(int x, int y, ColorType type);
       bool read_image(bool show, std::string path);
       void read_and_mask_image(bool show, std::string path, size_t channel, uchar* lower, uchar* upper);
       void setPrint(iap_print* p);

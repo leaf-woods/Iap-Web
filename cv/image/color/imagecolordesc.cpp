@@ -193,7 +193,7 @@ vector<uchar*>* imagecolordesc::findB(uchar b) {
  * Customer classes are responsible to release memory of newVec, example use auto.
  */
 vector<uchar*> imagecolordesc::findPixelColors(uchar hue) {
-    assert(color_type==imagecolorvalues::HSV);
+    assert(color_type==ColorType::HSV);
     assert(d3t!=nullptr && d3t->getDimensionType()==DimType::HSV);
     return d3t->findValues(hue);
 }
@@ -264,7 +264,7 @@ string imagecolordesc::writeColorValueTreeContents() {
  */
 void imagecolordesc::setDescData(const cv::Mat& mat, int type) {
     assert(mat.rows>0 && mat.cols>0);
-    assert(type==imagecolorvalues::BGR || type==imagecolorvalues::HSV);
+    assert(type==ColorType::BGR || type==ColorType::HSV);
     color_type = type;
 
     // Just cleared
@@ -334,7 +334,7 @@ void imagecolordesc::setColorValueTree() {
 }
 
 void imagecolordesc::setD3Tree(DimType type, int dim) {
-    if (imagecolorvalues::HSV == color_type && DimType::BGR == type) {
+    if (ColorType::HSV == color_type && DimType::BGR == type) {
         logger->error("Unsupported operation.");
         return;
     }
@@ -361,11 +361,11 @@ void imagecolordesc::setD3Tree(DimType type, int dim) {
         key = it->first;
         auto v3 = new uchar[imagecolorvalues::channel]{0};
         convert->setUChar3(key, arr);
-        if (color_type == imagecolorvalues::BGR && type == DimType::HSV) {
+        if (color_type == ColorType::BGR && type == DimType::HSV) {
             calc->toHsvCV(imagecolorvalues::channel, v3, arr[0], arr[1], arr[2]);
         }
         /*  Unsupported operation
-        else if (color_type == imagecolorvalues::HSV && type == DimType::BGR) {            
+        else if (color_type == ColorType::HSV && type == DimType::BGR) {            
         }
         */
         else {
@@ -404,12 +404,12 @@ void imagecolordesc::setMinMax() {
         }
     }
 
-    if (color_type==imagecolorvalues::BGR) {
-        rg->setColorType(imagecolorvalues::BGR);
+    if (color_type==ColorType::BGR) {
+        rg->setColorType(ColorType::BGR);
         rg->setBGRMin(bh_min, gs_min, rv_min);
     }
-    else if (color_type==imagecolorvalues::HSV) {
-        rg->setColorType(imagecolorvalues::HSV);
+    else if (color_type==ColorType::HSV) {
+        rg->setColorType(ColorType::HSV);
         rg->setHSVMin(bh_min, gs_min, rv_min);
     }
 
@@ -430,12 +430,12 @@ void imagecolordesc::setMinMax() {
         }
     }
 
-    if (color_type==imagecolorvalues::BGR) {
-        rg->setColorType(imagecolorvalues::BGR);
+    if (color_type==ColorType::BGR) {
+        rg->setColorType(ColorType::BGR);
         rg->setBGRMax(bh_max, gs_max, rv_max);
     }
-    else if (color_type==imagecolorvalues::HSV) {
-        rg->setColorType(imagecolorvalues::HSV);
+    else if (color_type==ColorType::HSV) {
+        rg->setColorType(ColorType::HSV);
         rg->setHSVMax(bh_max, gs_max, rv_max);
     }
 }
@@ -591,7 +591,7 @@ void imagecolordesc::setRange(range* rg) {
  * Return: Min value of h, s, and v from all the image pixels.
  */
 uchar* imagecolordesc::getLowerBoundHSV() {
-    assert(color_type==imagecolorvalues::HSV);
+    assert(color_type==ColorType::HSV);
     return rg->getLower();
 }
 
@@ -599,7 +599,7 @@ uchar* imagecolordesc::getLowerBoundHSV() {
  * Return: Max value of h, s, and v from all the image pixels.
  */
 uchar* imagecolordesc::getUpperBoundHSV() {
-    assert(color_type==imagecolorvalues::HSV);
+    assert(color_type==ColorType::HSV);
     return rg->getUpper();
 }
 
@@ -620,7 +620,7 @@ void imagecolordesc::setLogLevel(int level) {
 }
 
 int imagecolordesc::countColor(int color) {
-    assert(color_type==imagecolorvalues::BGR);
+    assert(color_type==ColorType::BGR);
     if (color != imagecolorvalues::BLACK) {
         logger->info("Unsupported operation. Color: ", imagecolorvalues::getColorTypeVal(color));
         return -1;

@@ -3,15 +3,22 @@
 
 #include <string>
 
+enum class ColorType {
+    NA,
+    BGR,
+    HSV,
+    MASKED
+};
+
 class imagecolorvalues {
     public:
       static const int NOT_AVAILABLE = -1;
       
       static const size_t channel = 3;
       
-      static const int BGR=100;
-      static const int HSV=200;
-      static const int MASKED=300;
+      //static const int BGR=100;
+      //static const int HSV=200;
+      //static const int MASKED=300;
 
       static const int BLACK  = 0;
       static const int PURPLE = 8323327;  // 127, 0, 255
@@ -27,14 +34,14 @@ class imagecolorvalues {
       static const int M_DELTA = 15; 
 
     public:
-      static std::string getColorTypeVal(int type) {
-          if (type == BGR) {
+      static std::string getColorTypeVal(ColorType type) {
+          if (type == ColorType::BGR) {
               return "BGR";
           }
-          if (type == HSV) {
+          if (type == ColorType::HSV) {
              return "HSV";
           }
-          if (type == MASKED) {
+          if (type == ColorType::MASKED) {
              return "Masked";
           }
           return nullptr;

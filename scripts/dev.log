@@ -10,3 +10,5 @@ https://www.w3schools.com/colors/colors_picker.asp
 
 # use pipe directly to find a string 'test_base/makefile' in build_iap.sh then find string '#rsync' in the found line.
 sed -n '/test_base\/makefile/p' build_iap.sh  | sed -n '/#rsync/p'
+
+dpkg -l | grep ^ii | awk '$2 ~ /^r-/ { print $2 }'

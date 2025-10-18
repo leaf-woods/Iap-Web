@@ -5,7 +5,6 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 
-#include "imagecolorvalues.h"
 #include "imagereader.h"
 
 using namespace std;
@@ -49,29 +48,29 @@ void imagereader::setPrint(iap_print* p) {
  */
  void imagereader::printPixelColorValues(int x, int y) {
      cv::Vec<unsigned char, 3> entry = input.at<cv::Vec3b>(y, x);
-     printer->printPixelColor(entry, imagecolorvalues::getColorTypeVal(imagecolorvalues::BGR));
+     printer->printPixelColor(entry, imagecolorvalues::getColorTypeVal(ColorType::BGR));
 
      entry = hsvImage.at<cv::Vec3b>(y, x);
-     printer->printPixelColor(entry, imagecolorvalues::getColorTypeVal(imagecolorvalues::HSV));
+     printer->printPixelColor(entry, imagecolorvalues::getColorTypeVal(ColorType::HSV));
 
      entry = hueMask.at<cv::Vec3b>(y, x);
-     printer->printPixelColor(entry, imagecolorvalues::getColorTypeVal(imagecolorvalues::MASKED));
+     printer->printPixelColor(entry, imagecolorvalues::getColorTypeVal(ColorType::MASKED));
      cout << endl;
  }
 
- void imagereader::printPixelColor(int x, int y, int type) {
+ void imagereader::printPixelColor(int x, int y, ColorType type) {
     cv::Vec<unsigned char, 3> entry;
-    if (type==imagecolorvalues::BGR) {
+    if (type==ColorType::BGR) {
         entry = input.at<cv::Vec3b>(y, x);
-        printer->printPixelColor(entry, imagecolorvalues::getColorTypeVal(imagecolorvalues::BGR));
+        printer->printPixelColor(entry, imagecolorvalues::getColorTypeVal(ColorType::BGR));
     }
-    else if (type==imagecolorvalues::HSV) {
+    else if (type==ColorType::HSV) {
         entry = hsvImage.at<cv::Vec3b>(y, x);
-        printer->printPixelColor(entry, imagecolorvalues::getColorTypeVal(imagecolorvalues::HSV));
+        printer->printPixelColor(entry, imagecolorvalues::getColorTypeVal(ColorType::HSV));
     }
-    else if (type==imagecolorvalues::MASKED) {
+    else if (type==ColorType::MASKED) {
         entry = hueMask.at<cv::Vec3b>(y, x);
-         printer->printPixelColor(entry, imagecolorvalues::getColorTypeVal(imagecolorvalues::MASKED));
+         printer->printPixelColor(entry, imagecolorvalues::getColorTypeVal(ColorType::MASKED));
     }
  }
 
