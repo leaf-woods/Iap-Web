@@ -12,3 +12,5 @@ https://www.w3schools.com/colors/colors_picker.asp
 sed -n '/test_base\/makefile/p' build_iap.sh  | sed -n '/#rsync/p'
 
 dpkg -l | grep ^ii | awk '$2 ~ /^r-/ { print $2 }'
+
+@20251019
