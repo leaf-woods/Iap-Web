@@ -18,7 +18,7 @@
 struct color_desc_state {
     public:
         ClearableState s_color_map; 
-        int s_color_type;
+        ColorType s_color_type;
         ClearableState s_tree_cvt;
         ClearableState s_tree_d3t;
 };
@@ -29,7 +29,7 @@ class imagecolordesc : public iclearable{
       int W; int H;
       int BH[256]; int GS[256]; int RV[256];
 
-      int color_type = imagecolorvalues::NOT_AVAILABLE;
+      ColorType color_type = ColorType::NA;
 
       std::unordered_map<int, std::vector<int*>*>  *color_map;
       //std::unordered_map<int, std::vector<int*>*>  *compact_map;
@@ -59,8 +59,8 @@ class imagecolordesc : public iclearable{
       std::vector<uchar*>* findB(uchar b);
       //@NOT USED
       std::vector<uchar*> findPixelColors(uchar hue);
-      int getColorType();
-      void setDescData(const cv::Mat &mat, int type);
+      ColorType getColorType();
+      void setDescData(const cv::Mat &mat, ColorType type);
       void setLogLevel(int level);
       void setPrint(iap_print* p);
       void setConvertHSV(convert_bgrhsv* calc);

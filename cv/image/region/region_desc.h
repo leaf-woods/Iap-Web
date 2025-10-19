@@ -50,6 +50,28 @@ class region_desc {
           break;  
           }
           return nullptr;
-      }  
+      } 
+      
+      static RegionDesc getRegionDesc(int colorVal) {
+          switch (colorVal) {
+            case imagecolorvalues::BLACK:
+                return RegionDesc::black;
+            case imagecolorvalues::PURPLE:
+                return RegionDesc::purple;
+            case imagecolorvalues::BLUE:
+                return RegionDesc::blue;
+            case imagecolorvalues::GREEN:
+                return RegionDesc::green;
+            case imagecolorvalues::YELLOW:
+                return RegionDesc::yellow;
+            case imagecolorvalues::ORANGE:
+                return RegionDesc::orange;
+            case imagecolorvalues::RED:
+                return RegionDesc::red;
+            default:
+                break;
+          }
+          return RegionDesc::na;
+      }
 };
 #endif

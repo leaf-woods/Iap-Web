@@ -1,6 +1,7 @@
 #ifndef BORDER_PIXEL_DIFF_NODE_H
 #define BORDER_PIXEL_DIFF_NODE_H
 
+#include <bitset>
 #include <iostream>
 
 #include <opencv2/core.hpp>
@@ -21,11 +22,12 @@ class border_pixel_diff_node {
         int nb_delta[8] = {-1};
         //https://stackoverflow.com/questions/3030829/is-it-possible-to-set-an-object-to-null
         cv::Vec<int, 3> diff[8];
+        std::bitset<8> x;
 
     public:
         void print() {
             std::cout << "index: [ " << index[0] << " , " << index[1] << " ]" << std::endl;
-            
+            std::cout << "x: " << x.to_string() << std::endl;
             /*
             std::cout << "north_east: " << nb_delta[0];
             std::cout << " north: " << nb_delta[static_cast<int>(direction::north)];

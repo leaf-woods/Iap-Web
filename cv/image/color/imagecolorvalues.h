@@ -7,18 +7,16 @@ enum class ColorType {
     NA,
     BGR,
     HSV,
-    MASKED
+    MASKED,
+    TRAINED
 };
 
 class imagecolorvalues {
     public:
       static const int NOT_AVAILABLE = -1;
+      static const int INVALID_KEY = -1;
       
       static const size_t channel = 3;
-      
-      //static const int BGR=100;
-      //static const int HSV=200;
-      //static const int MASKED=300;
 
       static const int BLACK  = 0;
       static const int PURPLE = 8323327;  // 127, 0, 255
@@ -44,7 +42,10 @@ class imagecolorvalues {
           if (type == ColorType::MASKED) {
              return "Masked";
           }
-          return nullptr;
+          if (type == ColorType::TRAINED) {
+             return "Trained";
+          }
+          return "NA";
       }
 
       static std::string getColorVal(int color) {
@@ -77,7 +78,7 @@ class imagecolorvalues {
               return "Red";
           break;
           }
-          return "Null";
+          return "Not Available";
       }
 };
 #endif

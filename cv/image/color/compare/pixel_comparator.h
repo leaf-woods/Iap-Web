@@ -41,7 +41,6 @@ enum class BasicNum {
 
 class pixel_comparator {
     private:
-      static const int INVALID_KEY = -1;
       // Automatically allocated array cannot be deleted.
       static int basic_color_table[3][3][3]; 
 
@@ -65,6 +64,7 @@ class pixel_comparator {
       bool isSky_ma(int which, const cv::Vec3b& color);
       bool equals(const cv::Vec3b& color1, const cv::Vec3b& color2) ;
       int getBasicColorKey(unsigned char b, unsigned char g, unsigned char r);
+      int getColor(cv::Vec3b color);
 
       bool similar(int which, const cv::Vec3b& color1, const cv::Vec3b& color2); 
 };

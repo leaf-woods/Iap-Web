@@ -1,53 +1,72 @@
 #ifndef EVAL_PARAMS_H
 #define EVAL_PARAMS_H
 
+#include <any>
+#include <iostream>
+#include <unordered_map>
+
 #include <opencv2/core.hpp>
+
+#include "region_desc.h"
 
 enum class ParamName {
     na,
-    key1,
-    key2
+    color1,
+    color2,
+    startPixelColor,
+    startDesc
 };
 
 class eval_params {
     private:
-        ParamName k1;
-        cv::Vec3b color1;
 
-        ParamName k2;
+        std::unordered_map<ParamName, std::any>* params_map;
+        
+        cv::Vec3b color1;
         cv::Vec3b color2;
 
     public:
+        eval_params() {
+            params_map = new std::unordered_map<ParamName, std::any>();
+        }
+
+        ~eval_params() {
+            clearParams();
+            delete params_map;
+        }
+        
         void clearParams() {
-            k1 = ParamName::na;
-            //color1 = nullptr;
-            k2 = ParamName::na;
-            //color2 = nullptr;
+            if (params_map->size() > 0) {
+                for (auto it=params_map->begin(); it!=params_map->end();) {
+                    it = params_map->erase(it);
+                }
+            }
         }
 
-        void setParams(ParamName n1, cv::Vec3b c1, ParamName n2, cv::Vec3b c2) {
-            k1 = n1;
-            k2 = n2;
-            color1 = c1;
-            color2 = c2;
+        void setParam(ParamName n, cv::Vec3b color) {
+            params_map->insert_or_assign(n, color);
         }
 
-        void setParam1(ParamName n1, cv::Vec3b c1) {
-            k1 = n1;
-            color1 = c1;
+        void setParam(ParamName n, RegionDesc d) {
+            if (ParamName::startDesc != n) {
+                std::cout << "Bad parameter." << std::endl;
+                return;
+            }
+            params_map->insert_or_assign(n, d);
         }
 
-        void setParam2(ParamName n2, cv::Vec3b c2) {
-            k2 = n2;
-            color2 = c2;
+        // https://en.cppreference.com/w/cpp/utility/any.html
+        std::any getParam(ParamName n) {
+            auto search = params_map->find(n);
+            if (search == params_map->end()) {
+                std::any a;
+                return a;
+            }
+            return search->second;
         }
 
-        cv::Vec3b getParam1() {
-            return color1;
-        }
-
-        cv::Vec3b getParam2() {
-            return color2;
+        int size() {
+            return params_map->size();
         }
 };
 #endif

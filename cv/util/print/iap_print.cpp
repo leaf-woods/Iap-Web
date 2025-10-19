@@ -74,6 +74,13 @@ void iap_print::printPixelColor(cv::Vec<unsigned char, 3> entry, string type) {
     cout << type << " [" << static_cast<unsigned>(entry[0]) << ", " << static_cast<unsigned>(entry[1]) << ", " << static_cast<unsigned>(entry[2]) << "]" << endl;
 }
 
+/// TODO Test
+string iap_print::printPixelColorToString(cv::Vec<unsigned char, 3> entry) {
+    ostringstream buffer;
+    buffer << "[" << static_cast<unsigned>(entry[0]) << ", " << static_cast<unsigned>(entry[1]) << ", " << static_cast<unsigned>(entry[2]) << "]" ;
+    return buffer.str();
+}
+
 void iap_print::printKV(int key, int value) {
     cout << "{ " << key << ", " << value << " }" << endl;
 }
@@ -83,41 +90,41 @@ void iap_print::printPixelIndex(size_t dim, int* array) {
 }
 
 string iap_print::formattedNumToStr(int num) {
-    ostringstream ostrm;
+    ostringstream buffer;
     if (num < 10) {
         string p = "       ";
-        ostrm << string(p) << num;
-        return ostrm.str();
+        buffer << p << num;
+        return buffer.str();
     }
     if (num < 100) {
         string p = "      ";
-        ostrm << string(p) << num;
-        return ostrm.str();
+        buffer << p << num;
+        return buffer.str();
     }
     if (num < 1000) {
         string p = "     ";
-        ostrm << string(p) << num;
-        return ostrm.str();
+        buffer << p << num;
+        return buffer.str();
     }
     if (num < 10000) {
         string p = "    ";
-        ostrm << string(p) << num;
-        return ostrm.str();
+        buffer << p << num;
+        return buffer.str();
     }
     if (num < 100000) {
         string p = "   ";
-        ostrm << string(p) << num;
-        return ostrm.str();
+        buffer << p << num;
+        return buffer.str();
     }
     if (num < 1000000) {
         string p = "  ";
-        ostrm << string(p) << num;
-        return ostrm.str();
+        buffer << p << num;
+        return buffer.str();
     }
     if (num < 10000000) {
         string p = " ";
-        ostrm << string(p) << num;
-        return ostrm.str();
+        buffer << p << num;
+        return buffer.str();
     }
     return to_string(num);
     
@@ -127,4 +134,24 @@ void iap_print::printCVMatrixPixel(const cv::Mat& mat, int row, int col, string 
     cout << "Print pixel color of: Row: " << row << " Col: " << col << " ";
     cv::Vec<unsigned char, 3> entry = mat.at<cv::Vec3b>(row, col);
     printPixelColor(entry, type);
+}
+
+void iap_print::printMapOnMatrix(const cv::Mat& mat, const map<int, vector<int*>*>& m ) {
+    cout << "Print map on matrix. Map size: " << m.size() << endl;
+    int left = 0;
+    int right = 0;
+    cv::Vec<unsigned char, 3> entry;
+    for (auto it=m.begin(); it!=m.end(); it++) {
+        cout << "offset: " << it->first << " vector size: " << it->second->size() << endl;
+        for (int i=0; i<it->second->size(); i++) {
+            left = it->second->at(i)[0];
+            right = it->second->at(i)[1];
+            cout << "row: " << it->first << " left: " << left << " right: " << right << endl;
+            for (int k=left; k<=right; k++) {
+                entry = mat.at<cv::Vec3b>(it->first, k);
+                cout << "index: row: " << it->first << " col: " << k << " [" << static_cast<unsigned>(entry[0]) << ", " << static_cast<unsigned>(entry[1]) << ", " << static_cast<unsigned>(entry[2]) << "]" << endl;
+            }
+        }
+        cout << endl;
+    }
 }

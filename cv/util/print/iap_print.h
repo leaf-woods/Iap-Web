@@ -2,6 +2,7 @@
 #define IAP_PRINT_H
 
 #include <iostream>
+#include <map>
 #include <vector>
 
 #include <opencv2/core.hpp>
@@ -22,10 +23,11 @@ class iap_print {
         void printVector(const std::vector<int*>& v, size_t s);
         void printPixelColor(size_t channel, uchar* array);
         void printPixelColor(cv::Vec<unsigned char, 3> entry, std::string type);
+        std::string printPixelColorToString(cv::Vec<unsigned char, 3> entry);
         void printPixelIndex(size_t dim, int* array);
         void printKV(int key, int value);
         void printCVMatrixPixel(const cv::Mat& mat, int row, int col, std::string type);
-
+        void printMapOnMatrix(const cv::Mat& mat, const std::map<int, std::vector<int*>*>& m );
         std::string formattedNumToStr(int num);
 };
 

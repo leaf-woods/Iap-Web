@@ -15,7 +15,7 @@ void region_print::printMap(string which, const map<int, vector<int*>*>& m) {
 }
 
 void region_print::printQueue(string which, const deque<span_node*>& q) {
-    cout << "Print deque. " << which << " size: " << q.size();
+    cout << "Print deque. " << which << " size: " << q.size() << " { ";
     int s = q.size();
     if (s == 0) {
         cout << "Empty queue." << endl;
@@ -24,7 +24,7 @@ void region_print::printQueue(string which, const deque<span_node*>& q) {
     for (span_node* p : q) {
         cout << p->offset << " ; ";
     }
-    cout << endl;
+    cout << " }" << endl;
 }
 
 void region_print::printSpan(const span_node& sp) {

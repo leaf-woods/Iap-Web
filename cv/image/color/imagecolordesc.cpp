@@ -262,7 +262,7 @@ string imagecolordesc::writeColorValueTreeContents() {
  * If size = 0, instance just created.
  * If size > 0, we clear color_map and invalidate it.
  */
-void imagecolordesc::setDescData(const cv::Mat& mat, int type) {
+void imagecolordesc::setDescData(const cv::Mat& mat, ColorType type) {
     assert(mat.rows>0 && mat.cols>0);
     assert(type==ColorType::BGR || type==ColorType::HSV);
     color_type = type;
@@ -508,7 +508,7 @@ void imagecolordesc::printState() {
 bool imagecolordesc::verifyState(const color_desc_state& cst) {
     bool verified = true;
     if (cst.s_color_type != color_type ) {
-        logger->error("color type: expected: ", cst.s_color_type);
+        logger->error("color type: expected: ", imagecolorvalues::getColorTypeVal(cst.s_color_type));
         verified = false;
     }
     if (cst.s_color_map == ClearableState::just_cleared) {
@@ -622,7 +622,7 @@ void imagecolordesc::setLogLevel(int level) {
 int imagecolordesc::countColor(int color) {
     assert(color_type==ColorType::BGR);
     if (color != imagecolorvalues::BLACK) {
-        logger->info("Unsupported operation. Color: ", imagecolorvalues::getColorTypeVal(color));
+        logger->info("Unsupported operation. Color: ", imagecolorvalues::getColorVal(color));
         return -1;
     }
     int count = 0;
@@ -637,6 +637,6 @@ int imagecolordesc::countColor(int color) {
     return count;
 }
 
-int imagecolordesc::getColorType() {
+ColorType imagecolordesc::getColorType() {
     return color_type;
 }

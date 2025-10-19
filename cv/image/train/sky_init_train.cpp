@@ -9,6 +9,12 @@
 #include "sky_init_train.h"
 
 using namespace std;
+
+/*
+ * testBorder, testCloud
+ * Sky: S > 160,  140 < H < 150 
+ * Cloud: S < 140, H > 155
+ */
 sky_init_train::sky_init_train(string basePath, string imageName) {
     //assert(basePath != nullptr && basePath.length()>0 && imageName != nullptr && imageName.length()>0);
     this->basePath = basePath;

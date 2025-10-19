@@ -84,6 +84,8 @@ class iapcv_log {
             }
         }
 
+        void ftrace(const char* fmt ...);
+
         void debug(string msg1);
 
         template<typename T>
@@ -153,6 +155,7 @@ class iapcv_log {
          *************************************************************
          */ 
         void debug_inline(string msg);
+        void trace_inline(string msg);
 };
 
 #endif

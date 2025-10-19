@@ -1,3 +1,4 @@
+#include <bitset>
 #include <cstdarg>
 #include <iostream>
 
@@ -236,6 +237,18 @@ int main(int argc, char* argv[]) {
         cout << "Cause: " << endl;
         cout << e.what() << endl;
     }
+    cout << endl;
+
+    bitset x = bitset<8>(0); 
+    log->fdebug("ssv", "msg1", "msg2", x.to_string());
+
+    log->fdebug("snsnsn", "count: ", 2, " count col: ", 1, " count row: ", 1);
+
+    log->fdebug("sfsfsfs", "variance: [ ", 0.151061,  " , ", 42.3981, " , ", 2.90235, " ]");
+    
+    double d0 = 0.151061;
+    log->fdebug("sfsfsfs", "variance: [ ", d0,  " , ", 42.3981, " , ", 2.90235, " ]");
+    
     delete log;
     return 0;
 }

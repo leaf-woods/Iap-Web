@@ -4,7 +4,9 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include "eval_policy.h"
 #include "iapcv_env.h"
+#include "region_constants.h"
 #include "regioncontext.h"
 //#include "sky_init_train.h"
 
@@ -62,23 +64,29 @@ int main(int argc, char* argv[]) {
     cout << "Use file: " << fname << endl;
     cv::Mat input = cv::imread(fname);
     
+    //simple_explore* sexp = region_ctx->sexp;
+
     cout << "Test exploration" << endl;
-    region_ctx->builder->getEvalPolicy()->setPolicy(RegionDesc::black);
-    region_ctx->builder->explore(input, 315, 0);
-    region_ctx->builder->explore(input, 319, 0);
-    region_ctx->builder->explore(input, 315, 349);
-    region_ctx->builder->explore(input, 319, 349);
+    eval_policy* po = new eval_policy();
+    po->setPolicy(RegionDesc::black, ColorType::BGR);
+    region_ctx->builder->setEvalPolicy(po);
+    
+    region_ctx->builder->explore(input, 315, 0, region_constants::VERTICAL);
+    region_ctx->builder->explore(input, 319, 0, region_constants::VERTICAL);
+    region_ctx->builder->explore(input, 315, 349, region_constants::VERTICAL);
+    region_ctx->builder->explore(input, 319, 349, region_constants::VERTICAL);
 
-    region_ctx->builder->explore(input, 0, 0);
-    region_ctx->builder->explore(input, 0, 350);
+    region_ctx->builder->explore(input, 0, 0, region_constants::VERTICAL);
+    region_ctx->builder->explore(input, 0, 350, region_constants::VERTICAL);
 
     cout << endl;
-    region_ctx->builder->getEvalPolicy()->setPolicy(RegionDesc::purple);
-    region_ctx->builder->explore(input, 0, 0); 
+    po->setPolicy(RegionDesc::purple, ColorType::BGR);
+    region_ctx->builder->setEvalPolicy(po);
+    region_ctx->builder->explore(input, 0, 0, region_constants::VERTICAL); 
 
     cout << endl;
-    region_ctx->builder->explore(input, 175, 250); 
-
+    region_ctx->builder->explore(input, 175, 250, region_constants::VERTICAL); 
+    
     delete region_ctx;
 
     return 0; // executed after test_region life time ends

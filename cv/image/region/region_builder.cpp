@@ -1,7 +1,9 @@
 #include <cassert>
 #include <chrono>
 #include <iostream>
+
 #include "region_builder.h"
+#include "region_constants.h"
 
 using namespace std;
 
@@ -28,7 +30,9 @@ region_builder::~region_builder() {
     evaluator = nullptr;
     po = nullptr;
     printer = nullptr;
+    prov = nullptr;
     logger = nullptr;
+    sexp = nullptr;
     delete sta;
     sta = nullptr;
 }
@@ -126,10 +130,6 @@ void region_builder::clearMap(map<int, vector<int*>*>& m) {
     }
 }
 
-void region_builder::checkInBound(const cv::Mat& mat, int r, int c, bool_status& sta) {
-    evaluator->evaluateInBound(*po, mat.at<cv::Vec3b>(r, c), sta); 
-}
-
 void region_builder::countRegionPixels() {
     if (rows_map->size()==0 || cols_map->size()==0) {
         assert(cols_map->size()==rows_map->size());
@@ -137,18 +137,21 @@ void region_builder::countRegionPixels() {
         return;
     }
     count = 0;
-    if (rows_map->size() < cols_map->size()) {
+    //if (rows_map->size() < cols_map->size()) {
         // https://en.cppreference.com/w/cpp/container/map.html
         for (const auto& [key, value] : *rows_map) {
             count+=countVector(*value);
         }
         
-    }
-    else {
+    //}
+    
+    //else {
+        int count2 = 0;
         for (const auto& [key, value] : *cols_map) {
-            count+=countVector(*value);
+            count2+=countVector(*value);
         }
-    }
+    //}
+    cout << "rows map count: " << count << " cols map count: " << count2 << endl;     
     logger->debug("size: ", count);
 }
 
@@ -177,7 +180,12 @@ void region_builder::init() {
  * @20250915 Reuse region.
  * Precondition: deque cols and rows, map cols_map and rows_map are newly created instances.
  */
-void region_builder::explore(cv::Mat& mat, int row, int col) {
+ // In java, we use iexplore as a type. We convert iexplore to its impl at runtime.
+ // This means, builder#explore() will provide a paramter that injects the explore type into 
+ // builder class. That is to say, we will put policy logic somewhere else and the explore type
+ // will be determined before calling method explore().
+ // We want to find a way to try different policies easily.
+void region_builder::explore(cv::Mat& mat, int row, int col, int start_direction) {
     if (mat.rows <= 0 || mat.cols <= 0) {
         logger->info("Invalid matrix.");
         return;
@@ -195,15 +203,13 @@ void region_builder::explore(cv::Mat& mat, int row, int col) {
     logger->info("Explore: ", po->getPolicyVal());
 
     sta->clear();
+
+    start = evaluator->evaluatePixelColor(*po, mat.at<cv::Vec3b>(row, col));
+    logger->info("Start pixel desc: ", region_desc::toString(start));
+    
     if (po->getPolicy() == Policies::r_desc) {
-        checkInBound(mat, row, col, *sta);
-        if (! sta->getResult()) {
-            if (sta->isNormal()) {
-                logger->finfo("snsnsv", "Pixel not in region: row: ", row, " col: ", col, " for: ", po->getPolicyVal());
-            }
-            else {
-                logger->error(sta->getMsg());
-            }
+        if ( start != po->getRegionDesc()) {
+            logger->finfo("snsnsv", "Pixel not in region: row: ", row, " col: ", col, " for: ", po->getPolicyVal());
             return;
         }
     }
@@ -228,8 +234,19 @@ void region_builder::explore(cv::Mat& mat, int row, int col) {
     
     auto t1 = chrono::high_resolution_clock::now();
 
-    exp->explore(mat, row, col, *rows, *cols, *rows_map, *cols_map);
-
+    exp->setEvalPolicy(po);
+    exp->setStartPixelRegionDesc(start);
+    if (start_direction == region_constants::VERTICAL) {
+        exp->explore(mat, row, col, *rows, *cols, *rows_map, *cols_map);
+    }
+    else if (start_direction == region_constants::HORIZONTAL) {
+        exp->explore_r(mat, row, col, *rows, *cols, *rows_map, *cols_map);
+    }
+    else {
+        logger->error("Invalid direction: ", start_direction);
+        return;
+    }
+    
     //logger->fdebug("snsnsn", "count: ", count, " count col: ", count_exp_col, " count row: ", count_exp_row);
 
     rpt->printMap("cols", *cols_map);
@@ -267,10 +284,6 @@ void region_builder::setPrint(iap_print* print) {
 
 void region_builder::setEvalPolicy(eval_policy* po) {
     this->po = po;
-}
-
-eval_policy* region_builder::getEvalPolicy() {
-    return this->po;
 }
 
 void region_builder::setRegionEvaluator(region_evaluator* eval) {
@@ -492,6 +505,7 @@ void region_builder::setBorderPixelsDiff(const cv::Mat& mat, int row, int col, b
     border_pixel_diff_node* bn = new border_pixel_diff_node();
     bn->index[0] = row;
     bn->index[1] = col;
+    bn->x = x;
     if (row == 0) {
         if (col == 0) {
             // south, south_east, east
@@ -708,6 +722,81 @@ void region_builder::computeDelta(cv::Vec<unsigned char, 3>& entry, cv::Vec<unsi
     df[0] = static_cast<int>(entry[0]) - static_cast<int>(neighbor[0]);
     df[1] = static_cast<int>(entry[1]) - static_cast<int>(neighbor[1]);
     df[2] = static_cast<int>(entry[2]) - static_cast<int>(neighbor[2]);
+}
+
+void region_builder::printMapOnMatrix(const cv::Mat& mat) {
+    cout << "Size of region: " << count << endl;
+    printer->printMapOnMatrix(mat, *rows_map);
+}
+
+void region_builder::setRegionColorProvider(region_colors_provider* prov) {
+    this->prov = prov;
+}
+
+void region_builder::getRegionColorsIndices(const cv::Mat& mat, std::vector<int*>* colorIndices, size_t t) {
+    prov->getRegionColors(mat, *rows_map, colorIndices, t);
+}
+
+void region_builder::explore(simple_explore* sp, cv::Mat& mat, int row, int col) {
+    if (mat.rows <= 0 || mat.cols <= 0) {
+        logger->info("Invalid matrix.");
+        return;
+    }
+    if (row < 0 || row >= mat.rows) {
+        logger->info("Row out of bound: ", row);
+        return;
+    }
+    if (col < 0 || col >= mat.cols) {
+        logger->info("Col out of bound: ", col);
+        return;
+    }
+
+    assert(po->getPolicy() == Policies::r_desc);
+    logger->info("Explore: ", po->getPolicyVal());
+
+    sta->clear();
+
+    start = evaluator->evaluatePixelColor(*po, mat.at<cv::Vec3b>(row, col));
+    logger->info("Start pixel desc: ", region_desc::toString(start));
+    
+    if ( start != po->getRegionDesc()) {
+        logger->finfo("snsnsv", "Pixel not in region: row: ", row, " col: ", col, " for: ", po->getPolicyVal());
+        return;
+    }
+    
+    // Just cleared.
+    if (cols_map == nullptr || rows_map == nullptr) {
+        assert(cols == nullptr && rows == nullptr);
+        init();
+    }
+    // Just used.
+    else if (cols_map->size()>0 || rows_map->size()>0) {
+        assert(cols->size()==0 || rows->size()==0);
+        clear();
+        init(); 
+    }
+    
+    /// TODO
+    H = mat.rows;
+    W = mat.cols;
+    mbounds->setOH(H);
+    mbounds->setOW(W);
+    
+    this->sexp = sp;
+
+    auto t1 = chrono::high_resolution_clock::now();
+
+    /// TODO determine explore type here
+    sexp->setRegionDesc(start);
+    sexp->explore(mat, row, col, *rows, *cols, *rows_map, *cols_map);
+
+    rpt->printMap("cols", *cols_map);
+    rpt->printMap("rows", *rows_map);
+    countRegionPixels();
+    cout << "size: " << size() << endl;
+
+    auto t2 = chrono::high_resolution_clock::now();
+    logger->info("Total process time: ", (int)chrono::duration_cast<chrono::microseconds>(t2-t1).count());
 }
 
 

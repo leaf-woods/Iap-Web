@@ -9,7 +9,9 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include "abstract_explore.h"
 #include "border_pixel_diff_node.h"
+#include "explore_helper.h"
 #include "eval_policy.h"
 #include "imagecolorvalues.h"
 #include "iapcv_log.h"
@@ -17,8 +19,10 @@
 #include "iclearable.h"
 #include "matrix_bounds.h"
 #include "pixel_comparator.h"
+#include "region_colors_provider.h"
 #include "region_evaluator.h"
 #include "region_explore.h"
+#include "simple_explore.h"
 #include "span_node.h"
 
 /*
@@ -54,6 +58,8 @@ class region_builder : public iclearable {
       region_evaluator* evaluator;
       region_explore* exp;
 
+      simple_explore* sexp;
+
       bool_status* sta;
       matrix_bounds* mbounds;
 
@@ -61,6 +67,9 @@ class region_builder : public iclearable {
       vector<border_pixel_diff_node*>* bv;
 
       eval_policy* po;
+      RegionDesc start;
+
+      region_colors_provider* prov;
 
     public:
 
@@ -77,7 +86,6 @@ class region_builder : public iclearable {
        */
 
     private:
-      void checkInBound(const cv::Mat& mat, int r, int c, bool_status& sta);
       void checkNorth(int row, int col, std::bitset<8>& x);
       void checkSouth(int row, int col, std::bitset<8>& x);
       void clearMap(map<int, vector<int*>*>& m);
@@ -110,11 +118,14 @@ class region_builder : public iclearable {
 
       void clear();
       void computeBorders(const cv::Mat& mat);
-      void explore(cv::Mat& mat, int r, int c);
-      //void explore_r(const cv::Mat& mat, int row, int col);
+      void explore(cv::Mat& mat, int r, int c, int start_direction);
+
+      void explore(simple_explore* sp, cv::Mat& mat, int r, int c);
+
       void getAllBorderPixels(const cv::Mat& mat);
       bool getNextStartPoint(size_t s, int* pixel);
-      
+      void getRegionColorsIndices(const cv::Mat& mat, std::vector<int*>* colorIndices, size_t t);
+      void printMapOnMatrix(const cv::Mat& mat);
       void setLogger(iapcv_log* logger);
       void setLogLevel(int level);
       void setMatrixBounds(matrix_bounds* mb);
@@ -123,12 +134,10 @@ class region_builder : public iclearable {
       void setRegionPrint(region_print* p);
       void setRegionEvaluator(region_evaluator* eval);
       void setRegionExplore(region_explore* exp);
+      void setRegionColorProvider(region_colors_provider* prov);
       void setSubMatrix(int r, int c, int num_rs, int num_cs);
       int size();
       void useMatrix();
-
-      eval_policy* getEvalPolicy();
-      
       
 };
 #endif

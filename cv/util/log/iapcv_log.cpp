@@ -71,6 +71,16 @@ void iapcv_log::trace(string msg1) {
     }
 }
 
+void iapcv_log::ftrace(const char* fmt ...) {
+    if (level == TRACE) {
+        cout << H_TRACE;
+        va_list args;
+        va_start(args, fmt);
+        cprintf(fmt, args);
+        va_end(args);
+    }
+}
+
 void iapcv_log::debug(string msg1) {
     if (level <= DEBUG) {
         cout << H_DEBUG << msg1 << endl;
@@ -162,6 +172,12 @@ void iapcv_log::Info(string msg1, int num) {
  void iapcv_log::debug_inline(string msg) {
     if (level <= DEBUG) {
         cout << H_DEBUG << " " << msg << " ";
+    }
+}
+
+void iapcv_log::trace_inline(string msg) {
+    if (level == TRACE) {
+        cout << H_TRACE << " " << msg << " ";
     }
 }
 

@@ -2,8 +2,10 @@
 
 #include <opencv2/core.hpp>
 
+#include "eval_policy.h"
 #include "iapcv_env.h"
 #include "regioncontext.h"
+#include "region_constants.h"
 #include "sky_init_train.h"
 
 using namespace std;
@@ -31,10 +33,13 @@ int main(int argc, char* argv[]) {
     color[2] = 0;
     trainM->at<cv::Vec3b>(cv::Point(1, 0)) = color;
 
+    eval_policy* po = new eval_policy();
+    po->setPolicy(RegionDesc::sky, ColorType::TRAINED);
+
     regioncontext* region_ctx = new regioncontext();
 
-    region_ctx->builder->getEvalPolicy()->setPolicy(RegionDesc::sky);
-    region_ctx->builder->explore(*trainM, 0, 0); 
+    region_ctx->builder->setEvalPolicy(po);
+    region_ctx->builder->explore(*trainM, 0, 0, region_constants::VERTICAL); 
     cout << "Test explore diagonal: Done" << endl;
     cout << endl;
 
@@ -50,13 +55,14 @@ int main(int argc, char* argv[]) {
     color[2] = 0;
     trainM->at<cv::Vec3b>(cv::Point(1, 0)) = color;
 
-    region_ctx->builder->getEvalPolicy()->setPolicy(RegionDesc::sky);
-    region_ctx->builder->explore(*trainM, 0, 0); 
+    //region_ctx->builder->getEvalPolicy()->setPolicy(RegionDesc::sky);
+    region_ctx->builder->explore(*trainM, 0, 0, region_constants::VERTICAL); 
     cout << endl;
 
     delete tr;
 
     delete region_ctx;
+    delete po;
 
     return 0;
 }

@@ -32,9 +32,9 @@ unordered_map<int, int> pixel_comparator::color_map = { {0, imagecolorvalues::BL
                                                         {16711680, imagecolorvalues::RED} };
  
                                                         
-int pixel_comparator::basic_color_table[3][3][3] = {INVALID_KEY};
+int pixel_comparator::basic_color_table[3][3][3] = {imagecolorvalues::INVALID_KEY};
 pixel_comparator::pixel_comparator() {
-    if (basic_color_table[0][0][0] == INVALID_KEY) {
+    if (basic_color_table[0][0][0] == imagecolorvalues::INVALID_KEY) {
         setupTable();
     }
 }
@@ -154,15 +154,16 @@ bool pixel_comparator::isSky_ma(int which, const cv::Vec3b& color) {
 }
 
 RegionDesc pixel_comparator::contents_sky_cloud_ma(const cv::Vec3b& color) {
-    if (color[0] == 1) {
+  //cout << "Color: " << static_cast<int>(color[0]) << " , " << static_cast<int>(color[1]) << " , " << static_cast<int>(color[2]) << endl; 
+    if (static_cast<int>(color[0]) == 1) {
         return RegionDesc::sky;
     }
     // return color[1] == 1: all cloud including weak.
-    if (color[1] == 1 ) {
-        if (color[2] == 0) {
+    if (static_cast<int>(color[1]) == 1 ) {
+        if (static_cast<int>(color[2]) == 0) {
             return RegionDesc::cloud;
         }
-        else if (color[2] == 2) {
+        else if (static_cast<int>(color[2]) == 1) {
             return RegionDesc::weakCloud;
         }
     }
@@ -226,7 +227,7 @@ int pixel_comparator::getBasicColorKey(unsigned char b, unsigned char g, unsigne
     BasicNum g_color = getBasicNum(g);
     BasicNum r_color = getBasicNum(r);
     if (b_color == BasicNum::eminvalid || g_color == BasicNum::eminvalid || r_color == BasicNum::eminvalid) {
-        return imagecolorvalues::NOT_AVAILABLE;
+        return imagecolorvalues::INVALID_KEY;
     }
     return basic_color_table[static_cast<int>(b_color)][static_cast<int>(g_color)][static_cast<int>(r_color)];
 }
@@ -242,4 +243,16 @@ BasicNum pixel_comparator::getBasicNum(unsigned char c) {
         return BasicNum::em255_like; // 2^8 - 1
     }
     return BasicNum::eminvalid;
+}
+
+int pixel_comparator::getColor(cv::Vec3b color) {
+    int key = getBasicColorKey(color[0], color[1], color[2]);
+    if (key == imagecolorvalues::INVALID_KEY) {
+        return imagecolorvalues::NOT_AVAILABLE;
+    }
+    auto search = color_map.find(key);
+    if (search == color_map.end()) {
+        return imagecolorvalues::NOT_AVAILABLE;   
+    }
+    return search->second;   
 }
