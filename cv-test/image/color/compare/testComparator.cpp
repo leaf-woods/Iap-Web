@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
     assert(compt->isColor(imagecolorvalues::ORANGE, mat->at<cv::Vec3b>(67, 170)));
     assert(compt->isColor(imagecolorvalues::ORANGE, mat->at<cv::Vec3b>(75, 170)));
     assert(compt->isColor(imagecolorvalues::ORANGE, mat->at<cv::Vec3b>(97, 170)));
-    assert(compt->isColor(imagecolorvalues::ORANGE, mat->at<cv::Vec3b>(98, 170)));
+    assert(!compt->isColor(imagecolorvalues::ORANGE, mat->at<cv::Vec3b>(98, 170)));
     assert(compt->isColor(imagecolorvalues::YELLOW, mat->at<cv::Vec3b>(100, 170)));
     assert(compt->isColor(imagecolorvalues::YELLOW, mat->at<cv::Vec3b>(116, 170)));
     assert(compt->isColor(imagecolorvalues::YELLOW, mat->at<cv::Vec3b>(118, 170)));
@@ -97,6 +97,19 @@ int main(int argc, char* argv[]) {
     assert(compt->isColor(imagecolorvalues::PURPLE, mat->at<cv::Vec3b>(250, 170)));
     assert(compt->isColor(imagecolorvalues::PURPLE, mat->at<cv::Vec3b>(253, 170)));
     assert(compt->isColor(imagecolorvalues::BLACK, mat->at<cv::Vec3b>(318, 170)));
+
+    pixel_comparator::printBasicColorTable();
+    cout << endl;
+
+    // test getColor()
+    assert(imagecolorvalues::BLACK == compt->getColor(mat->at<cv::Vec3b>(319, 175)));
+    assert(imagecolorvalues::PURPLE == compt->getColor(mat->at<cv::Vec3b>(250, 170)));
+    assert(imagecolorvalues::BLUE == compt->getColor(mat->at<cv::Vec3b>(207, 170)));
+    assert(imagecolorvalues::L50_GREEN == compt->getColor(mat->at<cv::Vec3b>(119, 170)));
+    assert(imagecolorvalues::GREEN == compt->getColor(mat->at<cv::Vec3b>(180, 170)));
+    assert(imagecolorvalues::YELLOW == compt->getColor(mat->at<cv::Vec3b>(118, 170)));
+    assert(imagecolorvalues::ORANGE != compt->getColor(mat->at<cv::Vec3b>(98, 170)));
+    assert(imagecolorvalues::RED == compt->getColor(mat->at<cv::Vec3b>(0, 170)));
 
     // test isSky()
     //sky_init_train* tr = new sky_init_train();

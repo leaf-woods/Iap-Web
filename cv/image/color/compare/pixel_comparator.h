@@ -67,5 +67,7 @@ class pixel_comparator {
       int getColor(cv::Vec3b color);
 
       bool similar(int which, const cv::Vec3b& color1, const cv::Vec3b& color2); 
+
+      static void printBasicColorTable();
 };
 #endif

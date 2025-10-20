@@ -22,14 +22,14 @@ Debug: std dev: [  0.0980581  ,  2.52101  ,  1.67082  ]
 
  */
 unordered_map<int, int> pixel_comparator::color_map = { {0, imagecolorvalues::BLACK}, 
-                                                        {8323327, imagecolorvalues::PURPLE}, 
-                                                        {255, imagecolorvalues::BLUE}, 
+                                                        {16711807, imagecolorvalues::PURPLE}, 
+                                                        {16711680, imagecolorvalues::BLUE}, 
                                                         {65280, imagecolorvalues::GREEN},
                                                         {65407, imagecolorvalues::L50_GREEN},
-                                                        {16776960, imagecolorvalues::YELLOW},
+                                                        {65535, imagecolorvalues::YELLOW},
                                                         {8388607, imagecolorvalues::L75_YELLOW},
-                                                        {16744192, imagecolorvalues::ORANGE},
-                                                        {16711680, imagecolorvalues::RED} };
+                                                        {32767, imagecolorvalues::ORANGE},
+                                                        {255, imagecolorvalues::RED} };
  
                                                         
 int pixel_comparator::basic_color_table[3][3][3] = {imagecolorvalues::INVALID_KEY};
@@ -40,15 +40,15 @@ pixel_comparator::pixel_comparator() {
 }
 
 void pixel_comparator::setupTable() {
-          //(b<<16) + (g<<8) + r
-          unsigned char b=0; 
-          unsigned char g=0;
-          unsigned char r=0;
+    //(b<<16) + (g<<8) + r
+    unsigned char b=0; 
+    unsigned char g=0;
+    unsigned char r=0;
 
-          int val_b = 0; int val_g = 0; int val_r = 0;
-          for ( b=0; b<3; b++) {
-            for ( g=0; g<3; g++) {
-              for ( r=0; r<3; r++) {
+    int val_b = 0; int val_g = 0; int val_r = 0;
+    for ( b=0; b<3; b++) {
+        for ( g=0; g<3; g++) {
+            for ( r=0; r<3; r++) {
                 if (b == 0) {
                   val_b = 0;
                 }
@@ -80,8 +80,8 @@ void pixel_comparator::setupTable() {
                 }  
                 basic_color_table[b][g][r] =  (val_b<<16) + (val_g<<8) + val_r;
             }
-          }
         }
+    }
 }
 
 bool pixel_comparator::similar(int which, const cv::Vec3b& color1, const cv::Vec3b& color2) {
@@ -178,8 +178,8 @@ bool pixel_comparator::isColor(int which, const cv::Vec3b& color) {
       case imagecolorvalues::BLACK:
         return color[0]<=imagecolorvalues::DELTA && color[1]<=imagecolorvalues::DELTA && color[2]<=imagecolorvalues::DELTA;
 
-      case imagecolorvalues::PURPLE:  // 127, 0, 255  R, G, B
-        return (color[2]<=127+imagecolorvalues::M_DELTA || color[2]>=127-imagecolorvalues::M_DELTA) \
+      case imagecolorvalues::PURPLE:  // RGB: 127, 0, 255  
+        return (color[2]<=127+imagecolorvalues::M_DELTA && color[2]>=127-imagecolorvalues::M_DELTA) \
                && color[1]<=imagecolorvalues::DELTA && color[0]>=255-imagecolorvalues::DELTA;
 
       case imagecolorvalues::BLUE:  // 0, 0, 255
@@ -205,7 +205,7 @@ bool pixel_comparator::isColor(int which, const cv::Vec3b& color) {
 
       case imagecolorvalues::ORANGE:  // 255, 127, 0
         return color[2]>=255-imagecolorvalues::DELTA \
-               && (color[1]<=127+imagecolorvalues::M_DELTA || color[1]>=127-imagecolorvalues::M_DELTA) \
+               && (color[1]<=127+imagecolorvalues::M_DELTA && color[1]>=127-imagecolorvalues::M_DELTA) \
                && color[0]<=imagecolorvalues::DELTA;
 
       case imagecolorvalues::RED:  // 255, 0, 0
@@ -250,9 +250,21 @@ int pixel_comparator::getColor(cv::Vec3b color) {
     if (key == imagecolorvalues::INVALID_KEY) {
         return imagecolorvalues::NOT_AVAILABLE;
     }
+    
     auto search = color_map.find(key);
     if (search == color_map.end()) {
         return imagecolorvalues::NOT_AVAILABLE;   
     }
     return search->second;   
+}
+
+void pixel_comparator::printBasicColorTable() {
+    cout << "Print basic bgr color table. " << endl;
+    for ( int b=0; b<3; b++) {
+        for ( int g=0; g<3; g++) {
+            for ( int r=0; r<3; r++) {
+                cout << "[ " << b << " , " << g << " , " << r << " ] : " << basic_color_table[b][g][r] << endl;        
+            }
+        }
+    } 
 }

@@ -34,8 +34,8 @@ iap_github_test_base=/home/linye020603/github-local/Iap-Web/cv-test;
 
 test_and_main() {
     echo "Update project make and build: test_and_main";
-    rsync $dry_run -av $iap_cv_test_base/makefile $iap_github_test_base/makefile
-    rsync $dry_run -av $iap_cv_test_base/runtests.sh $iap_github_test_base/runtests.sh
+    #rsync $dry_run -av $iap_cv_test_base/makefile $iap_github_test_base/makefile
+    #rsync $dry_run -av $iap_cv_test_base/runtests.sh $iap_github_test_base/runtests.sh
 
     #rsync $dry_run -av $iap_cv_base/makefile $iap_github_base/makefile 
 }
@@ -49,9 +49,12 @@ test_iap() {
     #rsync $dry_run -av $iap_dev_base/util/example8/*.* $iap_github_base/../examples/example8/
     #rsync $dry_run -av $iap_dev_base/util/example8/makefile $iap_github_base/../examples/example8/makefile
 
-    rsync $dry_run -av $iap_cv_test_base/image/color/makefile $iap_github_test_base/image/color/makefile
-    rsync $dry_run -av $iap_cv_test_base/image/color/test_imagecolordesc.cpp $iap_github_test_base/image/color/test_imagecolordesc.cpp
+    #rsync $dry_run -av $iap_cv_test_base/image/color/makefile $iap_github_test_base/image/color/makefile
+    #rsync $dry_run -av $iap_cv_test_base/image/color/test_imagecolordesc.cpp $iap_github_test_base/image/color/test_imagecolordesc.cpp
 
+    #rsync $dry_run -av $iap_cv_test_base/image/color/compare/makefile $iap_github_test_base/image/color/compare/makefile
+    rsync $dry_run -av $iap_cv_test_base/image/color/compare/testComparator.cpp $iap_github_test_base/image/color/compare/testComparator.cpp
+  
     #rsync $dry_run -av $iap_cv_test_base/image/color/ $iap_github_test_base/image/color
 
     #rsync $dry_run -av $iap_cv_test_base/image/color/datatype/ $iap_github_test_base/image/color/datatype
@@ -59,27 +62,27 @@ test_iap() {
     #rsync $dry_run -av $iap_cv_test_base/image/color/compare/testComparator.cpp $iap_github_test_base/image/color/compare/testComparator.cpp
     #rsync $dry_run -av $iap_cv_test_base/image/color/compare/ $iap_github_test_base/image/color/compare
 
-    rsync $dry_run -av $iap_cv_test_base/image/region/test_region.cpp $iap_github_test_base/image/region/test_region.cpp
-    rsync $dry_run -av $iap_cv_test_base/image/region/makefile $iap_github_test_base/image/region/makefile
+    #rsync $dry_run -av $iap_cv_test_base/image/region/test_region.cpp $iap_github_test_base/image/region/test_region.cpp
+    #rsync $dry_run -av $iap_cv_test_base/image/region/makefile $iap_github_test_base/image/region/makefile
     
-    rsync $dry_run -av $iap_cv_test_base/image/region/explore/testRegionExplore.cpp $iap_github_test_base/image/region/explore/testRegionExplore.cpp
-    rsync $dry_run -av $iap_cv_test_base/image/region/explore/makefile $iap_github_test_base/image/region/explore/makefile
+    #rsync $dry_run -av $iap_cv_test_base/image/region/explore/testRegionExplore.cpp $iap_github_test_base/image/region/explore/testRegionExplore.cpp
+    #rsync $dry_run -av $iap_cv_test_base/image/region/explore/makefile $iap_github_test_base/image/region/explore/makefile
     
     #rsync $dry_run -av $iap_cv_test_base/image/region/datatype/testBorderPixelDiffNode.cpp $iap_github_test_base/image/region/datatype/testBorderPixelDiffNode.cpp
     #rsync $dry_run -av $iap_cv_test_base/image/region/datatype/makefile $iap_github_test_base/image/region/datatype/makefile
     
-    rsync $dry_run -av $iap_cv_test_base/image/train/policies/testBorders.cpp $iap_github_test_base/image/train/policies/testBorders.cpp
-    rsync $dry_run -av $iap_cv_test_base/image/train/policies/makefile $iap_github_test_base/image/train/policies/makefile
+    #rsync $dry_run -av $iap_cv_test_base/image/train/policies/testBorders.cpp $iap_github_test_base/image/train/policies/testBorders.cpp
+    #rsync $dry_run -av $iap_cv_test_base/image/train/policies/makefile $iap_github_test_base/image/train/policies/makefile
 
-    rsync $dry_run -av $iap_cv_test_base/image/train/policies/ $iap_github_test_base/image/train/policies
+    #rsync $dry_run -av $iap_cv_test_base/image/train/policies/ $iap_github_test_base/image/train/policies
 
-    rsync $dry_run -av $iap_cv_test_base/statistics/makefile $iap_github_test_base/statistics/makefile
-    rsync $dry_run -av $iap_cv_test_base/statistics/testGetStddev.cpp $iap_github_test_base/statistics/testGetStddev.cpp
+    #rsync $dry_run -av $iap_cv_test_base/statistics/makefile $iap_github_test_base/statistics/makefile
+    #rsync $dry_run -av $iap_cv_test_base/statistics/testGetStddev.cpp $iap_github_test_base/statistics/testGetStddev.cpp
 
 
     #rsync $dry_run -av $iap_cv_test_base/util/convert/test_convertnumber.cpp $iap_github_test_base/util/convert/test_convertnumber.cpp
 
-    rsync $dry_run -av $iap_cv_test_base/util/log/testLog.cpp $iap_github_test_base/util/log/testLog.cpp
+    #rsync $dry_run -av $iap_cv_test_base/util/log/testLog.cpp $iap_github_test_base/util/log/testLog.cpp
     #rsync $dry_run -av $iap_cv_test_base/util/log/ $iap_github_test_base/util/log
 
     #rsync $dry_run -av $iap_cv_test_base/util/tree/dtree/ $iap_github_test_base/util/tree/dtree
@@ -109,8 +112,8 @@ else
 
     #rsync $dry_run -av $iap_cv_base/context/ $iap_github_base/context
 
-    rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.h $iap_github_base/image/color/imagecolordesc.h
-    rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.cpp $iap_github_base/image/color/imagecolordesc.cpp
+    #rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.h $iap_github_base/image/color/imagecolordesc.h
+    #rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.cpp $iap_github_base/image/color/imagecolordesc.cpp
     rsync $dry_run -av $iap_cv_base/image/color/imagecolorvalues.h $iap_github_base/image/color/imagecolorvalues.h
     #rsync $dry_run -av $iap_cv_base/image/color/imagecontext.h $iap_github_base/image/color/imagecontext.h
     #rsync $dry_run -av $iap_cv_base/image/color/imagereader.h $iap_github_base/image/color/imagereader.h
@@ -118,36 +121,36 @@ else
 
     rsync $dry_run -av $iap_cv_base/image/color/compare/ $iap_github_base/image/color/compare
 
-    rsync $dry_run -av $iap_cv_base/image/color/datatype/range.h $iap_github_base/image/color/datatype/range.h
+    #rsync $dry_run -av $iap_cv_base/image/color/datatype/range.h $iap_github_base/image/color/datatype/range.h
     #rsync $dry_run -av $iap_cv_base/image/color/datatype/sub_matr.h $iap_github_base/image/color/datatype/sub_matr.h
     #rsync $dry_run -av $iap_cv_base/image/color/datatype/status/status.h $iap_github_base/image/color/datatype/status/status.h
 
     #rsync $dry_run -av $iap_cv_base/image/color/ $iap_github_base/image/color
     
-    rsync $dry_run -av $iap_cv_base/image/region/region_builder.cpp $iap_github_base/image/region/region_builder.cpp
-    rsync $dry_run -av $iap_cv_base/image/region/region_builder.h $iap_github_base/image/region/region_builder.h
-    rsync $dry_run -av $iap_cv_base/image/region/region_print.cpp $iap_github_base/image/region/region_print.cpp
-    rsync $dry_run -av $iap_cv_base/image/region/region_print.h $iap_github_base/image/region/region_print.h
-    rsync $dry_run -av $iap_cv_base/image/region/regioncontext.h $iap_github_base/image/region/regioncontext.h
-    rsync $dry_run -av $iap_cv_base/image/region/region_constants.h $iap_github_base/image/region/region_constants.h
-    rsync $dry_run -av $iap_cv_base/image/region/region_desc.h $iap_github_base/image/region/region_desc.h
+    #rsync $dry_run -av $iap_cv_base/image/region/region_builder.cpp $iap_github_base/image/region/region_builder.cpp
+    #rsync $dry_run -av $iap_cv_base/image/region/region_builder.h $iap_github_base/image/region/region_builder.h
+    #rsync $dry_run -av $iap_cv_base/image/region/region_print.cpp $iap_github_base/image/region/region_print.cpp
+    #rsync $dry_run -av $iap_cv_base/image/region/region_print.h $iap_github_base/image/region/region_print.h
+    #rsync $dry_run -av $iap_cv_base/image/region/regioncontext.h $iap_github_base/image/region/regioncontext.h
+    #rsync $dry_run -av $iap_cv_base/image/region/region_constants.h $iap_github_base/image/region/region_constants.h
+    #rsync $dry_run -av $iap_cv_base/image/region/region_desc.h $iap_github_base/image/region/region_desc.h
 
     #rsync $dry_run -av $iap_cv_base/image/region/ $iap_github_base/image/region
     
-    rsync $dry_run -av $iap_cv_base/image/region/datatype/ $iap_github_base/image/region/datatype
-    rsync $dry_run -av $iap_cv_base/image/region/evaluate/ $iap_github_base/image/region/evaluate
-    rsync $dry_run -av $iap_cv_base/image/region/explore/ $iap_github_base/image/region/explore
-    rsync $dry_run -av $iap_cv_base/image/region/output/ $iap_github_base/image/region/output
+    #rsync $dry_run -av $iap_cv_base/image/region/datatype/ $iap_github_base/image/region/datatype
+    #rsync $dry_run -av $iap_cv_base/image/region/evaluate/ $iap_github_base/image/region/evaluate
+    #rsync $dry_run -av $iap_cv_base/image/region/explore/ $iap_github_base/image/region/explore
+    #rsync $dry_run -av $iap_cv_base/image/region/output/ $iap_github_base/image/region/output
 
     #rsync $dry_run -av $iap_cv_base/image/toolbox/sky.h $iap_github_base/image/toolbox/sky.h
     #rsync $dry_run -av $iap_cv_base/image/toolbox/sky.cpp $iap_github_base/image/toolbox/sky.cpp
 
-    rsync $dry_run -av $iap_cv_base/image/train/ $iap_github_base/image/train
+    #rsync $dry_run -av $iap_cv_base/image/train/ $iap_github_base/image/train
 
-    rsync $dry_run -av $iap_cv_base/io/ $iap_github_base/io
+    #rsync $dry_run -av $iap_cv_base/io/ $iap_github_base/io
 
     #rsync $dry_run -av $iap_cv_base/manage/iclearable.h $iap_github_base/manage/iclearable.h
-    rsync $dry_run -av $iap_cv_base/statistics/ $iap_github_base/statistics
+    #rsync $dry_run -av $iap_cv_base/statistics/ $iap_github_base/statistics
 
     #rsync $dry_run -av $iap_cv_base/util/convert/convertnumber.cpp $iap_github_base/util/convert/convertnumber.cpp
     #rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv.h $iap_github_base/util/convert/convert_bgrhsv.h
@@ -155,9 +158,9 @@ else
     #rsync $dry_run -av $iap_cv_base/util/convert/convert_bgrhsv_test.cpp $iap_github_base/util/convert/convert_bgrhsv_test.cpp  
     
     #rsync $dry_run -av $iap_cv_base/util/log/iapcv_log.h $iap_github_base/util/log/iapcv_log.h
-    rsync $dry_run -av $iap_cv_base/util/log/ $iap_github_base/util/log
+    #rsync $dry_run -av $iap_cv_base/util/log/ $iap_github_base/util/log
 
-    rsync $dry_run -av $iap_cv_base/util/print/ $iap_github_base/util/print
+    #rsync $dry_run -av $iap_cv_base/util/print/ $iap_github_base/util/print
     
     #rsync $dry_run -av $iap_cv_base/util/tree/ITreeNode.h $iap_github_base/util/tree/ITreeNode.h
     #rsync $dry_run -av $iap_cv_base/util/tree/ibstree.h $iap_github_base/util/tree/ibstree.h

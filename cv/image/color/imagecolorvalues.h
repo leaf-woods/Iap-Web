@@ -19,14 +19,14 @@ class imagecolorvalues {
       static const size_t channel = 3;
 
       static const int BLACK  = 0;
-      static const int PURPLE = 8323327;  // 127, 0, 255
-      static const int BLUE   = 255;      // 0, 0, 255
-      static const int GREEN  = 65280;    // 0, 255, 0
-      static const int L50_GREEN  = 65407;    // 0, 255, 127
-      static const int YELLOW = 16776960; // 255, 255, 0
-      static const int L75_YELLOW = 8388607; // 255, 255, 127
-      static const int ORANGE = 16744192; // 255, 127, 0
-      static const int RED    = 16711680; // 255, 0, 0
+      static const int PURPLE = 16711807;    // RGB: 127, 0, 255
+      static const int BLUE   = 16711680;    // RGB: 0, 0, 255
+      static const int GREEN  = 65280;       // RGB: 0, 255, 0
+      static const int L50_GREEN  = 65407;   // RGB: 0, 255, 127
+      static const int YELLOW = 65535;       // RGB: 255, 255, 0
+      static const int L75_YELLOW = 8388607; // RGB: 255, 255, 127
+      static const int ORANGE = 32767;       // RGB: 255, 127, 0
+      static const int RED    = 255;         // RGB: 255, 0, 0
 
       static const int DELTA = 20;
       static const int M_DELTA = 15; 
