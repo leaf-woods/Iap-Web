@@ -8,8 +8,6 @@ int main() {
     string imageName = "/home/linye020603/iap-web/cv-test/test-data/image/test-color-band-v.jpg";
 
     imagecontext* ctx = new imagecontext();
-    ctx->setImgCtxLogsLevel(iapcv_log::INFO);
-
     ctx->desc->setLogLevel(iapcv_log::INFO);
 
     cout << "Test setDescData: BGR" << endl;
@@ -65,10 +63,6 @@ int main() {
     cout << "Test set d3tree: Just created" << endl;
     cout << "Use file: " << imageName << endl;
     imagecolordesc* desc = new imagecolordesc();
-    desc->setPrint(ctx->getPrint());
-    desc->setConvertNum(ctx->getConvertNumber());
-    desc->setConvertHSV(ctx->getConvertBgrToHsv());
-    desc->setRange(ctx->getRange());
     desc->setD3Tree(DimType::HSV, dimensions::HUE);
     assert(ctx->desc->verifyState(*st));
     delete desc;

@@ -32,6 +32,11 @@ class eval_policy_property {
         ColorType getColorType() {
             return color_type;
         }
+
+        void clear() {
+            this->desc = RegionDesc::na;
+            this->color_type = ColorType::NA;
+        }
 };
 
 /**
@@ -46,29 +51,39 @@ class eval_policy {
     private:
         void clear() {
             po = Policies::na;
-            prop->setRegionDesc(RegionDesc::na);
-            prop->setColorType(ColorType::NA);
+            prop->clear();
         }
 
     public:
         eval_policy() {
             prop = new eval_policy_property();
+            // RegionDesc::na = -1, we have manually call clear().
+            prop->clear();
         }
 
         ~eval_policy() {
             delete prop;
         }
 
-        /// TODO test: If it is a policy applicable to train Matrix, user has to manually set it up.
-        /// Currently, we don't know how to solve the policies problem. 
         void setPolicy(Policies po) {
             this->po = po;
+            if (po != Policies::r_desc) {
+                prop->clear();
+            }
         }
 
         void setPolicy(RegionDesc desc, ColorType type) {
             this->po = Policies::r_desc;
             this->prop->setRegionDesc(desc);
             this->prop->setColorType(type);
+        }
+
+        void setColorType(ColorType type) {
+            this->prop->setColorType(type);
+        }
+
+        void setRegionDesc(RegionDesc d) {
+            this->prop->setRegionDesc(d);
         }
 
         Policies getPolicy() {

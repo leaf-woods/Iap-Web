@@ -30,7 +30,6 @@ using namespace std;
    * i.e., calling of setDescData().
    */
 imagecolordesc::imagecolordesc() {
-    logger = new iapcv_log(typeid(this).name());
     init();
 }
 
@@ -51,7 +50,7 @@ imagecolordesc::~imagecolordesc() {
     convert = nullptr;
 
     rg = nullptr;
-    delete logger;
+    logger = nullptr;
 }
 
 void imagecolordesc::init() {
@@ -613,6 +612,10 @@ void imagecolordesc::getAllHue(std::vector<int>* vh) {
 
 int imagecolordesc::getImageSize() {
     return W*H;
+}
+
+void imagecolordesc::setLogger(iapcv_log* logger) {
+    this->logger = logger;
 }
 
 void imagecolordesc::setLogLevel(int level) {

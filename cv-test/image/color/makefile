@@ -1,5 +1,5 @@
 iap_ghl_cv_base=/home/linye020603/github-local/Iap-Web/cv
-
+dir_context=$(iap_ghl_cv_base)/context
 dir_image=$(iap_ghl_cv_base)/image
 dir_manage=$(iap_ghl_cv_base)/manage
 dir_util=$(iap_ghl_cv_base)/util
@@ -14,7 +14,8 @@ CC = g++
 #CFLAGS = -g -O -Wall -Wextra -Werror -Wfatal-errors -pedantic
 
 # define any directories containing header files other than /usr/include
-INCLUDES = -I$(dir_image)/color \
+INCLUDES = -I$(dir_context) \
+           -I$(dir_image)/color \
 		   -I$(dir_image)/color/datatype \
 		   -I$(dir_image)/color/datatype/status \
 		   -I$(dir_manage) \

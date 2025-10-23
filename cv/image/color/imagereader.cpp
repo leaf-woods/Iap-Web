@@ -26,13 +26,15 @@ using namespace std;
  * 
  */
 imagereader::imagereader() {
-    logger = new iapcv_log(typeid(this).name());
 }
 
 imagereader::~imagereader() {
-    delete logger;
     logger = nullptr;
     printer = nullptr;
+}
+
+void imagereader::setLogger(iapcv_log* logger) {
+    this->logger = logger;
 }
 
 void imagereader::setLogLevel(int level) {

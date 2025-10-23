@@ -61,6 +61,7 @@ class imagecolordesc : public iclearable{
       std::vector<uchar*> findPixelColors(uchar hue);
       ColorType getColorType();
       void setDescData(const cv::Mat &mat, ColorType type);
+      void setLogger(iapcv_log* logger);
       void setLogLevel(int level);
       void setPrint(iap_print* p);
       void setConvertHSV(convert_bgrhsv* calc);

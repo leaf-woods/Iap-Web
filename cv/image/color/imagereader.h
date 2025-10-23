@@ -24,7 +24,8 @@ class imagereader {
     public:
       imagereader();
       ~imagereader(); 
-
+      
+      void setLogger(iapcv_log* logger);
       void setLogLevel(int level);
       cv::Mat* getInputImage();
       cv::Mat* getHsvImage();

@@ -34,8 +34,8 @@ iap_github_test_base=/home/linye020603/github-local/Iap-Web/cv-test;
 
 test_and_main() {
     echo "Update project make and build: test_and_main";
-    #rsync $dry_run -av $iap_cv_test_base/makefile $iap_github_test_base/makefile
-    #rsync $dry_run -av $iap_cv_test_base/runtests.sh $iap_github_test_base/runtests.sh
+    rsync $dry_run -av $iap_cv_test_base/makefile $iap_github_test_base/makefile
+    rsync $dry_run -av $iap_cv_test_base/runtests.sh $iap_github_test_base/runtests.sh
 
     #rsync $dry_run -av $iap_cv_base/makefile $iap_github_base/makefile 
 }
@@ -53,7 +53,7 @@ test_iap() {
     #rsync $dry_run -av $iap_cv_test_base/image/color/test_imagecolordesc.cpp $iap_github_test_base/image/color/test_imagecolordesc.cpp
 
     #rsync $dry_run -av $iap_cv_test_base/image/color/compare/makefile $iap_github_test_base/image/color/compare/makefile
-    rsync $dry_run -av $iap_cv_test_base/image/color/compare/testComparator.cpp $iap_github_test_base/image/color/compare/testComparator.cpp
+    #rsync $dry_run -av $iap_cv_test_base/image/color/compare/testComparator.cpp $iap_github_test_base/image/color/compare/testComparator.cpp
   
     #rsync $dry_run -av $iap_cv_test_base/image/color/ $iap_github_test_base/image/color
 
@@ -65,6 +65,11 @@ test_iap() {
     #rsync $dry_run -av $iap_cv_test_base/image/region/test_region.cpp $iap_github_test_base/image/region/test_region.cpp
     #rsync $dry_run -av $iap_cv_test_base/image/region/makefile $iap_github_test_base/image/region/makefile
     
+    #rsync $dry_run -av $iap_cv_test_base/image/region/evaluate/testEvalParams.cpp $iap_github_test_base/image/region/evaluate/testEvalParams.cpp
+    #rsync $dry_run -av $iap_cv_test_base/image/region/evaluate/testEvalPolicy.cpp $iap_github_test_base/image/region/evaluate/testEvalPolicy.cpp
+    #rsync $dry_run -av $iap_cv_test_base/image/region/evaluate/testEvaluator.cpp $iap_github_test_base/image/region/evaluate/testEvaluator.cpp
+    #rsync $dry_run -av $iap_cv_test_base/image/region/evaluate/makefile $iap_github_test_base/image/region/evaluate/makefile
+
     #rsync $dry_run -av $iap_cv_test_base/image/region/explore/testRegionExplore.cpp $iap_github_test_base/image/region/explore/testRegionExplore.cpp
     #rsync $dry_run -av $iap_cv_test_base/image/region/explore/makefile $iap_github_test_base/image/region/explore/makefile
     
@@ -112,14 +117,14 @@ else
 
     #rsync $dry_run -av $iap_cv_base/context/ $iap_github_base/context
 
-    #rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.h $iap_github_base/image/color/imagecolordesc.h
-    #rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.cpp $iap_github_base/image/color/imagecolordesc.cpp
-    rsync $dry_run -av $iap_cv_base/image/color/imagecolorvalues.h $iap_github_base/image/color/imagecolorvalues.h
-    #rsync $dry_run -av $iap_cv_base/image/color/imagecontext.h $iap_github_base/image/color/imagecontext.h
-    #rsync $dry_run -av $iap_cv_base/image/color/imagereader.h $iap_github_base/image/color/imagereader.h
-    #rsync $dry_run -av $iap_cv_base/image/color/imagereader.cpp $iap_github_base/image/color/imagereader.cpp
+    rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.h $iap_github_base/image/color/imagecolordesc.h
+    rsync $dry_run -av $iap_cv_base/image/color/imagecolordesc.cpp $iap_github_base/image/color/imagecolordesc.cpp
+    #rsync $dry_run -av $iap_cv_base/image/color/imagecolorvalues.h $iap_github_base/image/color/imagecolorvalues.h
+    rsync $dry_run -av $iap_cv_base/image/color/imagecontext.h $iap_github_base/image/color/imagecontext.h
+    rsync $dry_run -av $iap_cv_base/image/color/imagereader.h $iap_github_base/image/color/imagereader.h
+    rsync $dry_run -av $iap_cv_base/image/color/imagereader.cpp $iap_github_base/image/color/imagereader.cpp
 
-    rsync $dry_run -av $iap_cv_base/image/color/compare/ $iap_github_base/image/color/compare
+    #rsync $dry_run -av $iap_cv_base/image/color/compare/ $iap_github_base/image/color/compare
 
     #rsync $dry_run -av $iap_cv_base/image/color/datatype/range.h $iap_github_base/image/color/datatype/range.h
     #rsync $dry_run -av $iap_cv_base/image/color/datatype/sub_matr.h $iap_github_base/image/color/datatype/sub_matr.h
@@ -138,7 +143,7 @@ else
     #rsync $dry_run -av $iap_cv_base/image/region/ $iap_github_base/image/region
     
     #rsync $dry_run -av $iap_cv_base/image/region/datatype/ $iap_github_base/image/region/datatype
-    #rsync $dry_run -av $iap_cv_base/image/region/evaluate/ $iap_github_base/image/region/evaluate
+    rsync $dry_run -av $iap_cv_base/image/region/evaluate/ $iap_github_base/image/region/evaluate
     #rsync $dry_run -av $iap_cv_base/image/region/explore/ $iap_github_base/image/region/explore
     #rsync $dry_run -av $iap_cv_base/image/region/output/ $iap_github_base/image/region/output
 

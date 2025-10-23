@@ -16,6 +16,9 @@ cd $dir_test_image/color/datatype && ./testMatrixBounds
 cd $dir_test_image/region && ./testRegion
 cd $dir_test_image/region/context && ./testRegionContext
 cd $dir_test_image/region/datatype && ./testBorderPixelDiffNode
+cd $dir_test_image/region/evaluate && ./testEvalParams
+cd $dir_test_image/region/evaluate && ./testEvalPolicy
+cd $dir_test_image/region/evaluate && ./testEvalulator
 cd $dir_test_image/region/explore && ./testRegionExplore
 cd $dir_test_image/train && ./test_init_train
 cd $dir_test_image/train && ./testFactSkyInitTrain

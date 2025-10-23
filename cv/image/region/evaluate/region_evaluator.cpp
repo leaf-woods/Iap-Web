@@ -29,7 +29,7 @@ void region_evaluator::evaluate(eval_policy& po, eval_params& pm, bool_status& s
         }
         return;
     }
-
+    assert(po.getColorType() != ColorType::TRAINED && po.getColorType() != ColorType::NA);
     if (po.getPolicy() == Policies::similar_base_00) {
         evaluateSimilarBase_00(pm, sta);
         return;
