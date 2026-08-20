@@ -14,3 +14,6 @@ sed -n '/test_base\/makefile/p' build_iap.sh  | sed -n '/#rsync/p'
 dpkg -l | grep ^ii | awk '$2 ~ /^r-/ { print $2 }'
 
 @20251019
+
+grep -r -l "BattleStatus" . --exclude-dir=.git | xargs sed -i 's/BattleStatus/BattleConstants/g'
+@20260820
