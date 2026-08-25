@@ -17,3 +17,6 @@ dpkg -l | grep ^ii | awk '$2 ~ /^r-/ { print $2 }'
 
 grep -r -l "BattleStatus" . --exclude-dir=.git | xargs sed -i 's/BattleStatus/BattleConstants/g'
 @20260820
+
+du -h -d 1
+@20260825 moved iap-web (1.2G) to movable hard drive
