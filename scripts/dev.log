@@ -20,3 +20,13 @@ grep -r -l "BattleStatus" . --exclude-dir=.git | xargs sed -i 's/BattleStatus/Ba
 
 du -h -d 1
 @20260825 moved iap-web (1.2G) to movable hard drive
+
+linye020603@penguin:~/P-Graphs$ vim test.cpp
+linye020603@penguin:~/P-Graphs$ g++ -I./lib -L./lib test.cpp -llogger
+linye020603@penguin:~/P-Graphs$ ./a.out
+./a.out: error while loading shared libraries: liblogger.so: cannot open shared object file: No such file or directory
+linye020603@penguin:~/P-Graphs$ export LD_LIBRARY_PATH=./lib
+linye020603@penguin:~/P-Graphs$ ./a.out
+Hello
+2026-09-08 08:36:07 test Event - test event test.cpp
+linye020603@penguin:~/P-Graphs$ 
