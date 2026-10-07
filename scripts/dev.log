@@ -49,3 +49,116 @@ test.cpp:4:10: fatal error: logger.h: No such file or directory
 compilation terminated.
 linye020603@penguin:~/P-Graphs$ g++ -I/home/linye020603/P-Graphs/com/cmzs/pgraphs/log -L./lib test.cpp -llogger
 linye020603@penguin:~/P-Graphs$ 
+
+linye020603@penguin:~/P-Graphs$ sudo apt-get clean
+linye020603@penguin:~/P-Graphs$ sudo apt-get autoremove --purge
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+0 upgraded, 0 newly installed, 0 to remove and 1 not upgraded.
+linye020603@penguin:~/P-Graphs$ journalctl --disk-usage
+Hint: You are currently not seeing messages from other users and the system.
+      Users in groups 'adm', 'systemd-journal' can see all messages.
+      Pass -q to turn off this notice.
+Archived and active journals take up 343.4M in the file system.
+linye020603@penguin:~/P-Graphs$ 
+linye020603@penguin:~/P-Graphs$ sudo journalctl --vacuum-size=50M
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@000659f2b9a4fc43-a4adbd9edaeb0c9d.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@000659f2b9e51b01-90aca65e750fc3b5.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@000659fb5ecbffe6-8dd2040becfa2c66.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@000659fb5f1efe76-b5dd3795d6abac7e.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065a06e4e3b3df-e01e22c08f346e37.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065a06e5199506-8789a7296c56e98a.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065a0d8017d7b9-fe6d2fd9ed88bc9f.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065a2393e6549e-aeccfabc677c270a.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065a1b1ade1fae-bc91b288d04fb3b6.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065a1f50ee2568-ecac15046ac17996.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065a23937fc3ca-a119a893746cabd7.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@650ec9d1309c46a8a5aba3ce13f2f8e7-0000000000043186-00065a23937c3cb1.journal (4.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@da2860cb1bba4880854c254e0d76a2da-000000000004357a-00065a2393e5bef6.journal (3.7M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065a2f11cf5a8b-245eb5052023f3d2.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065a2f12317e91-e6cd6e389a55312d.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065a71de369190-4a20780c21fb3e71.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065a7f5d6501d9-7997ab6fb20acae0.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065a7f5d33cd5f-499a16c12970834b.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065ac4a1eedaf8-2d756049329f2451.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065ac4a215a349-8a9554810b465098.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065ac6571311c4-e68d6fa36b77d5c5.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065ac657401fd6-cc62caa3037dc14e.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065ad02e2ca237-9ec9985cb6cd5a75.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065ad02e5623ff-edba438e4dc60eb9.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065ad3ee72c309-bb0b92946f4167fb.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065ad3ef41a0ee-25207bbd6b7dc009.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065ae4eed7e20e-8ba14ae6c0cfa669.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065ae4ef01f219-cd91192db841d076.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065aece999e1b4-f5d5faf32371dfa4.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065aecea049b6a-97eb8f3a395df401.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065afa8d150783-f048342731105604.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065afa8d4097a2-fe33822a86adbe7d.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065b0c64f323d5-1896ad8d374da4ba.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065b0c651fe574-71e47de49dda455f.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065b10f3629146-103f642ee22d801d.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065b10f3a8aa59-ec34038746f98755.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065b2009eb39c6-7ce11b24505ab314.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065b200a1bb82e-c21631a4114321a7.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065b28a67bdfd7-b38b22e0b9b34bbc.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065b28a6b2a165-161420feffcb4441.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065b3428c59697-6e241c46cb2b43b0.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065b3428edec33-2aa33db90f393f13.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065b48977b44f5-0ad55e06a9ae3f87.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065b4897b9ab69-42f17e8e047f636b.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065b5c9883c0bb-aa2c6f5abca74d17.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065b5c98bbe36d-f8c34c3b227e3b45.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065b624295c485-ed03f14e53e9accf.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@da2860cb1bba4880854c254e0d76a2da-000000000004a161-00065b5c98bb810c.journal (3.7M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@650ec9d1309c46a8a5aba3ce13f2f8e7-000000000004a385-00065b62429795f1.journal (3.6M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065b847c57ed82-49d79bc616bbbdf7.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065b847ce23c77-2a5ec3bfc3d3aff6.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065b9909b2a437-3cd0c3e6acd2aa96.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065b9909f6f9f8-36ee9ba89f21f949.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@650ec9d1309c46a8a5aba3ce13f2f8e7-000000000004ad21-00065b9909af34d2.journal (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065bd55c1ead6d-c4b54102a4aecf65.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065bd55be2aac7-7c5bc03de6816410.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065bda497ae0de-8407f7744a91af36.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065be92f087e7e-1b2f48bf4bed5e10.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065be92eceb870-d89777f564eec97e.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065bfd5728ac1d-4759376bc28486aa.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065bfd575733aa-e376c22579715918.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065c06db78c73b-0d08ed22d5b0a301.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065c06dbf7dccf-8eb3d8bc1341b3ec.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065c115c4d3322-8ceca51155a5913b.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065c115c839fe8-372594f48c26f5aa.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065c1711fdb765-245fec8e3572f71a.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065c2565fb1141-3c3d406373ab8d98.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065c1c6d78c2fa-406bc3d9423b99e5.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065c2565b458af-806c0a650496dab9.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065c4df67532cc-76ff7beaf21abd32.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065c4df7a21888-a657b2b000dd662f.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065c61c0624ec3-53872dbe8d4c78e1.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065c61c088b5cc-b363e971cb0dedd8.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@650ec9d1309c46a8a5aba3ce13f2f8e7-000000000004e8d0-00065c61c05f2a82.journal (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065c89e9cf845b-1ac556ebaa84b439.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065c89e9a2e5d8-6f674bde79f26965.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065c9ea989bb59-49384e788f32767d.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065c9ea9ae2e6f-3712ccdc9536d19e.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065ca56bcbae2c-36efd7efd8abaec5.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065cb77ced617a-a60fca5e7edafe69.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065cb77ca30b05-da43ea704a1c1d8e.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065cb97ffdb0c5-9075d08cd06f0615.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065cc666268a3d-00491d51fef9bf99.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065cc665ef84a0-907459e1bf3eece6.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065cdb3e8b162b-deed53eebcc322ed.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065cdb3f13a9a6-e13008b04920bb9b.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065cef1eb58771-178b1d2bdcea3772.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065cef1eeb72b6-a120b9920db2bec2.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065cfb6b203207-22ad42067cf7703f.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065cfb6b46ba2a-89821e2eac29ae2a.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065d01abcd90a4-9b694e71a25d6482.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065d01abceb54c-47e744b7c7eaf6f3.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065d1722e08b23-f8d70f8a020459bd.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/user-1000@00065d17239378e8-f1325bc7d87db790.journal~ (8.0M).
+Deleted archived journal /var/log/journal/af094a2e49784790860ca413e61f1740/system@00065d2cccdd0a06-139ad9f6084d531f.journal~ (8.0M).
+Vacuuming done, freed 743.2M of archived journals from /var/log/journal/af094a2e49784790860ca413e61f1740.
+Vacuuming done, freed 0B of archived journals from /var/log/journal.
+Vacuuming done, freed 0B of archived journals from /run/log/journal.
+linye020603@penguin:~/P-Graphs$ 
