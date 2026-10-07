@@ -162,3 +162,7 @@ Vacuuming done, freed 743.2M of archived journals from /var/log/journal/af094a2e
 Vacuuming done, freed 0B of archived journals from /var/log/journal.
 Vacuuming done, freed 0B of archived journals from /run/log/journal.
 linye020603@penguin:~/P-Graphs$ 
+
+linye020603@penguin:~/P-Graphs$ sudo journalctl --disk-usage
+Archived and active journals take up 48.0M in the file system.
+linye020603@penguin:~/P-Graphs$ 
