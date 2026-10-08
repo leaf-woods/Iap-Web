@@ -166,3 +166,5 @@ linye020603@penguin:~/P-Graphs$
 linye020603@penguin:~/P-Graphs$ sudo journalctl --disk-usage
 Archived and active journals take up 48.0M in the file system.
 linye020603@penguin:~/P-Graphs$ 
+
+du -h --max-depth=1 | sort -hr
